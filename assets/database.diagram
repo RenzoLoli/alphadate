@@ -1,0 +1,49 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users {
+  id integer [primary key, increment, not null]
+  username varchar
+  couplename varchar
+  email varchar
+  password varchar
+  anniversary datetime
+}
+
+Table tags {
+  id integer [primary key, increment, not null]
+  name varchar
+}
+
+Table date_ideas {
+  id integer [primary key, increment, not null]
+  idea varchar
+  description varchar
+}
+
+Table alphabets {
+  id integer [primary key, increment, not null]
+  title varchar
+  user_id int [not null]
+}
+
+Table users_dates{
+  id int [primary key, increment, not null]
+  letter char
+  completed bool
+  alphabet_id int [not null]
+  date_idea_id int [not null]
+}
+
+Table date_idea_tags{
+  id int [primary key, increment, not null]
+  date_idea_id int [not null]
+  tag_id int [not null]
+}
+
+Ref: alphabets.user_id > users.id
+Ref: users_dates.alphabet_id > alphabets.id
+Ref: users_dates.date_idea_id > date_ideas.id
+Ref: date_idea_tags.date_idea_id > date_ideas.id
+Ref: date_idea_tags.tag_id > tags.id
+
