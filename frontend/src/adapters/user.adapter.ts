@@ -1,5 +1,5 @@
 import { User } from "@/model/user.entity";
-import type { UserRequest } from "@/model/user_request";
+import type { UserRequest } from "@/model/user_request.interface";
 
 export class UserAdapter {
   static requestToEntity(userReq: UserRequest): User {
