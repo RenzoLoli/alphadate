@@ -1,12 +1,11 @@
 ---
 import ProfileTag from "@/components/ProfileTag.astro";
 import { BrandService } from "@/services/brand.service";
-import { UserApiService } from "@/services/user.service";
+import userStore from "@/store/user.store";
 
 const brandService = new BrandService();
-const userService = new UserApiService();
 
-const user = userService.getRandom();
+const user = userStore.getUser();
 ---
 
 <div class="w-full flex flex-row justify-between bg-gray-800 px-5 items-center">
