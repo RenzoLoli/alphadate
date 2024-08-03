@@ -1,10 +1,10 @@
-export class User {
+export class SignUpRequest {
   constructor(
-    public id: string,
     public userName: string,
     public coupleName: string,
     public photo: string,
     public email: string,
-    public anniversary: Date,
+    public password: string,
+    public anniversary: string,
   ) {}
 }

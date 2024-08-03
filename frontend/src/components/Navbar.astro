@@ -1,16 +1,13 @@
 ---
-import ProfileTag from "@/components/ProfileTag.astro";
+import Auth from "./Auth.astro";
 import { BrandService } from "@/services/brand.service";
-import userStore from "@/store/user.store";
 
 const brandService = new BrandService();
-
-const user = userStore.getUser();
 ---
 
-<div class="w-full flex flex-row justify-between bg-gray-800 px-5 items-center">
+<div class="w-full flex flex-row justify-between bg-gray-800 px-8 items-center">
   <a href="/">
     <img src={brandService.getBrand()} class="shadow" width="140" alt="brand" />
   </a>
-  <ProfileTag photo={user?.photo ?? ""} alias={user?.userName ?? "null"} />
+  <Auth />
 </div>

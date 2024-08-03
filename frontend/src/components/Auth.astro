@@ -1,0 +1,17 @@
+---
+import userStore from "@/store/auth.store";
+import ProfileTag from "@/components/ProfileTag.astro";
+import AuthLink from "@/components/AuthLink.astro";
+
+const user = userStore.getUser();
+---
+
+<div>
+  {
+    user ? (
+      <ProfileTag photo={user?.photo ?? ""} alias={user?.userName ?? "null"} />
+    ) : (
+      <AuthLink />
+    )
+  }
+</div>
