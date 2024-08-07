@@ -1,15 +1,13 @@
+mod controllers;
+mod domain;
 mod config;
+mod router;
 mod services;
 
-use actix_web::{get, middleware::Logger, App, HttpServer, Responder};
+use actix_web::{middleware::Logger, App, HttpServer};
 use config::ServerOptions;
 use env_logger::Env;
 use services::EnvService;
-
-#[get("/")]
-async fn test() -> impl Responder {
-    "Hola mundo"
-}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -21,7 +19,7 @@ async fn main() -> std::io::Result<()> {
 
     // init server
     let server_opts = ServerOptions::load();
-    HttpServer::new(|| App::new().wrap(Logger::default()).service(test))
+    HttpServer::new(|| App::new().wrap(Logger::default()).configure(router::config))
         .bind((server_opts.host.clone(), server_opts.port))?
         .run()
         .await
