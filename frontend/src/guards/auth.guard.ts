@@ -5,13 +5,13 @@ type Redirect = (path: string) => Response;
 const authGuard = (from: string, redirect: Redirect): Response | null => {
   const authUrls = ["/login", "/register"];
 
-  const user = userStorage.getUser();
+  const isAuth = userStorage.isAuth();
   const isAuthUrl = authUrls.includes(from);
-  if (!isAuthUrl && !user) {
+  if (!isAuthUrl && !isAuth) {
     return redirect("/login");
   }
 
-  if(isAuthUrl && user){
+  if(isAuthUrl && isAuth){
     return redirect("/");
   }
 

@@ -1,7 +1,7 @@
 export class SignUpRequest {
   constructor(
-    public userName: string,
-    public coupleName: string,
+    public username: string,
+    public couplename: string,
     public photo: string,
     public email: string,
     public password: string,

@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const BACKEND_URL = import.meta.env.BACKEND_URL;
+
 const http = axios.create({
-  baseURL: "http://google.com",
+  baseURL: BACKEND_URL,
   headers: {
     "Content-Type": "json",
   },

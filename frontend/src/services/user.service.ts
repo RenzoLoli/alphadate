@@ -2,12 +2,15 @@ import { User } from "@/model/user.entity";
 import http from "./http";
 
 export class UserApiService {
-  async getUserById(id: string): Promise<User | null> {
-    const res = await http.get("/users", {
+  getUsers(): Promise<User[]> {
+    return http.get("/auth/users");
+  }
+
+  getUserById(id: string): Promise<User> {
+    return http.get("/user", {
       params: {
         id,
       },
     });
-    return null;
   }
 }

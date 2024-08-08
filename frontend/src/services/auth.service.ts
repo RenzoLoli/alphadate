@@ -1,21 +1,22 @@
 import type { SignInRequest } from "@/model/signin.request";
 import type { SignUpRequest } from "@/model/signup.request";
-import type { User } from "@/model/user.entity";
-import type { AxiosResponse } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 import http from "./http";
+import type { Token } from "@/model/token";
 
-type PromiseResponse = Promise<AxiosResponse<User, string>>;
+type OkResponse = Promise<AxiosResponse<null>>;
+type PromiseResponse = Promise<AxiosResponse<Token>>;
 
 export class AuthService {
   login(signinRequest: SignInRequest): PromiseResponse {
-    return http.post<User>("/login", signinRequest);
+    return http.post<Token>("/auth/login", signinRequest);
   }
 
-  register(signupRequest: SignUpRequest): PromiseResponse {
-    return http.post<User>("/register", signupRequest);
+  register(signupRequest: SignUpRequest): OkResponse {
+    return http.post("/auth/register", signupRequest);
   }
 
-  logout(): PromiseResponse {
-    return http.post("/logout");
+  logout(): OkResponse {
+    return http.post("/auth/logout");
   }
 }
