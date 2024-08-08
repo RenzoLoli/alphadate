@@ -7,10 +7,6 @@ export class UserApiService {
   }
 
   getUserById(id: string): Promise<User> {
-    return http.get("/user", {
-      params: {
-        id,
-      },
-    });
+    return http.get("/user?id=" + id);
   }
 }
