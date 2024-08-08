@@ -65,7 +65,7 @@ class AuthStorage {
     }
 
     this.setToken(token);
-    this.setUser(user);
+    this.setUser(user.data);
     this.setIsAuth(true);
   }
 
