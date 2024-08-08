@@ -5,7 +5,7 @@ const BACKEND_URL = import.meta.env.BACKEND_URL;
 const http = axios.create({
   baseURL: BACKEND_URL,
   headers: {
-    "Content-Type": "json",
+    "Content-Type": "application/json",
   },
 });
 
