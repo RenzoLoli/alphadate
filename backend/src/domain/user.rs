@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct User {
+    pub id: String,
     pub username: String,
     pub password: String,
     pub email: String,
@@ -20,6 +21,7 @@ impl User {
         photo: String,
     ) -> Self {
         Self {
+            id: "".to_owned(),
             username,
             password,
             email,
