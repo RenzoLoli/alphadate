@@ -8,7 +8,10 @@ export class TokenService {
   getUserIdFromToken(tokenReq: Token): IdToken | null {
     const { token } = tokenReq;
     try {
-      return JSON.parse(this.getPayload(token)) as IdToken;
+      const payload = JSON.parse(this.getPayload(token));
+      const sub = payload.sub;
+      const idToken = JSON.parse(sub) as IdToken;
+      return idToken;
     } catch {
       return null;
     }
