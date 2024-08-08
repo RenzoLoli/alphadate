@@ -42,11 +42,6 @@ async fn register(user_req: Result<web::Json<UserRegister>, actix_web::Error>) -
     }
 }
 
-#[get("/users")]
-async fn users() -> impl Responder {
-    HttpResponse::Ok().json(AuthService::all())
-}
-
 #[post("/validate")]
 async fn validate(token_req: Result<web::Json<Token>, actix_web::Error>) -> impl Responder {
     let token_res = match token_req {
@@ -66,8 +61,5 @@ async fn validate(token_req: Result<web::Json<Token>, actix_web::Error>) -> impl
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     //TODO: Add renew expired tokens service
-    cfg.service(login)
-        .service(register)
-        .service(users)
-        .service(validate);
+    cfg.service(login).service(register).service(validate);
 }

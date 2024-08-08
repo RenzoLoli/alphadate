@@ -1,33 +1,22 @@
-use crate::domain::{Token, User, UserAuth, UserLogin, UserRegister};
+use crate::domain::{Token, User, UserLogin, UserRegister};
 
-use super::{PasswordService, TokenService};
+use super::{PasswordService, TokenService, UserService};
 
 pub struct AuthService;
-
-static mut USERS: Vec<User> = vec![];
 
 impl AuthService {
     pub fn login(user_login: UserLogin) -> Result<Token, String> {
         // validate username and password
-        let finded_user = unsafe {
-            USERS
-                .clone()
-                .into_iter()
-                .find(|user: &'_ User| user.email == user_login.email)
+        let finded_user = match UserService::find_by_email(&user_login.email) {
+            Some(user) => user,
+            None => return Err("Cannot find user".to_owned()),
         };
-
-        if finded_user.is_none() {
-            return Err("Cannot find user".to_owned());
-        }
-
-        let finded_user = finded_user.unwrap();
 
         if !PasswordService::validate(&user_login.password, &finded_user.password) {
             return Err("Incorrect Password".to_owned());
         }
 
-        let user_auth = UserAuth::new(user_login.email, user_login.password);
-        let token = TokenService::create_token(user_auth)?;
+        let token = TokenService::create_token(finded_user.id)?;
 
         Ok(Token::new(token))
     }
@@ -43,12 +32,6 @@ impl AuthService {
             user_register.photo,
         );
 
-        unsafe { USERS.push(n_user.clone()) };
-
-        Ok(n_user)
-    }
-
-    pub fn all() -> Vec<User> {
-        unsafe { USERS.clone() }
+        UserService::create_user(&n_user)
     }
 }
