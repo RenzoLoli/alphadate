@@ -12,8 +12,16 @@ const http = axios.create({
 http.interceptors.response.use(
   (res) => res,
   (error) => {
-    console.log(`intercept axios error:`, error.message);
-    return Promise.reject(error.message);
+    let message = error;
+
+    if (error.response && error.response.data) {
+      message = error.response.data;
+    } else {
+      message = error.message;
+    }
+
+    console.log(`intercept axios error:`, message);
+    return Promise.reject(message);
   },
 );
 
