@@ -15,7 +15,7 @@ http.interceptors.response.use(
     let message = error;
 
     if (error.response && error.response.data) {
-      message = error.response.data;
+      message = error.response.data.message;
     } else {
       message = error.message;
     }
