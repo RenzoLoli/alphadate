@@ -5,6 +5,7 @@ export class UserApiService {
   getUsers(): Promise<User[]> {
     return http.get("/auth/users");
   }
+
   getUserById(id: string): Promise<User> {
     return http.get("/user", {
       params: {
