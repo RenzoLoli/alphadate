@@ -9,9 +9,8 @@ use crate::{
 async fn login(user_req: Result<web::Json<UserLogin>, actix_web::Error>) -> impl Responder {
     let user_login = match user_req {
         Ok(user) => user.into_inner(),
-        Err(_) => {
-            return HttpResponse::BadRequest()
-                .json(ErrorResponse::new("Needed email and password".to_owned()));
+        Err(err) => {
+            return HttpResponse::BadRequest().json(ErrorResponse::new(err.to_string()));
         }
     };
 
@@ -28,9 +27,8 @@ async fn login(user_req: Result<web::Json<UserLogin>, actix_web::Error>) -> impl
 async fn register(user_req: Result<web::Json<UserRegister>, actix_web::Error>) -> impl Responder {
     let user_register = match user_req {
         Ok(user) => user.into_inner(),
-        Err(_) => {
-            return HttpResponse::BadRequest()
-                .json(ErrorResponse::new("Invalid request inputs".to_owned()));
+        Err(err) => {
+            return HttpResponse::BadRequest().json(ErrorResponse::new(err.to_string()));
         }
     };
 

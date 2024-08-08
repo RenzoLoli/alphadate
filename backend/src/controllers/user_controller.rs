@@ -17,9 +17,7 @@ async fn users() -> impl Responder {
 async fn user(id_query: Result<web::Query<IdQuery>, actix_web::Error>) -> impl Responder {
     let id = match id_query {
         Ok(query) => query.id.clone(),
-        Err(_) => {
-            return HttpResponse::BadRequest().json(ErrorResponse::new("Not find id".to_owned()))
-        }
+        Err(err) => return HttpResponse::BadRequest().json(err.to_string()),
     };
 
     match UserService::find_by_id(&id) {
