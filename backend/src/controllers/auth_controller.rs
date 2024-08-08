@@ -35,8 +35,8 @@ async fn register(user_req: Result<web::Json<UserRegister>, actix_web::Error>) -
     let user = AuthService::register(user_register);
 
     match user {
-        Ok(_) => HttpResponse::Ok().body("Registered Succesfully"),
-        Err(err) => HttpResponse::Conflict().json(ErrorResponse::new(err)),
+        Ok(_) => HttpResponse::Ok().json(OkResponse::new("Registered Succesfully".to_owned())),
+        Err(err) => HttpResponse::Conflict().json(ErrorResponse::new(err.to_string())),
     }
 }
 
