@@ -30,14 +30,14 @@ async fn register(user_req: Result<web::Json<UserRegister>, actix_web::Error>) -
         Ok(user) => user.into_inner(),
         Err(_) => {
             return HttpResponse::BadRequest()
-                .json(ErrorResponse::new("Needed email and password".to_owned()));
+                .json(ErrorResponse::new("Invalid request inputs".to_owned()));
         }
     };
 
     let user = AuthService::register(user_register);
 
     match user {
-        Ok(_) => HttpResponse::Ok().body(""),
+        Ok(_) => HttpResponse::Ok().body("Registered Succesfully"),
         Err(err) => HttpResponse::Conflict().json(ErrorResponse::new(err)),
     }
 }
