@@ -53,7 +53,7 @@ class AuthStorage {
     const token = res.data;
 
     const userId = this.tokenService.getUserIdFromToken(token);
-    if (!userId) {
+    if (!userId || !userId.id) {
       throw new Error("Received token is corrupted");
     }
 
