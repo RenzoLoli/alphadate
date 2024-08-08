@@ -6,12 +6,11 @@ import node from "@astrojs/node";
 // https://astro.build/config
 export default defineConfig({
   devToolbar: {
-    enabled: true
+    enabled: false
   },
   output: "server",
   server: {
-    host: "127.0.1",
-    port: 8001
+    port: 8000
   },
   integrations: [tailwind()],
   adapter: node({
