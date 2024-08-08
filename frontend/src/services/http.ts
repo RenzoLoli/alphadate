@@ -16,8 +16,6 @@ http.interceptors.response.use(
 
     if (error.response && error.response.data) {
       message = error.response.data.message;
-    } else {
-      message = error.message;
     }
 
     console.log(`intercept axios error:`, message);
