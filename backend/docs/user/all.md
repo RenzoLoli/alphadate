@@ -1,14 +1,14 @@
-# Users
+# All Users
 
 Used to collect all users on memory.
-
-- !!For now, a database is not used, so an endpoint is used for the users that are stored in memory
 
 **URL** : `/api/v1/auth/users/`
 
 **Method** : `GET`
 
-**Auth required** : NO
+**Auth required** : YES
+
+## Success Response
 
 **Code** : `200 OK`
 

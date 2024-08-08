@@ -48,7 +48,7 @@ Used to collect a Token for a registered User.
 
 ## Bad Request Response
 
-**Condition** : If 'username' and 'password' combination is wrong.
+**Condition** : If query input is wrong.
 
 **Code** : `400 BAD REQUEST`
 
@@ -56,7 +56,7 @@ Used to collect a Token for a registered User.
 
 ```json
 {
-  "message": "Needed email and password"
+  "message": "[Cause of the error]" 
 }
 ```
 
