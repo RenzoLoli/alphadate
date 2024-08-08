@@ -38,7 +38,13 @@ Used to register a new User.
 
 **Code** : `200 OK`
 
-**No Content**
+**Content** :
+
+```json
+{
+  "message": "Registered Succesfully"
+}
+```
 
 ## Bad Request Response
 
@@ -50,7 +56,7 @@ Used to register a new User.
 
 ```json
 {
-  "message": "Invalid inputs"
+  "message": "[Cause of the error]"
 }
 ```
 
@@ -64,6 +70,6 @@ Used to register a new User.
 
 ```json
 {
-  "message": "[Cause of the conflict]"
+  "message": "[Cause of the error]"
 }
 ```
