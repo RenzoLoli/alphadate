@@ -16,7 +16,7 @@ Used to register a new User.
   "password": "[password in plain text]",
   "email": "[valid email address]",
   "couplename": "[couplename in plain text]",
-  "anniversary": "[date in format 'dd/mm/yyyy']",
+  "anniversary": "[date in format 'yyyy/mm/dd']",
   "photo": "[valid url pic]"
 }
 ```
