@@ -21,7 +21,7 @@ Used to collect all users on memory.
     "password": "[password in plain text]",
     "email": "[valid email address]",
     "couplename": "[couplename in plain text]",
-    "anniversary": "[date in format 'dd/mm/yyyy']",
+  "anniversary": "[date in format 'yyyy/mm/dd']",
     "photo": "[valid url pic]"
   }
 ]
