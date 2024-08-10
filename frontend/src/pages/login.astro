@@ -1,13 +1,9 @@
 ---
 import Button from "@/components/Button.astro";
 import FormErrorMessage from "@/components/FormErrorMessage.astro";
-import authGuard from "@/guards/auth.guard";
 import Layout from "@/layouts/Layout.astro";
 import { SignInRequest } from "@/model/signin.request";
 import authStorage from "@/store/auth.store";
-
-const res = authGuard(Astro.url.pathname, Astro.redirect);
-if (res) return res;
 
 const onPost = async () => {
   const data = await Astro.request.formData();

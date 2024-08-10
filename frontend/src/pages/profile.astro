@@ -1,11 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import UserPhoto from "@/components/UserPhoto.astro";
-import authGuard from "@/guards/auth.guard";
 import authStorage from "@/store/auth.store";
-
-const res = authGuard(Astro.url.pathname, Astro.redirect);
-if (res) return res;
 
 const user = authStorage.getUser();
 ---
