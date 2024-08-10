@@ -1,3 +1,4 @@
+import { UserAdapter } from "@/adapters/user.adapter";
 import type { SignInRequest } from "@/model/signin.request";
 import { SignUpRequest } from "@/model/signup.request";
 import { Token } from "@/model/token";
@@ -16,6 +17,7 @@ class AuthStorage {
     private authService = new AuthService(),
     private tokenService = new TokenService(),
     private userService = new UserApiService(),
+    private userAdapter = new UserAdapter(),
   ) {}
 
   private setUser(user: User | null) {
@@ -57,15 +59,17 @@ class AuthStorage {
       throw new Error("Received token is corrupted");
     }
 
-    const user = await this.userService.getUserById(userId.id);
+    const finded_user = await this.userService.getUserById(userId.id);
     if (res.status != HttpStatusCode.Ok) {
       throw new Error(
-        `server response error, status ${res.status} [${res.statusText}]`,
+        `server response error, status ${finded_user.status} [${finded_user.statusText}]`,
       );
     }
 
+    const user = this.userAdapter.entityFromGetUserResponse(finded_user.data);
+
     this.setToken(token);
-    this.setUser(user.data);
+    this.setUser(user);
     this.setIsAuth(true);
   }
 
