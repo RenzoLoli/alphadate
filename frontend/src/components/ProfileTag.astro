@@ -1,4 +1,6 @@
 ---
+import UserPhoto from "@/components/UserPhoto.astro"
+
 interface Props {
   photo: string;
   alias: string;
@@ -11,10 +13,6 @@ const { photo, alias } = Astro.props;
   class="flex flex-col border-none shadow-sm hover:grayscale items-center bg-pink-700 shadow-pink-900 rounded-lg p-2"
   href="/profile"
 >
-  <img
-    class="rounded-full bg-pink-800 w-[60px] h-[60px] p-2"
-    src={photo}
-    alt="user-photo"
-  />
+  <UserPhoto photo={photo} />
   <p class="font-bold">@{alias}</p>
 </a>

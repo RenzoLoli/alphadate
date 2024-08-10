@@ -26,10 +26,13 @@ const { title } = Astro.props;
   </body>
 </html>
 <style is:global>
+  :root {
+    color-scheme: only dark;
+  }
+
   html {
     font-family: system-ui, sans-serif;
     background-size: 224px;
-    color-scheme: dark light;
   }
 
   body {
@@ -37,6 +40,27 @@ const { title } = Astro.props;
     height: 100dvh;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 130px 1fr;
+    grid-template-rows: 120px 1fr;
+  }
+  
+  main {
+    overflow: hidden;
+    overflow-y: auto;
+  }
+
+  label {
+    font-size: 1.1rem;
+  }
+
+  input {
+    width: 200px;
+    font-size: 1rem;
+    padding-left: 3px;
+    padding-block: 2px;
+  }
+
+  input:enabled {
+    color: black;
+    background: white;
   }
 </style>
