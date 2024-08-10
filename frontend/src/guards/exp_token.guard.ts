@@ -11,7 +11,7 @@ const expTokenGuard = (): Next => {
 
   const tokenService = new TokenService();
   const exp = tokenService.getExpirationFromToken(tokenReq);
-  if (!exp) null;
+  if (!exp) return null;
 
   return "renew";
 };
