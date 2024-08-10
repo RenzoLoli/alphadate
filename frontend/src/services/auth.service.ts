@@ -1,6 +1,6 @@
 import type { SignInRequest } from "@/model/signin.request";
 import type { SignUpRequest } from "@/model/signup.request";
-import type { AxiosError, AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 import http from "./http";
 import type { Token } from "@/model/token";
 
@@ -16,7 +16,9 @@ export class AuthService {
     return http.post("/auth/register", signupRequest);
   }
 
-  logout(): OkResponse {
-    return http.post("/auth/logout");
+  renew(id: string): PromiseResponse {
+    return http.post<Token>("/auth/renew", {
+      id,
+    });
   }
 }

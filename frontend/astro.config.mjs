@@ -15,5 +15,8 @@ export default defineConfig({
   integrations: [tailwind()],
   adapter: node({
     mode: "middleware"
-  })
+  }),
+  experimental: {
+    rewriting: true
+  }
 });

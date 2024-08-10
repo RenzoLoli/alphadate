@@ -76,14 +76,24 @@ class AuthStorage {
     }
   }
 
-  public async logout() {
-    const res = await this.authService.logout();
+  public logout() {
+    this.setUser(null);
+    this.setToken(null);
+    this.setIsAuth(false);
+  }
+
+  public async renew() {
+    const user = this.getUser();
+    if (!user) {
+      throw new Error("Local User is Corrupted");
+    }
+
+    const res = await this.authService.renew(user.id);
     if (res.status != HttpStatusCode.Ok) {
       throw new Error(`server error status: ${res.status}`);
     }
 
-    this.setUser(null);
-    this.setIsAuth(false);
+    this.setToken(res.data);
   }
 }
 
