@@ -1,6 +1,8 @@
-use crate::domain::{Token, User, UserLogin, UserRegister};
+use crate::domain::{User, UserLogin, UserRegister};
 
 use super::{PasswordService, TokenService, UserService};
+
+type Token = String;
 
 pub struct AuthService;
 
@@ -18,7 +20,7 @@ impl AuthService {
 
         let token = TokenService::create_token(finded_user.id)?;
 
-        Ok(Token::new(token))
+        Ok(token)
     }
 
     pub fn register(user_register: UserRegister) -> Result<User, String> {
