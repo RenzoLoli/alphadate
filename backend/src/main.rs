@@ -1,5 +1,6 @@
 mod controllers;
 mod domain;
+mod middlewares;
 mod config;
 mod router;
 mod services;
