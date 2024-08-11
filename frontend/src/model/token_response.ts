@@ -1,3 +1,3 @@
-export class Token {
+export class TokenResponse {
   constructor(public token: string) {}
 }

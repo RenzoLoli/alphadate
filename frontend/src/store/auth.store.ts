@@ -1,22 +1,26 @@
 import { UserAdapter } from "@/adapters/user.adapter";
-import type { SignInRequest } from "@/model/signin.request";
 import { SignUpRequest } from "@/model/signup.request";
-import { Token } from "@/model/token";
+import type { SignInRequest } from "@/model/signin.request";
+import type { Token } from "@/model/token_type";
 import { User } from "@/model/user.entity";
 import { AuthService } from "@/services/auth.service";
 import { TokenService } from "@/services/token.service";
 import { UserApiService } from "@/services/user.service";
+import { TokenUtils } from "@/utils/token.utils";
 import { HttpStatusCode } from "axios";
 import { atom } from "nanostores";
 
 class AuthStorage {
   constructor(
+    private $isAuth = atom<boolean>(false),
     private $user = atom<User | null>(null),
     private $token = atom<Token | null>(null),
-    private $isAuth = false,
+
     private authService = new AuthService(),
     private tokenService = new TokenService(),
     private userService = new UserApiService(),
+
+    private tokenUtils = new TokenUtils(),
     private userAdapter = new UserAdapter(),
   ) {}
 
@@ -29,7 +33,7 @@ class AuthStorage {
   }
 
   private setIsAuth(isAuth: boolean) {
-    this.$isAuth = isAuth;
+    this.$isAuth.set(isAuth);
   }
 
   public getUser(): User | null {
@@ -41,7 +45,7 @@ class AuthStorage {
   }
 
   public isAuth(): boolean {
-    return this.$isAuth;
+    return this.$isAuth.get();
   }
 
   public async login(signinRequest: SignInRequest) {
@@ -52,14 +56,14 @@ class AuthStorage {
       );
     }
 
-    const token = res.data;
+    const token = res.data.token;
 
-    const userId = this.tokenService.getUserIdFromToken(token);
-    if (!userId || !userId.id) {
+    const userId = this.tokenUtils.getUserIdFromToken(token);
+    if (!userId) {
       throw new Error("Received token is corrupted");
     }
 
-    const finded_user = await this.userService.getUserById(userId.id);
+    const finded_user = await this.userService.getUserById(userId);
     if (res.status != HttpStatusCode.Ok) {
       throw new Error(
         `server response error, status ${finded_user.status} [${finded_user.statusText}]`,
@@ -87,17 +91,12 @@ class AuthStorage {
   }
 
   public async renew() {
-    const user = this.getUser();
-    if (!user) {
-      throw new Error("Local User is Corrupted");
-    }
-
-    const res = await this.authService.renew(user.id);
+    const res = await this.tokenService.renew();
     if (res.status != HttpStatusCode.Ok) {
       throw new Error(`server error status: ${res.status}`);
     }
 
-    this.setToken(res.data);
+    this.setToken(res.data.token);
   }
 }
 

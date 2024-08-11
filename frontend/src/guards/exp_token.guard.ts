@@ -1,16 +1,21 @@
-import { TokenService } from "@/services/token.service";
 import authStorage from "@/store/auth.store";
+import { TokenUtils } from "@/utils/token.utils";
 
 type Next = string | null;
 
-const expTokenGuard = (): Next => {
+const expTokenGuard = (from: string): Next => {
+  const authUrls = ["/login", "/register"];
+
+  const isAuthUrl = authUrls.includes(from);
+  if(isAuthUrl) return null;
+
   const tokenReq = authStorage.getToken();
-  if (!tokenReq || !tokenReq.token) {
+  if (!tokenReq) {
     return "login";
   }
 
-  const tokenService = new TokenService();
-  const exp = tokenService.isExpiredIn(tokenReq, 60 * 1000);
+  const tokenUtils = new TokenUtils();
+  const exp = tokenUtils.isExpiredIn(tokenReq, 60 * 1000);
   if (!exp) return null;
 
   return "renew";

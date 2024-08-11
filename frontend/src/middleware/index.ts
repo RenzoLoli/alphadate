@@ -12,17 +12,16 @@ export const onRequest: MiddlewareHandler = async (
   if (resAuthGuard) return context.redirect(resAuthGuard);
 
   // guardia de la expiracion del token
-  const resTokenGuard = expTokenGuard();
-  try {
-    if (resTokenGuard == "renew") {
+  const resTokenGuard = expTokenGuard(context.url.pathname);
+  if (resTokenGuard == "renew") {
+    try {
       await authStorage.renew();
+    } catch {
+      authStorage.logout();
+      return context.redirect("login");
     }
-  } catch {
-    authStorage.logout();
-    return context.redirect("login");
-  }
-  if (resTokenGuard != "renew" && typeof resAuthGuard == "string") {
-    return context.redirect(resAuthGuard);
+  } else if (resTokenGuard != null) {
+    return context.redirect(resTokenGuard);
   }
 
   return next();
