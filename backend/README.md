@@ -1,13 +1,18 @@
 # Alphadate REST API Documentation
 
 <!--toc:start-->
+
 - [Alphadate REST API Documentation](#alphadate-rest-api-documentation)
+  - [Authentication](#authentication)
   - [Open Endpoints](#open-endpoints)
     - [Authentication Related](#authentication-related)
     - [Playground Endpoints](#playground-endpoints)
-  - [Required Authentication Endpoints](#required-authentication-endpoints)
-    - [User Related](#user-related)
-<!--toc:end-->
+  - [Required Authentication Endpoints](#required-authentication-endpoints) - [User Related](#user-related)
+  <!--toc:end-->
+
+## Authentication
+
+- [Bearer](docs/auth/bearer.md): "Header Authorization Bearer"
 
 ## Open Endpoints
 
