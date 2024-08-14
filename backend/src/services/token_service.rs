@@ -14,10 +14,10 @@ type Token = String;
 pub struct TokenService;
 
 impl TokenService {
-    pub fn create_token(id: String) -> Result<Token, String> {
+    pub fn create_token(id: &str) -> Result<Token, String> {
         let secret = EnvService::get_env("SECRET_KEY").map_err(|_| "Server Error".to_owned())?;
         let claims = Claims {
-            sub: id,
+            sub: id.to_string(),
             //TODO: improve maximum expiration time
             exp: (chrono::offset::Local::now() + chrono::Duration::days(1)).timestamp() as usize,
         };

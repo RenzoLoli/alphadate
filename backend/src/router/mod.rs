@@ -1,6 +1,6 @@
 use actix_web::{get, web, Responder};
 
-use crate::controllers::{auth_config, token_config, user_config};
+use crate::controllers::{auth_config, date_idea_config, tag_config, token_config, user_config};
 use crate::middlewares::AuthorizeMiddleware;
 
 #[get("/")]
@@ -13,12 +13,16 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     let auth = web::scope("/auth").configure(auth_config);
     let user = web::scope("/user").configure(user_config);
     let token = web::scope("/token").configure(token_config);
+    let tag = web::scope("/tag").configure(tag_config);
+    let date_idea = web::scope("/date-idea").configure(date_idea_config);
 
     // auth routes
     let need_authorization = web::scope("")
         .wrap(AuthorizeMiddleware)
         .service(user)
-        .service(token);
+        .service(token)
+        .service(tag)
+        .service(date_idea);
 
     // v1
     let api_v1 = web::scope("/api/v1")

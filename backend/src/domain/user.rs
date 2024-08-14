@@ -1,14 +1,16 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Serialize, Deserialize)]
+use super::UserUpdate;
+
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub struct User {
-    pub id: String,
-    pub username: String,
-    pub password: String,
-    pub email: String,
-    pub couplename: String,
-    pub anniversary: String,
-    pub photo: String,
+    id: String,
+    username: String,
+    password: String,
+    email: String,
+    couplename: String,
+    anniversary: String,
+    photo: String,
 }
 
 impl User {
@@ -28,6 +30,78 @@ impl User {
             couplename,
             anniversary,
             photo,
+        }
+    }
+
+    // GETTERS
+    pub fn id(&self) -> &str {
+        &self.id
+    }
+    pub fn username(&self) -> &str {
+        &self.username
+    }
+    pub fn password(&self) -> &str {
+        &self.password
+    }
+    pub fn email(&self) -> &str {
+        &self.email
+    }
+    pub fn couplename(&self) -> &str {
+        &self.couplename
+    }
+    pub fn anniversary(&self) -> &str {
+        &self.anniversary
+    }
+    pub fn photo(&self) -> &str {
+        &self.photo
+    }
+
+    //SETTERS
+    pub fn set_id(&mut self, id: &str) {
+        self.id = String::from(id);
+    }
+
+    pub fn set_username(&mut self, username: &str) {
+        self.username = String::from(username);
+    }
+
+    pub fn set_password(&mut self, password: &str) {
+        self.password = String::from(password);
+    }
+
+    pub fn set_email(&mut self, email: &str) {
+        self.email = String::from(email);
+    }
+
+    pub fn set_couplename(&mut self, couplename: &str) {
+        self.couplename = String::from(couplename);
+    }
+
+    pub fn set_anniversary(&mut self, anniversary: &str) {
+        self.anniversary = String::from(anniversary);
+    }
+
+    pub fn set_photo(&mut self, photo: &str) {
+        self.photo = String::from(photo);
+    }
+
+    // DOMAIN LOGIC
+
+    pub fn update(&mut self, options: &UserUpdate) {
+        if let Some(username) = options.username.clone() {
+            self.username = username;
+        }
+
+        if let Some(couplename) = options.couplename.clone() {
+            self.couplename = couplename;
+        }
+
+        if let Some(anniversary) = options.anniversary.clone() {
+            self.anniversary = anniversary;
+        }
+
+        if let Some(photo) = options.photo.clone() {
+            self.photo = photo;
         }
     }
 }

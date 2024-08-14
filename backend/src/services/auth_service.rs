@@ -14,11 +14,11 @@ impl AuthService {
             None => return Err("Cannot find user".to_owned()),
         };
 
-        if !PasswordService::validate(&user_login.password, &finded_user.password) {
+        if !PasswordService::validate(&user_login.password, &finded_user.password().to_string()) {
             return Err("Incorrect Password".to_owned());
         }
 
-        let token = TokenService::create_token(finded_user.id)?;
+        let token = TokenService::create_token(finded_user.id().to_string().as_str())?;
 
         Ok(token)
     }
