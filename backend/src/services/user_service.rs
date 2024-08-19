@@ -1,65 +1,67 @@
-use crate::domain::{User, UserUpdate};
-use uuid::Uuid;
+use std::sync::Arc;
 
-pub struct UserService;
+use crate::{
+    domain::{User, UserUpdate},
+    repository::UserRepository,
+};
 
-static mut USERS: Vec<User> = vec![];
+pub struct UserService {
+    user_repository: Arc<UserRepository>,
+}
 
 impl UserService {
-    pub fn get_all() -> Vec<User> {
-        unsafe { USERS.clone() }
+    pub fn new(user_repository: Arc<UserRepository>) -> Self {
+        Self { user_repository }
     }
 
-    pub fn find_by_id(id: &str) -> Option<User> {
-        unsafe {
-            USERS
-                .clone()
-                .into_iter()
-                .find(|user: &'_ User| user.id() == id)
-        }
+    pub async fn get_all(&self) -> Vec<User> {
+        self.user_repository.get_all().await
     }
 
-    pub fn find_by_email(email: &str) -> Option<User> {
-        unsafe {
-            USERS
-                .clone()
-                .into_iter()
-                .find(|user: &'_ User| user.email() == email)
-        }
+    pub async fn find_by_id(&self, id: &str) -> Option<User> {
+        self.user_repository.find_by_id(id).await
     }
 
-    pub fn create_user(user: &User) -> Result<User, String> {
-        let mut n_user = user.clone();
+    pub async fn find_by_email(&self, email: &str) -> Option<User> {
+        self.user_repository.find_by_email(email).await
+    }
 
-        if UserService::find_by_email(user.email()).is_some() {
+    pub async fn create_user(&self, user: &User) -> Result<User, String> {
+        if self.find_by_email(user.email()).await.is_some() {
             return Err("User already exist".to_owned());
         }
 
-        n_user.set_id(Uuid::new_v4().to_string().as_str());
-
-        unsafe { USERS.push(n_user.clone()) }
-        Ok(n_user)
+        self.user_repository
+            .create(user)
+            .await
+            .ok_or("Cannot Create User".to_owned())
     }
 
-    pub fn update_user(id: &str, options: &UserUpdate) -> Result<User, String> {
-        let finded_user = unsafe { USERS.iter_mut().find(|user: &'_ &mut User| user.id() == id) };
+    pub async fn update_user(&self, id: &str, options: &UserUpdate) -> Result<User, String> {
+        let finded_user = self.user_repository.find_by_id(id).await;
 
-        let Some(user) = finded_user else {
+        let Some(mut user) = finded_user else {
             return Err("User not exist".to_owned());
         };
 
         user.update(options);
 
-        Ok(user.clone())
+        self.user_repository
+            .update(id, &user)
+            .await
+            .ok_or("Cannot Update User".to_owned())
     }
 
-    pub fn delete_user(id: &str) -> Result<User, String> {
-        unsafe {
-            USERS
-                .iter()
-                .position(|user: &User| user.id() == id)
-                .map(|pos| USERS.remove(pos))
-                .ok_or("user not Exists".to_owned())
-        }
+    pub async fn delete_user(&self, id: &str) -> Result<User, String> {
+        let finded_user = self.user_repository.find_by_id(id).await;
+
+        if finded_user.is_none() {
+            return Err("User not exist".to_owned());
+        };
+
+        self.user_repository
+            .delete(id)
+            .await
+            .ok_or("Cannot Update User".to_owned())
     }
 }

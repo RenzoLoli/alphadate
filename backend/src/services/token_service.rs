@@ -58,7 +58,6 @@ impl TokenService {
                         exp: (chrono::offset::Local::now() + chrono::Duration::days(1)).timestamp()
                             as usize,
                     };
-                    println!("{:?}", claims);
                     encode::<Claims>(
                         &Header::default(),
                         &claims,

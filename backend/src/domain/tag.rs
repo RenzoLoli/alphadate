@@ -9,10 +9,10 @@ pub struct Tag {
 }
 
 impl Tag {
-    pub fn new(name: String) -> Self {
+    pub fn new(name: &str) -> Self {
         Self {
             id: "".to_owned(),
-            name,
+            name: name.to_string(),
         }
     }
 
@@ -34,11 +34,11 @@ impl Tag {
         self.name = String::from(name);
     }
 
-    // DOMAIN RULES
+    // FUNCTIONS
 
     pub fn update(&mut self, options: &TagUpdate) {
         if let Some(name) = options.name.clone() {
-            self.name = name.clone();
+            self.name.clone_from(&name);
         }
     }
 }

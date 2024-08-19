@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::UserUpdate;
 
-#[derive(Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
     id: String,
     username: String,
@@ -15,21 +15,21 @@ pub struct User {
 
 impl User {
     pub fn new(
-        username: String,
-        password: String,
-        email: String,
-        couplename: String,
-        anniversary: String,
-        photo: String,
+        username: &str,
+        password: &str,
+        email: &str,
+        couplename: &str,
+        anniversary: &str,
+        photo: &str,
     ) -> Self {
         Self {
             id: "".to_owned(),
-            username,
-            password,
-            email,
-            couplename,
-            anniversary,
-            photo,
+            username: username.to_string(),
+            password: password.to_string(),
+            email: email.to_string(),
+            couplename: couplename.to_string(),
+            anniversary: anniversary.to_string(),
+            photo: photo.to_string(),
         }
     }
 
@@ -58,7 +58,7 @@ impl User {
 
     //SETTERS
     pub fn set_id(&mut self, id: &str) {
-        self.id = String::from(id);
+        self.id = id.to_string();
     }
 
     pub fn set_username(&mut self, username: &str) {

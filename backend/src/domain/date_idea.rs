@@ -48,11 +48,11 @@ impl DateIdea {
 
     pub fn update(&mut self, options: &DateIdeaUpdate) {
         if let Some(idea) = options.idea.clone() {
-            self.idea = idea.clone();
+            self.idea.clone_from(&idea);
         }
 
         if let Some(description) = options.description.clone() {
-            self.description = description.clone();
+            self.description.clone_from(&description);
         }
     }
 }

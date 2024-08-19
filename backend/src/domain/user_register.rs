@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use super::User;
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct UserRegister {
     pub username: String,
@@ -10,22 +12,15 @@ pub struct UserRegister {
     pub photo: String,
 }
 
-impl UserRegister {
-    pub fn new(
-        username: String,
-        password: String,
-        email: String,
-        couplename: String,
-        anniversary: String,
-        photo: String,
-    ) -> Self {
-        Self {
-            username,
-            password,
-            email,
-            couplename,
-            anniversary,
-            photo,
-        }
+impl From<&UserRegister> for User {
+    fn from(register: &UserRegister) -> Self {
+        User::new(
+            &register.username,
+            &register.password,
+            &register.email,
+            &register.couplename,
+            &register.anniversary,
+            &register.photo,
+        )
     }
 }

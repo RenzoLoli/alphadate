@@ -1,18 +1,26 @@
+use std::sync::Arc;
+
 use crate::domain::{User, UserLogin, UserRegister};
 
 use super::{PasswordService, TokenService, UserService};
 
 type Token = String;
 
-pub struct AuthService;
+pub struct AuthService {
+    user_service: Arc<UserService>,
+}
 
 impl AuthService {
-    pub fn login(user_login: UserLogin) -> Result<Token, String> {
-        // validate username and password
-        let finded_user = match UserService::find_by_email(&user_login.email) {
-            Some(user) => user,
-            None => return Err("Cannot find user".to_owned()),
-        };
+    pub fn new(user_service: Arc<UserService>) -> Self {
+        Self { user_service }
+    }
+
+    pub async fn login(&self, user_login: UserLogin) -> Result<Token, String> {
+        let finded_user = self
+            .user_service
+            .find_by_email(&user_login.email)
+            .await
+            .ok_or("Cannot find user".to_owned())?;
 
         if !PasswordService::validate(&user_login.password, &finded_user.password().to_string()) {
             return Err("Incorrect Password".to_owned());
@@ -23,17 +31,12 @@ impl AuthService {
         Ok(token)
     }
 
-    pub fn register(user_register: UserRegister) -> Result<User, String> {
+    pub async fn register(&self, user_register: &UserRegister) -> Result<User, String> {
         let e_password = PasswordService::encrypt(&user_register.password);
-        let n_user = User::new(
-            user_register.username,
-            e_password,
-            user_register.email,
-            user_register.couplename,
-            user_register.anniversary,
-            user_register.photo,
-        );
 
-        UserService::create_user(&n_user)
+        user_register.to_owned().password = e_password;
+        let n_user = User::from(user_register);
+
+        self.user_service.create_user(&n_user).await
     }
 }

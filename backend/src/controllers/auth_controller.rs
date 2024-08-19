@@ -2,11 +2,15 @@ use actix_web::{post, web, HttpResponse, Responder};
 
 use crate::{
     domain::{ErrorResponse, OkResponse, TokenResponse, UserLogin, UserRegister},
-    services::AuthService,
+    services::{AuthService, ContextServices},
 };
 
 #[post("/login")]
-async fn login(user_req: Result<web::Json<UserLogin>, actix_web::Error>) -> impl Responder {
+async fn login(
+    services: ContextServices,
+    user_req: Result<web::Json<UserLogin>, actix_web::Error>,
+) -> impl Responder {
+    let auth_service = &services.auth_service;
     let user_login = match user_req {
         Ok(user) => user.into_inner(),
         Err(err) => {
@@ -14,7 +18,7 @@ async fn login(user_req: Result<web::Json<UserLogin>, actix_web::Error>) -> impl
         }
     };
 
-    let token = AuthService::login(user_login);
+    let token = auth_service.login(user_login).await;
 
     match token {
         Ok(token) => HttpResponse::Ok().json(TokenResponse::new(token)),
@@ -23,7 +27,13 @@ async fn login(user_req: Result<web::Json<UserLogin>, actix_web::Error>) -> impl
 }
 
 #[post("/register")]
-async fn register(user_req: Result<web::Json<UserRegister>, actix_web::Error>) -> impl Responder {
+async fn register(
+    services: ContextServices,
+    user_req: Result<web::Json<UserRegister>, actix_web::Error>,
+) -> impl Responder {
+    let auth_service = &services.auth_service;
+    log::error!("error");
+
     let user_register = match user_req {
         Ok(user) => user.into_inner(),
         Err(err) => {
@@ -31,7 +41,7 @@ async fn register(user_req: Result<web::Json<UserRegister>, actix_web::Error>) -
         }
     };
 
-    let user = AuthService::register(user_register);
+    let user = auth_service.register(&user_register).await;
 
     match user {
         Ok(_) => HttpResponse::Ok().json(OkResponse::new("Registered Succesfully".to_owned())),
