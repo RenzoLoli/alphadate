@@ -10,6 +10,9 @@ mod tag_resource;
 mod tag_update_resource;
 mod token_resource;
 mod user_update_resource;
+mod alphabet_create_resource;
+mod alphabet_resource;
+mod alphabet_update_resource;
 
 pub use authenticated_user_resource::AuthenticatedUserResource;
 pub use date_idea_create_resource::DateIdeaCreateResource;
@@ -23,3 +26,6 @@ pub use tag_resource::TagResource;
 pub use tag_update_resource::TagUpdateResource;
 pub use token_resource::TokenResource;
 pub use user_update_resource::UserUpdateResource;
+pub use alphabet_create_resource::AlphabetCreateResource;
+pub use alphabet_resource::AlphabetResource;
+pub use alphabet_update_resource::AlphabetUpdateResource;

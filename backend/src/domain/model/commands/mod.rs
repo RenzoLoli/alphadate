@@ -1,3 +1,6 @@
+mod alphabet_create_command;
+mod alphabet_delete_command;
+mod alphabet_update_command;
 mod date_idea_create_command;
 mod date_idea_delete_command;
 mod date_idea_update_command;
@@ -10,6 +13,9 @@ mod user_delete_command;
 mod user_update_command;
 mod validate_token_command;
 
+pub use alphabet_create_command::AlphabetCreateCommand;
+pub use alphabet_delete_command::AlphabetDeleteCommand;
+pub use alphabet_update_command::AlphabetUpdateCommand;
 pub use date_idea_create_command::DateIdeaCreateCommand;
 pub use date_idea_delete_command::DateIdeaDeleteCommand;
 pub use date_idea_update_command::DateIdeaUpdateCommand;

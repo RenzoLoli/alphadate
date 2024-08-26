@@ -1,3 +1,5 @@
+mod alphabet_command_service;
+mod alphabet_query_service;
 mod auth_command_service;
 mod date_idea_command_service;
 mod date_idea_query_service;
@@ -14,6 +16,8 @@ mod user_query_service;
 use std::sync::Arc;
 
 use actix_web::web;
+pub use alphabet_command_service::AlphabetCommandService;
+pub use alphabet_query_service::AlphabetQueryService;
 pub use auth_command_service::AuthCommandService;
 pub use date_idea_command_service::DateIdeaCommandService;
 pub use date_idea_query_service::DateIdeaQueryService;
@@ -37,6 +41,9 @@ pub struct Services {
 
     pub auth_command_service: Arc<AuthCommandService>,
 
+    pub alphabet_command_service: Arc<AlphabetCommandService>,
+    pub alphabet_query_service: Arc<AlphabetQueryService>,
+
     pub date_idea_command_service: Arc<DateIdeaCommandService>,
     pub date_idea_query_service: Arc<DateIdeaQueryService>,
 
@@ -54,6 +61,8 @@ impl Services {
             auth_command_service: Arc::default(),
             date_idea_command_service: Arc::default(),
             date_idea_query_service: Arc::default(),
+            alphabet_query_service: Arc::default(),
+            alphabet_command_service: Arc::default(),
             tag_query_service: Arc::default(),
             tag_command_service: Arc::default(),
             token_command_service: Arc::default(),
@@ -68,6 +77,17 @@ impl Services {
             repositories.user_repository.clone(),
         ));
         self.auth_command_service = Arc::new(AuthCommandService::new(
+            repositories.user_repository.clone(),
+        ));
+
+        self.alphabet_query_service = Arc::new(AlphabetQueryService::new(
+            repositories.alphabet_repository.clone(),
+            repositories.user_date_repository.clone(),
+            repositories.user_repository.clone(),
+        ));
+        self.alphabet_command_service = Arc::new(AlphabetCommandService::new(
+            repositories.alphabet_repository.clone(),
+            repositories.user_date_repository.clone(),
             repositories.user_repository.clone(),
         ));
 

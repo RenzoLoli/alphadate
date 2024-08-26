@@ -13,7 +13,8 @@ pub async fn config_database(conn: &Connection) {
                     ASSERT string::is::email($value);
                 DEFINE FIELD password ON TABLE users TYPE string;
                 DEFINE FIELD anniversary ON TABLE users TYPE string;
-                DEFINE FIELD photo ON TABLE users TYPE string;
+                DEFINE FIELD photo ON TABLE users TYPE string
+                    ASSERT string::is::url($value);
             ",
         )
         .await

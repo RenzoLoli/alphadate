@@ -48,9 +48,9 @@ impl ServiceHandlerTrait<GetAllDateIdeasQuery, Vec<DateIdeaAggregate>> for DateI
             .iter()
             .map(|date_idea| {
                 let idea_tags = tags
-                    .clone()
-                    .into_iter()
+                    .iter()
                     .filter(|tag| idea_tag_ids_set.contains(&tag.id.to_string()))
+                    .cloned()
                     .collect();
 
                 DateIdeaAggregate {

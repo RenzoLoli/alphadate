@@ -32,6 +32,14 @@ impl std::fmt::Display for IdObject {
     }
 }
 
+impl PartialEq for IdObject {
+    fn eq(&self, other: &Self) -> bool {
+        self.tb == other.tb && self.id.to_string() == other.id.to_string()
+    }
+}
+
+impl Eq for IdObject {}
+
 impl IdObject {
     pub fn generate(&mut self, table: &str) {
         self.id = Id::uuid();

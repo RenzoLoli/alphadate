@@ -76,13 +76,13 @@ async fn update_date_idea(
     date_idea_update_resource: web::Json<DateIdeaUpdateResource>,
     services: ContextServices,
 ) -> impl Responder {
-    let date_idea_query_service = &services.date_idea_command_service;
+    let date_idea_command_service = &services.date_idea_command_service;
     let id = path.into_inner().0;
     let resource = date_idea_update_resource.into_inner();
 
     let command = DateIdeaUpdateCommand::from((id, resource));
 
-    let date_idea = match date_idea_query_service.handle(command).await {
+    let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
         Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
     };

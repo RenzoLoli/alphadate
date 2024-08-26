@@ -20,3 +20,9 @@ impl BaseRepository<EAlphabet> for AlphabetRepository {
         &self.connection
     }
 }
+
+impl AlphabetRepository {
+    pub async fn find_by_user_id(&self, user_id: &str) -> Vec<EAlphabet> {
+        self.find_by_where("user_id", user_id).await
+    }
+}

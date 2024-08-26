@@ -59,7 +59,7 @@ impl ServiceHandlerTrait<DateIdeaDeleteCommand, EDateIdea> for DateIdeaCommandSe
 
         let date_idea_tag_refs = date_idea_tags
             .into_iter()
-            .filter(|idea_tag| idea_tag.id.to_string() == command.id)
+            .filter(|idea_tag| idea_tag.date_idea_id == date_idea.id)
             .collect::<Vec<EDateIdeaTag>>();
 
         for date_idea_tag_ref in date_idea_tag_refs {
