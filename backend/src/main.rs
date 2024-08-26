@@ -9,12 +9,12 @@ mod services;
 
 use std::sync::Arc;
 
-use actix_web::{middleware::Logger, web, App, HttpServer};
+use actix_web::{middleware::Logger, App, HttpServer};
 use config::ServerOptions;
-use database::{ConfigConnection, Connection};
+use database::{config_database, ConfigConnection, Connection};
 use env_logger::Env;
-use repository::{DateIdeaRepository, UserRepository};
-use services::{AuthService, DateIdeaService, EnvService, Services, UserService};
+use repository::Repositories;
+use services::{ContextServices, EnvService, Services};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -22,60 +22,35 @@ async fn main() -> std::io::Result<()> {
     EnvService::load();
 
     // init logger
-    env_logger::init_from_env(Env::default().default_filter_or("debug"));
+    env_logger::init_from_env(
+        Env::default().default_filter_or(&EnvService::get_env("LOG_LEVEL").unwrap()),
+    );
 
     // load database connection
-    let connection = Connection::default()
-        .connect(&ConfigConnection {
-            username: "root",
-            password: "root",
-            address: "127.0.0.1:4700",
-            namespace: "alphadate",
-            database: "resources",
-        })
-        .await
-        .expect("cannot connect to database");
+    let connection = Arc::new(
+        Connection::default()
+            .connect(&ConfigConnection {
+                username: &EnvService::get_env("DB_USER").unwrap(),
+                password: &EnvService::get_env("DB_PASS").unwrap(),
+                address: &EnvService::get_env("DB_HOST").unwrap(),
+                namespace: &EnvService::get_env("DB_NAMESPACE").unwrap(),
+                database: &EnvService::get_env("DB_DATABASE").unwrap(),
+            })
+            .await
+            .expect("cannot connect to database"),
+    );
 
-    connection
-        .db()
-        .query(
-            "
-                DEFINE TABLE users SCHEMAFULL;
+    // config tables
+    config_database(&connection).await;
 
-                DEFINE FIELD username ON TABLE users TYPE string;
-                DEFINE FIELD couplename ON TABLE users TYPE string;
-                DEFINE FIELD email ON TABLE users TYPE string
-                    ASSERT string::is::email($value);
-                DEFINE FIELD password ON TABLE users TYPE string;
-                DEFINE FIELD anniversary ON TABLE users TYPE string;
-                DEFINE FIELD photo ON TABLE users TYPE string;
-            ",
-        )
-        .await
-        .expect("cannot create table");
-
-    // repositories
-    let user_repository = Arc::new(UserRepository::new(connection.clone()));
-    let date_idea_repository = Arc::new(DateIdeaRepository::new(connection.clone()));
-
-    // services
-    let user_service = Arc::new(UserService::new(user_repository.clone()));
-    let auth_service = Arc::new(AuthService::new(user_service.clone()));
-    let date_idea_service = Arc::new(DateIdeaService::new(date_idea_repository.clone()));
-
-    // context
-    let services = Arc::new(Services {
-        user_service,
-        auth_service,
-        date_idea_service
-    });
+    let repositories = Repositories::new(connection);
+    let services = Arc::new(Services::new().load(repositories));
 
     // init server
     let server_opts = ServerOptions::load();
     HttpServer::new(move || {
         App::new()
-            // services
-            .app_data(web::Data::from(services.clone()))
+            .app_data(ContextServices::from(services.clone()))
             // middlewares
             .wrap(Logger::default())
             // routing

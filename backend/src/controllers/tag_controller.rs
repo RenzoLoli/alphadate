@@ -2,9 +2,12 @@ use actix_web::{delete, get, put, web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    domain::{ErrorResponse, TagUpdate, UserUpdate},
-    services::{TagService, UserService},
+    controllers::resources::{ErrorResource, TagResource},
+    domain::{GetAllTagsQuery, GetTagByIdQuery, TagDeleteCommand, TagUpdateCommand},
+    services::{ContextServices, ServiceHandlerTrait},
 };
+
+use super::resources::TagUpdateResource;
 
 #[derive(Deserialize, Serialize)]
 struct IdQuery {
@@ -12,39 +15,86 @@ struct IdQuery {
 }
 
 #[get("/all")]
-async fn get_all_tags() -> impl Responder {
-    HttpResponse::Ok().json(TagService::get_all())
-}
+async fn get_all_tags(services: ContextServices) -> impl Responder {
+    let tag_service = &services.tag_query_service;
 
-#[get("")]
-async fn get_tag_by_id(id_query: Result<web::Query<IdQuery>, actix_web::Error>) -> impl Responder {
-    let id = match id_query {
-        Ok(query) => query.id.clone(),
-        Err(err) => return HttpResponse::BadRequest().json(ErrorResponse::new(err.to_string())),
+    let query = GetAllTagsQuery {};
+
+    let tags = match tag_service.handle(query).await {
+        Ok(tags) => tags,
+        Err(err) => {
+            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+        }
     };
 
-    match TagService::find_by_id(&id) {
-        Some(tag) => HttpResponse::Ok().json(tag),
-        None => HttpResponse::NotFound().json(ErrorResponse::new("Cannot get tag".to_owned())),
-    }
+    let resources: Vec<TagResource> = tags.into_iter().map(TagResource::from).collect();
+
+    HttpResponse::Ok().json(resources)
+}
+
+#[get("/{id}")]
+async fn get_tag_by_id(
+    id_query: web::Path<(String,)>,
+    services: ContextServices,
+) -> impl Responder {
+    let tag_service = &services.tag_query_service;
+
+    let id = id_query.into_inner().0;
+    let query = GetTagByIdQuery { id };
+
+    let tag = match tag_service.handle(query).await {
+        Ok(tag) => tag,
+        Err(err) => {
+            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+        }
+    };
+
+    let resource = TagResource::from(tag);
+
+    HttpResponse::Ok().json(resource)
 }
 
 #[put("/{id}")]
-async fn update_tag(path: web::Path<String>, tag_update: web::Json<TagUpdate>) -> impl Responder {
+async fn update_tag(
+    path: web::Path<String>,
+    tag_update_resource: web::Json<TagUpdateResource>,
+    services: ContextServices,
+) -> impl Responder {
     let id = path.into_inner();
-    match TagService::update_tag(&id, &tag_update) {
-        Ok(tag) => HttpResponse::Ok().json(tag),
-        Err(err) => HttpResponse::InternalServerError().json(ErrorResponse::new(err.to_string())),
-    }
+    let tag_command_service = &services.tag_command_service;
+
+    let command = TagUpdateCommand::from((id, tag_update_resource.into_inner()));
+
+    let tag = match tag_command_service.handle(command).await {
+        Ok(tag) => tag,
+        Err(err) => {
+            return HttpResponse::NotModified().json(ErrorResource::new(err.to_string().as_str()))
+        }
+    };
+
+    let resource = TagResource::from(tag);
+
+    HttpResponse::Ok().json(resource)
 }
 
 #[delete("/{id}")]
-async fn delete_tag(path: web::Path<String>) -> impl Responder {
-    let id = path.into_inner();
-    match TagService::delete_tag(&id) {
-        Ok(tag) => HttpResponse::Ok().json(tag),
-        Err(err) => HttpResponse::InternalServerError().json(ErrorResponse::new(err.to_string())),
-    }
+async fn delete_tag(path: web::Path<(String,)>, services: ContextServices) -> impl Responder {
+    let tag_command_service = &services.tag_command_service;
+
+    let (id,) = path.into_inner();
+
+    let command = TagDeleteCommand { id };
+
+    let tag = match tag_command_service.handle(command).await {
+        Ok(tag) => tag,
+        Err(err) => {
+            return HttpResponse::NotModified().json(ErrorResource::new(err.to_string().as_str()))
+        }
+    };
+
+    let resource = TagResource::from(tag);
+
+    HttpResponse::Ok().json(resource)
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {

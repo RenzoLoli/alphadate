@@ -29,7 +29,9 @@ impl Connection {
             db: Surreal::init(),
         }
     }
+}
 
+impl Connection {
     pub async fn connect(&self, config_connection: &ConfigConnection<'_>) -> Result<Self, String> {
         self.db
             .connect::<Ws>(config_connection.address)

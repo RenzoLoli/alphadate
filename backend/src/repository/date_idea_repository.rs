@@ -1,22 +1,38 @@
-use crate::{
-    database::Connection,
-    domain::{DateIdea, DateIdeaDto},
-};
+use std::sync::Arc;
 
+use crate::{database::Connection, domain::EDateIdea};
+
+use super::BaseRepository;
+
+#[derive(Default)]
 pub struct DateIdeaRepository {
-    connection: Connection,
+    connection: Arc<Connection>,
 }
 
 impl DateIdeaRepository {
-    pub fn new(connection: Connection) -> Self {
+    pub fn new(connection: Arc<Connection>) -> Self {
         Self { connection }
     }
+}
 
-    pub async fn get_all(&self) -> Vec<DateIdea> {
-        let db = self.connection.db();
-
-        let ideas: Vec<DateIdeaDto> = db.select("date_ideas").await.ok().unwrap_or(vec![]);
-
-        ideas.iter().map(DateIdea::from).collect()
+impl BaseRepository<EDateIdea> for DateIdeaRepository {
+    fn get_connection(&self) -> &Connection {
+        &self.connection
     }
 }
+
+impl DateIdeaRepository {
+    pub async fn find_by_idea(&self, idea: &str) -> Vec<EDateIdea> {
+        self.find_by_where("idea", idea).await
+    }
+}
+
+// "SELECT *,
+//     (SELECT
+//         (SELECT *
+//         FROM tags
+//         WHERE $parent.tag_id = id) as tags
+//     FROM date_idea_tags
+//     WHERE $parent.id = date_idea_id).tags[0] as tags
+// FROM date_ideas
+// ",

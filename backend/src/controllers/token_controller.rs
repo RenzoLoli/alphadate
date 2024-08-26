@@ -1,7 +1,7 @@
 use actix_web::http::header::AUTHORIZATION;
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 
-use crate::domain::{ErrorResponse, TokenResponse};
+use crate::controllers::resources::{ErrorResource, TokenResource};
 use crate::services::TokenService;
 
 #[post("/renew")]
@@ -14,12 +14,14 @@ async fn renew(req: HttpRequest) -> impl Responder {
         .map(|auth_str| &auth_str["Bearer ".len()..])
         .and_then(|token| TokenService::renew_token(token.to_string()).ok());
 
-    match result {
-        Some(token) => HttpResponse::Ok().json(TokenResponse::new(token)),
-        None => {
-            HttpResponse::NotModified().json(ErrorResponse::new("Cannot renew Token".to_owned()))
-        }
-    }
+    let token = match result {
+        Some(token) => token,
+        None => return HttpResponse::NotModified().json(ErrorResource::new("Cannot renew Token")),
+    };
+
+    let resource = TokenResource { token };
+
+    HttpResponse::Ok().json(resource)
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {

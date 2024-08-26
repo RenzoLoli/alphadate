@@ -1,84 +1,29 @@
-use crate::{
-    database::Connection,
-    domain::{User, UserDto},
-};
+use std::sync::Arc;
 
+use crate::{database::Connection, domain::EUser};
+
+use crate::repository::BaseRepository;
+
+#[derive(Default)]
 pub struct UserRepository {
-    connection: Connection,
+    connection: Arc<Connection>,
 }
 
 impl UserRepository {
-    pub fn new(connection: Connection) -> Self {
+    pub fn new(connection: Arc<Connection>) -> Self {
         Self { connection }
     }
+}
 
-    pub async fn get_all(&self) -> Vec<User> {
-        let db = self.connection.db();
-
-        let users: Vec<UserDto> = db.select("users").await.ok().unwrap_or(vec![]);
-
-        users.iter().map(User::from).collect()
+impl BaseRepository<EUser> for UserRepository {
+    fn get_connection(&self) -> &Connection {
+        &self.connection
     }
+}
 
-    pub async fn create(&self, user: &User) -> Option<User> {
-        let db = self.connection.db();
-
-        let dto = UserDto::from(user);
-
-        db.create("users")
-            .content(dto)
-            .await
-            .inspect_err(|err| log::error!("{}", err.to_string()))
-            .map(|mut res| res.pop())
-            .ok()?
-            .map(|dto: UserDto| User::from(&dto))
-    }
-
-    pub async fn update(&self, id: &str, user: &User) -> Option<User> {
-        let db = self.connection.db();
-
-        let dto = UserDto::from(user);
-
-        db.update(("users", id))
-            .merge(dto)
-            .await
-            .inspect_err(|err| log::error!("{}", err.to_string()))
-            .ok()?
-            .map(|dto: UserDto| User::from(&dto))
-    }
-
-    pub async fn delete(&self, id: &str) -> Option<User> {
-        let db = self.connection.db();
-
-        db.delete(("users", id))
-            .await
-            .inspect_err(|err| log::error!("{}", err.to_string()))
-            .ok()?
-            .map(|dto: UserDto| User::from(&dto))
-    }
-
-    pub async fn find_by_id(&self, id: &str) -> Option<User> {
-        let db = self.connection.db();
-
-        db.select(("users", id))
-            .await
-            .inspect_err(|err| log::error!("{}", err.to_string()))
-            .ok()?
-            .map(|dto: UserDto| User::from(&dto))
-    }
-
-    pub async fn find_by_email(&self, email: &str) -> Option<User> {
-        let db = self.connection.db();
-
-        db.query("SELECT * FROM users WHERE email = $email")
-            .bind(("email", email))
-            .await
-            .inspect_err(|err| log::error!("{}", err))
-            .ok()?
-            .take(0)
-            .inspect_err(|err| log::error!("{}", err))
-            .map(|mut res: Vec<UserDto>| res.pop())
-            .ok()?
-            .map(|dto: UserDto| User::from(&dto))
+impl UserRepository {
+    pub async fn find_by_email(&self, email: &str) -> Option<EUser> {
+        let users = self.find_by_where("email", email).await;
+        users.first().map(|user| user.to_owned())
     }
 }

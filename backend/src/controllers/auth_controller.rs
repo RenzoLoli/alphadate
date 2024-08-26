@@ -1,72 +1,47 @@
 use actix_web::{post, web, HttpResponse, Responder};
 
 use crate::{
-    domain::{ErrorResponse, OkResponse, TokenResponse, UserLogin, UserRegister},
-    services::{AuthService, ContextServices},
+    controllers::resources::{
+        ErrorResource, OkResource, SignInResource, SignUpResource, TokenResource,
+    },
+    domain::{SignInCommand, SignUpCommand},
+    services::{ContextServices, ServiceHandlerTrait},
 };
 
 #[post("/login")]
 async fn login(
     services: ContextServices,
-    user_req: Result<web::Json<UserLogin>, actix_web::Error>,
+    signin_resource: web::Json<SignInResource>,
 ) -> impl Responder {
-    let auth_service = &services.auth_service;
-    let user_login = match user_req {
-        Ok(user) => user.into_inner(),
-        Err(err) => {
-            return HttpResponse::BadRequest().json(ErrorResponse::new(err.to_string()));
-        }
-    };
+    let auth_command_service = &services.auth_command_service;
 
-    let token = auth_service.login(user_login).await;
+    let singin_command = SignInCommand::from(signin_resource.into_inner());
+
+    let token = auth_command_service.handle(singin_command).await;
 
     match token {
-        Ok(token) => HttpResponse::Ok().json(TokenResponse::new(token)),
-        Err(err) => HttpResponse::NotFound().json(ErrorResponse::new(err)),
+        Ok(token) => HttpResponse::Ok().json(TokenResource::new(token.as_str())),
+        Err(err) => HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str())),
     }
 }
 
 #[post("/register")]
 async fn register(
     services: ContextServices,
-    user_req: Result<web::Json<UserRegister>, actix_web::Error>,
+    user_req: web::Json<SignUpResource>,
 ) -> impl Responder {
-    let auth_service = &services.auth_service;
-    log::error!("error");
+    let auth_service = &services.auth_command_service;
 
-    let user_register = match user_req {
-        Ok(user) => user.into_inner(),
-        Err(err) => {
-            return HttpResponse::BadRequest().json(ErrorResponse::new(err.to_string()));
-        }
-    };
+    let user_command = SignUpCommand::from(user_req.into_inner());
 
-    let user = auth_service.register(&user_register).await;
+    let user = auth_service.handle(user_command).await;
 
     match user {
-        Ok(_) => HttpResponse::Ok().json(OkResponse::new("Registered Succesfully".to_owned())),
-        Err(err) => HttpResponse::Conflict().json(ErrorResponse::new(err.to_string())),
+        Ok(_) => HttpResponse::Ok().json(OkResource::new("Registered Succesfully")),
+        Err(err) => HttpResponse::Conflict().json(ErrorResource::new(err.to_string().as_str())),
     }
 }
 
-// #[post("/validate")]
-// async fn validate(token_req: Result<web::Json<Token>, actix_web::Error>) -> impl Responder {
-//     let token_res = match token_req {
-//         Ok(token) => token.into_inner(),
-//         Err(_) => {
-//             return HttpResponse::BadRequest().json(ErrorResponse::new("Needed token".to_owned()));
-//         }
-//     };
-//
-//     let validate = TokenService::validate_token(token_res.token);
-//
-//     match validate {
-//         Ok(_) => HttpResponse::Ok().json(OkResponse::new("Valid Token".to_owned())),
-//         Err(_) => HttpResponse::Unauthorized().json(ErrorResponse::new("Invalid Token".to_owned())),
-//     }
-// }
-
 pub fn config(cfg: &mut web::ServiceConfig) {
-    //TODO: Add renew expired tokens service
     cfg.service(login).service(register);
 }
