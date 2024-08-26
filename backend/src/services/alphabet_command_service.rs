@@ -89,6 +89,6 @@ impl ServiceHandlerTrait<AlphabetDeleteCommand, EAlphabet> for AlphabetCommandSe
             None => return Err("alphabet cannot be not deleted".to_owned()),
         };
 
-        return Ok(alphabet_ent);
+        Ok(alphabet_ent)
     }
 }

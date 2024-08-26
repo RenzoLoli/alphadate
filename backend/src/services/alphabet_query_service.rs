@@ -91,7 +91,7 @@ impl ServiceHandlerTrait<GetAlphabetByIdQuery, AlphabetAggregate> for AlphabetQu
 
         let user_date_ents = self.user_date_repository.get_all().await;
 
-        return Ok(AlphabetAggregate {
+        Ok(AlphabetAggregate {
             id: alphabet_ent.id.to_string(),
             title: alphabet_ent.title,
             user_dates: user_date_ents
@@ -103,6 +103,6 @@ impl ServiceHandlerTrait<GetAlphabetByIdQuery, AlphabetAggregate> for AlphabetQu
                     date_idea_id: user_date.date_idea_id.to_string(),
                 })
                 .collect::<Vec<UserDateAggregate>>(),
-        });
+        })
     }
 }
