@@ -1,28 +1,22 @@
 # Renew token
 
-Used to renew requested tokens.
-
-**URL** : `/api/v1/token/renew`
-
-**Method** : `POST`
-
-**Auth required** : YES
+| URL                 | Method | Auth required | Description |
+| ------------------- | ------ | ------------- | ----------- |
+| /api/v1/auth/renew/ | POST   | YES           | Renew token |
 
 ## Success Response
 
 **Code** : `200 OK`
 
-**Content**
+**Content** :
 
 ```json
 {
-  "token": "[token generated]"
+  "token": "string"
 }
 ```
 
 ## Bad Request Response
-
-**Condition** : bad token request.
 
 **Code** : `400 BAD REQUEST`
 
@@ -30,13 +24,23 @@ Used to renew requested tokens.
 
 ```json
 {
-  "message": "[Cause of the error]"
+  "message": "string"
+}
+```
+
+## Unauthorized Response
+
+**Code** : `401 UNAUTHORIZED`
+
+**Content** :
+
+```json
+{
+  "message": "string"
 }
 ```
 
 ## Not Modified
-
-**Condition** : Some server error or token is invalid.
 
 **Code** : `304 NOT MODIFIED`
 
@@ -44,6 +48,6 @@ Used to renew requested tokens.
 
 ```json
 {
-  "message": "Cannot renew token"
+  "message": "string"
 }
 ```

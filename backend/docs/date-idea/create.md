@@ -1,8 +1,17 @@
-# Get User By Id
+# Create Date Idea
 
-| URL                   | Method | Auth required | Description    |
-| --------------------- | ------ | ------------- | -------------- |
-| /api/v1/auth/user/:id | GET    | YES           | Get user by id |
+| URL                | Method | Auth required | Description      |
+| ------------------ | ------ | ------------- | ---------------- |
+| /api/v1/date-idea/ | POST   | YES           | Create date idea |
+
+## Request Body
+
+```json
+{
+  "idea": "string",
+  "description": "string"
+}
+```
 
 ## Success Response
 
@@ -12,12 +21,9 @@
 
 ```json
 {
-  "username": "string",
-  "password": "string",
-  "email": "string",
-  "couplename": "string",
-  "anniversary": "string",
-  "photo": "string"
+  "id": "string",
+  "idea": "string",
+  "description": "string"
 }
 ```
 
