@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    database::{Connection, QueryBuilder},
+    database::{Connection, DbHelper, QueryBuilder},
     domain::EDateIdea,
 };
 
@@ -28,7 +28,7 @@ impl DateIdeaRepository {
     pub async fn find_by_idea(&self, idea: &str) -> Vec<EDateIdea> {
         let query = QueryBuilder::new("date_ideas")
             .q_select()
-            .q_where_eq("idea", idea)
+            .q_where_eq("idea", &DbHelper::as_db_string(idea))
             .get_query();
 
         self.query_search(query).await

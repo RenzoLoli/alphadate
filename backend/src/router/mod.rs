@@ -3,7 +3,7 @@ use actix_web::{get, web, Responder};
 use crate::controllers::{
     alphabet_config, auth_config, date_idea_config, tag_config, token_config, user_config,
 };
-use crate::middlewares::AuthorizeMiddleware;
+use crate::middlewares::{AuthorizeMiddleware, BadRequestMiddleware};
 
 #[get("/")]
 async fn test() -> impl Responder {
@@ -30,6 +30,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 
     // v1
     let api_v1 = web::scope("/api/v1")
+        .wrap(BadRequestMiddleware)
         .service(auth)
         .service(need_authorization);
 
