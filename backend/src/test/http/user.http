@@ -1,0 +1,32 @@
+@user_id=
+
+###
+
+## Get All Users
+GET {{BASE_URL}}/user/all
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+## Get User By Id
+GET {{BASE_URL}}/user/{{userId}}
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+## Update User
+PUT {{BASE_URL}}/user/{{userId}}
+Authorization: Bearer {{AUTH_TOKEN}}
+Content-Type: application/json
+
+{
+    "username": "John Doe",
+    "photo": "http://example.com/johndoe.jpg",
+    "couplename": "Jane Doe",
+}
+
+###
+
+## Delete User
+DELETE {{BASE_URL}}/user/{{userId}}
+Authorization: Bearer {{AUTH_TOKEN}}
