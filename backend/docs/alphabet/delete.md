@@ -1,5 +1,17 @@
 # Delete Alphabet
 
+<!--toc:start-->
+- [Delete Alphabet](#delete-alphabet)
+  - [Description](#description)
+  - [URL Params](#url-params)
+  - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
+  - [Unauthorized Response](#unauthorized-response)
+  - [Not Modified Response](#not-modified-response)
+<!--toc:end-->
+
+## Description
+
 | URL                   | Method | Auth required | Description     |
 | --------------------- | ------ | ------------- | --------------- |
 | /api/v1/alphabets/:id | DELETE | YES           | Delete alphabet |
@@ -55,7 +67,7 @@
 }
 ```
 
-## Not Modified
+## Not Modified Response
 
 **Code** : `304 NOT MODIFIED`
 

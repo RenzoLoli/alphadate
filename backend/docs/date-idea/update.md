@@ -1,5 +1,19 @@
 # Update Date Idea
 
+<!--toc:start-->
+
+- [Update Date Idea](#update-date-idea)
+  - [Description](#description)
+  - [URL Params](#url-params)
+  - [Request Body](#request-body)
+  - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
+  - [Unauthorized Response](#unauthorized-response)
+  - [Not Modified Response](#not-modified-response)
+  <!--toc:end-->
+
+## Description
+
 | URL                   | Method | Auth required | Description      |
 | --------------------- | ------ | ------------- | ---------------- |
 | /api/v1/date-idea/:id | PUT    | YES           | Update date idea |
@@ -57,7 +71,7 @@
 }
 ```
 
-## Not Modified
+## Not Modified Response
 
 **Code** : `304 NOT MODIFIED`
 

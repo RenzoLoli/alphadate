@@ -1,5 +1,17 @@
 # Get User By Id
 
+<!--toc:start-->
+
+- [Get User By Id](#get-user-by-id)
+  - [Description](#description)
+  - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
+  - [Unauthorized Response](#unauthorized-response)
+  - [Not Found Response](#not-found-response)
+  <!--toc:end-->
+
+## Description
+
 | URL                   | Method | Auth required | Description    |
 | --------------------- | ------ | ------------- | -------------- |
 | /api/v1/auth/user/:id | GET    | YES           | Get user by id |

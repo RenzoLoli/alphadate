@@ -1,5 +1,18 @@
 # Update User
 
+<!--toc:start-->
+
+- [Update User](#update-user)
+  - [Description](#description)
+  - [URL Params](#url-params)
+  - [Request Body](#request-body)
+  - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
+  - [Not Found Response](#not-found-response)
+  <!--toc:end-->
+
+## Description
+
 | URL                   | Method | Auth required | Description       |
 | --------------------- | ------ | ------------- | ----------------- |
 | /api/v1/auth/user/:id | PUT    | YES           | Update user by id |

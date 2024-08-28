@@ -1,5 +1,16 @@
 # All Date Ideas
 
+<!--toc:start-->
+
+- [All Date Ideas](#all-date-ideas)
+  - [Description](#description)
+  - [Success Response](#success-response)
+  - [Not Found Response](#not-found-response)
+  - [Unauthorized Response](#unauthorized-response)
+  <!--toc:end-->
+
+## Description
+
 | URL                | Method | Auth required | Description        |
 | ------------------ | ------ | ------------- | ------------------ |
 | /api/v1/date-idea/ | GET    | YES           | Get all date ideas |
@@ -24,18 +35,6 @@
     ]
   }
 ]
-```
-
-## Bad Request Response
-
-**Code** : `400 BAD REQUEST`
-
-**Content** :
-
-```json
-{
-  "message": "string"
-}
 ```
 
 ## Not Found Response

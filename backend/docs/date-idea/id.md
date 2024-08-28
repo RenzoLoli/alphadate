@@ -1,5 +1,18 @@
 # Get Date Idea by ID
 
+<!--toc:start-->
+
+- [Get Date Idea by ID](#get-date-idea-by-id)
+  - [Description](#description)
+  - [URL Params](#url-params)
+  - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
+  - [Unauthorized Response](#unauthorized-response)
+  - [Not Found Response](#not-found-response)
+  <!--toc:end-->
+
+## Description
+
 | URL                   | Method | Auth required | Description         |
 | --------------------- | ------ | ------------- | ------------------- |
 | /api/v1/date-idea/:id | GET    | YES           | Get date idea by ID |

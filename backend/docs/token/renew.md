@@ -1,5 +1,15 @@
 # Renew token
 
+<!--toc:start-->
+
+- [Renew token](#renew-token)
+  - [Description](#description)
+  - [Success Response](#success-response)
+  - [Unauthorized Response](#unauthorized-response)
+  <!--toc:end-->
+
+## Description
+
 | URL                 | Method | Auth required | Description |
 | ------------------- | ------ | ------------- | ----------- |
 | /api/v1/auth/renew/ | POST   | YES           | Renew token |
@@ -16,18 +26,6 @@
 }
 ```
 
-## Bad Request Response
-
-**Code** : `400 BAD REQUEST`
-
-**Content** :
-
-```json
-{
-  "message": "string"
-}
-```
-
 ## Unauthorized Response
 
 **Code** : `401 UNAUTHORIZED`
@@ -40,7 +38,7 @@
 }
 ```
 
-## Not Modified
+## Not Modified Response
 
 **Code** : `304 NOT MODIFIED`
 

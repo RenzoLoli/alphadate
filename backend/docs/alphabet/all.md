@@ -1,5 +1,16 @@
 # All Alphabets
 
+<!--toc:start-->
+
+- [All Alphabets](#all-alphabets)
+  - [Description](#description)
+  - [URL Params](#url-params)
+  - [Success Response](#success-response)
+  - [Unauthorized Response](#unauthorized-response)
+  <!--toc:end-->
+
+## Description
+
 | URL                        | Method | Auth required | Description       |
 | -------------------------- | ------ | ------------- | ----------------- |
 | /api/v1/alphabets/:user_id | GET    | YES           | Get all alphabets |
