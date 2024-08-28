@@ -1,11 +1,12 @@
 # All Users
 
 <!--toc:start-->
-
 - [All Users](#all-users)
   - [Description](#description)
   - [Success Response](#success-response)
-  <!--toc:end-->
+  - [Unauthorized Response](#unauthorized-response)
+  - [Not Found success](#not-found-success)
+<!--toc:end-->
 
 ## Description
 
@@ -35,6 +36,18 @@
 ## Unauthorized Response
 
 **Code** : `401 UNAUTHORIZED`
+
+**Content** :
+
+```json
+{
+  "message": "string"
+}
+```
+
+## Not Found success
+
+**Code** : `404 NOT FOUND`
 
 **Content** :
 

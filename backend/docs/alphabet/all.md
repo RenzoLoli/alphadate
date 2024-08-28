@@ -1,13 +1,13 @@
 # All Alphabets
 
 <!--toc:start-->
-
 - [All Alphabets](#all-alphabets)
   - [Description](#description)
   - [URL Params](#url-params)
   - [Success Response](#success-response)
   - [Unauthorized Response](#unauthorized-response)
-  <!--toc:end-->
+  - [Not Found Response](#not-found-response)
+<!--toc:end-->
 
 ## Description
 
@@ -42,6 +42,18 @@
 ## Unauthorized Response
 
 **Code** : `401 UNAUTHORIZED`
+
+**Content** :
+
+```json
+{
+  "message": "string"
+}
+```
+
+## Not Found Response
+
+**Code** : `404 NOT FOUND`
 
 **Content** :
 
