@@ -1,28 +1,30 @@
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::{database::Connection, domain::Entity};
-
-fn encapsulate(value: String) -> String {
-    format!("\"{}\"", value)
-}
-
-fn encapsulate_ids_vec(table_name: String, ids: Vec<String>) -> Vec<String> {
-    let encapsulated_table_name = encapsulate(table_name);
-    ids.into_iter()
-        .map(|id| {
-            format!(
-                "type::record({},{})",
-                encapsulated_table_name.clone(),
-                encapsulate(id)
-            )
-        })
-        .collect()
-}
+use crate::{
+    database::{Connection, DbHelper, QueryBuilder},
+    domain::Entity,
+};
 
 pub trait BaseRepository<T>
 where
     T: Clone + DeserializeOwned + Serialize + Entity,
 {
+    async fn query_search(&self, query: String) -> Vec<T> {
+        let db = self.get_connection().db();
+
+        match db
+            .query(query)
+            .await
+            .and_then(|mut res| res.take::<Vec<T>>(0))
+        {
+            Ok(res) => res,
+            Err(err) => {
+                log::error!("{}", err.to_string());
+                vec![]
+            }
+        }
+    }
+
     async fn get_all(&self) -> Vec<T> {
         let table_name = T::get_table_name();
         let db = self.get_connection().db();
@@ -33,58 +35,27 @@ where
     }
 
     async fn find_by_ids(&self, ids: Vec<String>) -> Vec<T> {
-        self.find_by_in("id", ids).await
-    }
-
-    async fn find_by_in(&self, key: &str, ids: Vec<String>) -> Vec<T> {
         let table_name = T::get_table_name();
-        let db = self.get_connection().db();
+        let parsed_ids = DbHelper::ids_to_things(table_name, ids);
 
-        match db
-            .query("SELECT * from $table WHERE $key IN [$ids]")
-            .bind(("table", table_name))
-            .bind(("key", key))
-            .bind(("ids", encapsulate_ids_vec(table_name.to_owned(), ids)))
-            .await
-            .and_then(|mut res| res.take::<Vec<T>>(0))
-        {
-            Ok(res) => res,
-            Err(err) => {
-                log::error!("{}", err.to_string());
-                vec![]
-            }
-        }
+        let query = QueryBuilder::new(table_name)
+            .q_select()
+            .q_where_in("id", parsed_ids)
+            .get_query();
+
+        self.query_search(query).await
     }
 
     async fn find_by_id(&self, id: &str) -> Option<T> {
-        self.find_by_where("id", id).await.pop()
-    }
-
-    async fn find_by_where(&self, field: &str, value: &str) -> Vec<T> {
         let table_name = T::get_table_name();
-        let db = self.get_connection().db();
+        let parsed_id = DbHelper::id_to_thing(table_name, id);
 
-        let query = format!(
-            "SELECT * FROM {} WHERE {} = {}",
-            table_name,
-            field,
-            encapsulate(value.to_owned())
-        );
+        let query = QueryBuilder::new(table_name)
+            .q_select()
+            .q_where_eq("id", &parsed_id)
+            .get_query();
 
-        match db
-            .query(query)
-            .bind(("table", table_name))
-            .bind(("field", field))
-            .bind(("value", encapsulate(value.to_owned())))
-            .await
-            .and_then(|mut res| res.take::<Vec<T>>(0))
-        {
-            Ok(res) => res,
-            Err(err) => {
-                log::error!("{}", err.to_string());
-                vec![]
-            }
-        }
+        self.query_search(query).await.pop()
     }
 
     async fn create(&self, entity: T) -> Option<T> {

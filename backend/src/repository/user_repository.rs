@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::database::QueryBuilder;
 use crate::{database::Connection, domain::EUser};
 
 use crate::repository::BaseRepository;
@@ -23,7 +24,11 @@ impl BaseRepository<EUser> for UserRepository {
 
 impl UserRepository {
     pub async fn find_by_email(&self, email: &str) -> Option<EUser> {
-        let users = self.find_by_where("email", email).await;
+        let query = QueryBuilder::new("users")
+            .q_select()
+            .q_where_eq("email", email)
+            .get_query();
+        let users = self.query_search(query).await;
         users.first().map(|user| user.to_owned())
     }
 }
