@@ -111,6 +111,7 @@ async fn delete_date_idea(path: web::Path<(String,)>, services: ContextServices)
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(get_all_date_ideas)
         .service(get_date_idea_by_id)
+        .service(create_date_idea)
         .service(update_date_idea)
         .service(delete_date_idea);
 }
