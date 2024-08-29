@@ -2,9 +2,12 @@ use std::sync::Arc;
 
 use crate::{
     domain::{
-        AlphabetCreateCommand, AlphabetDeleteCommand, AlphabetUpdateCommand, EAlphabet, EUserDate,
+        AlphabetAddDateIdeaCommand, AlphabetCreateCommand, AlphabetDeleteCommand,
+        AlphabetRemoveDateIdeaCommand, AlphabetUpdateCommand, EAlphabet, EUserDate,
     },
-    repository::{AlphabetRepository, BaseRepository, UserDateRepository, UserRepository},
+    repository::{
+        AlphabetRepository, BaseRepository, DateIdeaRepository, UserDateRepository, UserRepository,
+    },
 };
 
 use super::ServiceHandlerTrait;
@@ -14,6 +17,7 @@ pub struct AlphabetCommandService {
     alphabet_repository: Arc<AlphabetRepository>,
     user_date_repository: Arc<UserDateRepository>,
     user_repository: Arc<UserRepository>,
+    date_idea_repository: Arc<DateIdeaRepository>,
 }
 
 impl AlphabetCommandService {
@@ -21,11 +25,13 @@ impl AlphabetCommandService {
         alphabet_repository: Arc<AlphabetRepository>,
         user_date_repository: Arc<UserDateRepository>,
         user_repository: Arc<UserRepository>,
+        date_idea_repository: Arc<DateIdeaRepository>,
     ) -> Self {
         Self {
             alphabet_repository,
             user_date_repository,
             user_repository,
+            date_idea_repository,
         }
     }
 }
@@ -90,5 +96,80 @@ impl ServiceHandlerTrait<AlphabetDeleteCommand, EAlphabet> for AlphabetCommandSe
         };
 
         Ok(alphabet_ent)
+    }
+}
+
+impl ServiceHandlerTrait<AlphabetAddDateIdeaCommand, EAlphabet> for AlphabetCommandService {
+    async fn handle(&self, mut command: AlphabetAddDateIdeaCommand) -> Result<EAlphabet, String> {
+        let alphabet_ent = match self
+            .alphabet_repository
+            .find_by_id(&command.alphabet_id)
+            .await
+        {
+            Some(alphabet_ent) => alphabet_ent,
+            None => return Err("Alphabet not found".to_owned()),
+        };
+
+        let date_idea_ent = match self
+            .date_idea_repository
+            .find_by_id(&command.date_idea_id)
+            .await
+        {
+            Some(date_idea_ent) => date_idea_ent,
+            None => return Err("Date idea not found".to_owned()),
+        };
+
+        command.letter = match date_idea_ent.idea.chars().next() {
+            Some(letter) => letter,
+            None => return Err("Something is wrong with date idea".to_owned()),
+        };
+
+        if self
+            .user_date_repository
+            .find_by_alphabet_id_and_letter(command.letter)
+            .await
+            .pop()
+            .is_some()
+        {
+            return Err("Letter is already used".to_owned());
+        };
+
+        let user_date_ent = EUserDate::from(command);
+
+        match self.user_date_repository.create(user_date_ent).await {
+            Some(_) => Ok(alphabet_ent),
+            None => Err("Reference cannot be not added".to_owned()),
+        }
+    }
+}
+
+impl ServiceHandlerTrait<AlphabetRemoveDateIdeaCommand, EAlphabet> for AlphabetCommandService {
+    async fn handle(&self, command: AlphabetRemoveDateIdeaCommand) -> Result<EAlphabet, String> {
+        let alphabet_ent = match self
+            .alphabet_repository
+            .find_by_id(&command.alphabet_id)
+            .await
+        {
+            Some(alphabet_ent) => alphabet_ent,
+            None => return Err("Alphabet not found".to_owned()),
+        };
+
+        let user_date_ent = match self
+            .user_date_repository
+            .find_by_alphabet_and_date_idea_id(&command.alphabet_id, &command.date_idea_id)
+            .await
+        {
+            Some(user_date_ent) => user_date_ent,
+            None => return Err("User date not found".to_owned()),
+        };
+
+        match self
+            .user_date_repository
+            .delete(&user_date_ent.id.to_string())
+            .await
+        {
+            Some(_) => Ok(alphabet_ent),
+            None => Err("Reference cannot be not deleted".to_owned()),
+        }
     }
 }

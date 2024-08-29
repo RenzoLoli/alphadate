@@ -3,10 +3,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     controllers::resources::{
-        AlphabetCreateResource, AlphabetResource, AlphabetUpdateResource, ErrorResource,
+        AlphabetAddDateIdeaResource, AlphabetCreateResource, AlphabetRemoveDateIdeaResource,
+        AlphabetResource, AlphabetUpdateResource, ErrorResource,
     },
     domain::{
-        AlphabetCreateCommand, AlphabetDeleteCommand, AlphabetUpdateCommand, GetAllAlphabetsQuery,
+        AlphabetAddDateIdeaCommand, AlphabetCreateCommand, AlphabetDeleteCommand,
+        AlphabetRemoveDateIdeaCommand, AlphabetUpdateCommand, GetAllAlphabetsQuery,
         GetAlphabetByIdQuery,
     },
     services::{ContextServices, ServiceHandlerTrait},
@@ -114,9 +116,54 @@ async fn delete_alphabet(path: web::Path<(String,)>, services: ContextServices) 
     HttpResponse::Ok().json(resource)
 }
 
+#[post("/{id}")]
+async fn add_date_idea_to_alphabet(
+    path: web::Path<(String,)>,
+    alphabet_add_date_idea_resource: web::Json<AlphabetAddDateIdeaResource>,
+    services: ContextServices,
+) -> impl Responder {
+    let alphabet_command_service = &services.alphabet_command_service;
+    let id = path.into_inner().0;
+    let resource = alphabet_add_date_idea_resource.into_inner();
+
+    let command = AlphabetAddDateIdeaCommand::from((id, resource));
+
+    let alphabet = match alphabet_command_service.handle(command).await {
+        Ok(alphabet) => alphabet,
+        Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
+    };
+
+    let resource = AlphabetResource::from(alphabet);
+
+    HttpResponse::Ok().json(resource)
+}
+
+#[delete("/{id}")]
+async fn remove_date_idea_from_alphabet(
+    path: web::Path<(String,)>,
+    alphabet_remove_date_idea_resource: web::Json<AlphabetRemoveDateIdeaResource>,
+    services: ContextServices,
+) -> impl Responder {
+    let alphabet_command_service = &services.alphabet_command_service;
+    let id = path.into_inner().0;
+    let resource = alphabet_remove_date_idea_resource.into_inner();
+
+    let command = AlphabetRemoveDateIdeaCommand::from((id, resource));
+
+    let alphabet = match alphabet_command_service.handle(command).await {
+        Ok(alphabet) => alphabet,
+        Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
+    };
+
+    let resource = AlphabetResource::from(alphabet);
+
+    HttpResponse::Ok().json(resource)
+}
+
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(get_all_alphabets)
         .service(get_alphabet_by_id)
         .service(update_alphabet)
+        .service(remove_date_idea_from_alphabet)
         .service(delete_alphabet);
 }

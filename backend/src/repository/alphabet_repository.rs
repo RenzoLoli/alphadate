@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     database::{Connection, DbHelper, QueryBuilder},
-    domain::EAlphabet,
+    domain::{EAlphabet, Entity},
 };
 
 use super::BaseRepository;
@@ -26,9 +26,10 @@ impl BaseRepository<EAlphabet> for AlphabetRepository {
 
 impl AlphabetRepository {
     pub async fn find_by_user_id(&self, user_id: &str) -> Vec<EAlphabet> {
-        let query = QueryBuilder::new("alphabet")
+        let table_name = EAlphabet::get_table_name();
+        let query = QueryBuilder::new(table_name)
             .q_select()
-            .q_where_eq("user_id", &DbHelper::as_db_string(user_id))
+            .q_where_eq("user_id", &DbHelper::id_to_thing(table_name, user_id))
             .get_query();
 
         self.query_search(query).await

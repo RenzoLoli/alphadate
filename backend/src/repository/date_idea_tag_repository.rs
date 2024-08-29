@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     database::{Connection, DbHelper, QueryBuilder},
-    domain::EDateIdeaTag,
+    domain::{EDateIdeaTag, Entity},
 };
 
 use super::BaseRepository;
@@ -26,20 +26,43 @@ impl BaseRepository<EDateIdeaTag> for DateIdeaTagRepository {
 
 impl DateIdeaTagRepository {
     pub async fn find_by_tag_id(&self, tag_id: &str) -> Vec<EDateIdeaTag> {
-        let query = QueryBuilder::new("date_idea_tags")
+        let table_name = EDateIdeaTag::get_table_name();
+        let query = QueryBuilder::new(table_name)
             .q_select()
-            .q_where_eq("tag_id", &DbHelper::as_db_string(tag_id))
+            .q_where_eq("tag_id", &DbHelper::id_to_thing(table_name, tag_id))
             .get_query();
 
         self.query_search(query).await
     }
 
     pub async fn find_by_date_idea_id(&self, date_idea_id: &str) -> Vec<EDateIdeaTag> {
-        let query = QueryBuilder::new("date_idea_tags")
+        let table_name = EDateIdeaTag::get_table_name();
+        let query = QueryBuilder::new(table_name)
             .q_select()
-            .q_where_eq("date_idea_id", &DbHelper::as_db_string(date_idea_id))
+            .q_where_eq(
+                "date_idea_id",
+                &DbHelper::id_to_thing(table_name, date_idea_id),
+            )
             .get_query();
 
         self.query_search(query).await
+    }
+
+    pub async fn find_by_date_idea_and_tag_id(
+        &self,
+        date_idea_id: &str,
+        tag_id: &str,
+    ) -> Option<EDateIdeaTag> {
+        let table_name = EDateIdeaTag::get_table_name();
+        let query = QueryBuilder::new(table_name)
+            .q_select()
+            .q_where_eq(
+                "date_idea_id",
+                &DbHelper::id_to_thing(table_name, date_idea_id),
+            )
+            .q_and_eq("tag_id", &DbHelper::id_to_thing(table_name, tag_id))
+            .get_query();
+
+        self.query_search(query).await.pop()
     }
 }

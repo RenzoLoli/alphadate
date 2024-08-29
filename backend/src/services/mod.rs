@@ -89,11 +89,13 @@ impl Services {
             repositories.alphabet_repository.clone(),
             repositories.user_date_repository.clone(),
             repositories.user_repository.clone(),
+            repositories.date_idea_repository.clone(),
         ));
 
         self.date_idea_command_service = Arc::new(DateIdeaCommandService::new(
             repositories.date_idea_repository.clone(),
             repositories.date_idea_tag_repository.clone(),
+            repositories.tag_repository.clone(),
         ));
         self.date_idea_query_service = Arc::new(DateIdeaQueryService::new(
             repositories.date_idea_repository.clone(),

@@ -6,7 +6,7 @@ use std::{
 use actix_web::{
     body::BoxBody,
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
-    http::{header::AUTHORIZATION, StatusCode},
+    http::header::AUTHORIZATION,
     Error, HttpResponse,
 };
 

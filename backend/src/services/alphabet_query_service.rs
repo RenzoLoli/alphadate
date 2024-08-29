@@ -43,40 +43,29 @@ impl ServiceHandlerTrait<GetAllAlphabetsQuery, Vec<AlphabetAggregate>> for Alpha
             return Ok(vec![]);
         }
 
-        let user_date_ents = self.user_date_repository.get_all().await;
+        let mut aggregates: Vec<AlphabetAggregate> = vec![];
+        for alphabet in alphabet_ents.iter() {
+            let user_dates = self
+                .user_date_repository
+                .find_by_alphabet_id(&alphabet.id.to_string())
+                .await;
 
-        if user_date_ents.is_empty() {
-            return Ok(alphabet_ents
-                .into_iter()
-                .map(|alphabet_ent| AlphabetAggregate {
-                    id: alphabet_ent.id.to_string(),
-                    title: alphabet_ent.title,
-                    user_dates: vec![],
-                })
-                .collect::<Vec<AlphabetAggregate>>());
-        }
-
-        let aggregates = alphabet_ents
-            .into_iter()
-            .map(|alphabet_ent| {
-                let dates = user_date_ents
-                    .iter()
-                    .filter(|user_date| user_date.id == alphabet_ent.id)
-                    .cloned()
+            let aggregate = AlphabetAggregate {
+                id: alphabet.id.to_string(),
+                title: alphabet.title.clone(),
+                user_dates: user_dates
+                    .into_iter()
                     .map(|user_date| UserDateAggregate {
                         id: user_date.id.to_string(),
                         letter: user_date.letter,
                         completed: user_date.completed,
                         date_idea_id: user_date.date_idea_id.to_string(),
                     })
-                    .collect::<Vec<UserDateAggregate>>();
-                AlphabetAggregate {
-                    id: alphabet_ent.id.to_string(),
-                    title: alphabet_ent.title,
-                    user_dates: dates,
-                }
-            })
-            .collect::<Vec<AlphabetAggregate>>();
+                    .collect::<Vec<UserDateAggregate>>(),
+            };
+
+            aggregates.push(aggregate);
+        }
 
         Ok(aggregates)
     }

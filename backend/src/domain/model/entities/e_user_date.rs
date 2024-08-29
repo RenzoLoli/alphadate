@@ -1,10 +1,10 @@
 use serde::{Deserialize, Serialize};
 
-use crate::domain::model::value_objects::IdObject;
+use crate::domain::{model::value_objects::IdObject, AlphabetAddDateIdeaCommand};
 
 use super::Entity;
 
-#[derive(Default,Debug, Clone, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct EUserDate {
     pub id: IdObject,
     pub letter: char,
@@ -24,5 +24,22 @@ impl Entity for EUserDate {
 
     fn get_mut_id(&mut self) -> &mut IdObject {
         &mut self.id
+    }
+}
+
+impl From<AlphabetAddDateIdeaCommand> for EUserDate {
+    fn from(value: AlphabetAddDateIdeaCommand) -> Self {
+        let table_name = EUserDate::get_table_name();
+
+        let alphabet_id = IdObject::new(table_name, &value.alphabet_id);
+        let date_idea_id = IdObject::new(table_name, &value.date_idea_id);
+
+        Self {
+            id: Default::default(),
+            alphabet_id,
+            date_idea_id,
+            letter: value.letter,
+            completed: false,
+        }
     }
 }
