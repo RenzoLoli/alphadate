@@ -56,6 +56,8 @@
 - [Create](docs/date-idea/create.md) : `POST /api/v1/date-idea/{id}`
 - [Update](docs/date-idea/update.md) : `PUT /api/v1/date-idea/{id}`
 - [Delete](docs/date-idea/delete.md) : `DELETE /api/v1/date-idea/{id}`
+- [AddTag](docs/date-idea/add_tag.md) : `POST /api/v1/date-idea/{date-idea-id}`
+- [RemoveTag](docs/date-idea/remove_tag.md) : `DELETE /api/v1/date-idea/{date-idea-id`
 
 ### Alphabet Related
 
@@ -64,3 +66,5 @@
 - [Create](docs/alphabet/create.md) : `POST /api/v1/alphabet/{id}`
 - [Update](docs/alphabet/update.md) : `PUT /api/v1/alphabet/{id}`
 - [Delete](docs/alphabet/delete.md) : `DELETE /api/v1/alphabet/{id}`
+- [AddIdea](docs/alphabet/add_idea.md) : `POST /api/v1/alphabet/{alphabet-id}`
+- [RemoveIdea](docs/alphabet/remove_idea.md) : `DELETE /api/v1/alphabet/{alphabet-id}`
