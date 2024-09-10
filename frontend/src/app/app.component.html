@@ -1,0 +1,39 @@
+<div class="app">
+  <mat-toolbar color="primary">
+    @if (isAuthenticated) {
+      <div class="left-side">
+        <button mat-icon-button>
+          <mat-icon>menu</mat-icon>
+        </button>
+        <a href="/">
+          <img [src]="brandService.getBrandImage()" alt="Brand Logo" />
+        </a>
+      </div>
+      <span class="spacer"></span>
+      <app-user-tag
+        [matMenuTriggerFor]="menu"
+        [img]="user?.photo || ''"
+      ></app-user-tag>
+      <mat-menu #menu="matMenu">
+        @let username = user?.username;
+        @if(username){
+        <div class="user-info">
+          <span>{{'@'}}{{username || ''}}</span>
+        </div>
+        }
+        <a href="/profile" mat-menu-item><mat-icon>person</mat-icon>Profile</a>
+        <button mat-menu-item (click)="logout()"><mat-icon>exit_to_app</mat-icon>Logout</button>
+      </mat-menu>
+    }
+    @else {
+      <div class="left-side">
+        <a href="/">
+          <img [src]="brandService.getBrandImage()" alt="Brand Logo" />
+        </a>
+      </div>
+    }
+  </mat-toolbar>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</div>

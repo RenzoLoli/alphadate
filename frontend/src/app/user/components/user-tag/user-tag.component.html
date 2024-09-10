@@ -1,0 +1,12 @@
+<button>
+  <mat-card class="user-tag">
+    <mat-card-header>
+      <img mat-card-avatar [src]="img" alt="Avatar" />
+    </mat-card-header>
+    @if (alias) {
+      <mat-card-title>
+        <p>{{ "@" }}{{ alias }}</p>
+      </mat-card-title>
+    }
+  </mat-card>
+</button>

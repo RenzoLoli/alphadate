@@ -1,0 +1,30 @@
+<div class="login-panel">
+  <mat-card appearance="outlined" class="form-container">
+    <div class="form-header">
+      <h2>Login</h2>
+      @if (reqError) {
+        <p>{{ reqError }}</p>
+      }
+    </div>
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        @if (!email?.valid) {
+          <mat-error>Invalid email</mat-error>
+        }
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+        @if (!password?.valid) {
+          <mat-error>Invalid password</mat-error>
+        }
+      </mat-form-field>
+      <div class="form-actions">
+        <a mat-button href="/register">Register</a>
+        <button mat-flat-button type="submit">Submit</button>
+      </div>
+    </form>
+  </mat-card>
+</div>
