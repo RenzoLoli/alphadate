@@ -1,0 +1,83 @@
+<table mat-table [dataSource]="dateIdeas()">
+  <ng-container matColumnDef="idea">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header
+      class="idea-container"
+    >
+      Idea
+    </th>
+    <td mat-cell *matCellDef="let dateIdea">{{ dateIdea.idea }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="description">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header
+      class="description-container"
+    >
+      Description
+    </th>
+    <td mat-cell *matCellDef="let dateIdea">{{ dateIdea.description }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="tags">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header
+      class="tags-container"
+    >
+      Tags
+    </th>
+    <td mat-cell *matCellDef="let dateIdea">
+      <mat-chip-set>
+        @for (tag of dateIdea.tags; track tag.id) {
+          <mat-chip (removed)="onRemoveIdeaTag(dateIdea, tag)">
+            {{ tag.name }}
+            <button matChipRemove aria-label="remove ">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        }
+        <button mat-icon-button (click)="onAddIdeaTag(dateIdea)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-chip-set>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header
+      class="actions-container"
+    >
+      Actions
+    </th>
+    <td mat-cell *matCellDef="let dateIdea">
+      @if (admin) {
+        <button mat-icon-button (click)="onEditIdea(dateIdea)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDeleteIdea(dateIdea)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      }
+      <button mat-icon-button (click)="onAddIdeaAlphabet(dateIdea)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+  <!-- empty state -->
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">No data</td>
+  </tr>
+</table>

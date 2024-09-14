@@ -1,0 +1,43 @@
+<div>
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Search Idea</mat-label>
+      <input
+        matInput
+        placeholder="Filter"
+        (keyup)="onChangeFilterIdea($event)"
+      />
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Search Tags</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Tags">
+        @for (tag of filterTags(); track tag.id) {
+          <mat-chip
+            [removable]="true"
+            (removed)="onRemoveFilterTag($event, tag)"
+          >
+            {{ tag.name }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        }
+        <input
+          type="text"
+          name="currentTag"
+          placeholder="Tags"
+          #tagInput
+          matInput
+          aria-label="tags input"
+          [matChipInputFor]="chipGrid"
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete #auto (optionSelected)="onSelectFilterTag($event)">
+          @for (tag of unselectedTags; track tag.id) {
+            <mat-option [value]="tag">{{ tag.name }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-chip-grid>
+    </mat-form-field>
+  </div>
+</div>

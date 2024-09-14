@@ -1,0 +1,165 @@
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import {
+  MatChipEvent,
+  MatChipInputEvent,
+  MatChipsModule,
+} from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { pipe, switchMap, tap } from 'rxjs';
+import { DateIdeaEntity } from '../../models/date-idea.entity';
+import { TagEntity } from '../../models/tag.entity';
+import { DateIdeaService } from '../../services/date-idea.service';
+import { TagService } from '../../services/tag.service';
+
+const COMPONENTS: Array<any> = [];
+const MATERIAL: Array<any> = [
+  MatChipsModule,
+  MatListModule,
+  MatIconModule,
+  MatButtonModule,
+  MatCardModule,
+  MatTableModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatAutocompleteModule,
+];
+
+@Component({
+  selector: 'app-date-ideas',
+  standalone: true,
+  imports: [CommonModule, COMPONENTS, MATERIAL],
+  templateUrl: './date-ideas.component.html',
+  styleUrl: './date-ideas.component.css',
+})
+export class DateIdeasComponent implements OnInit {
+  dateIdeaService = inject(DateIdeaService);
+  tagService = inject(TagService);
+
+  dateIdeas = signal(Array<DateIdeaEntity>());
+  allTags = signal(Array<TagEntity>());
+  filterValue = signal('');
+  filterTags = signal(Array<TagEntity>());
+
+  displayedColumns: string[] = ['idea', 'description', 'tags'];
+  allTags$ = rxMethod<void>(
+    pipe(
+      switchMap(() => this.tagService.getAll()),
+      tap((tags: Array<TagEntity>) => {
+        tags.push({ id: 'n-tag1', name: 'New tag' });
+        tags.push({ id: 'n-tag2', name: 'New tag2' });
+        this.allTags.set(tags);
+      }),
+    ),
+  );
+  allDateIdeas$ = rxMethod<void>(
+    pipe(
+      switchMap(() => this.dateIdeaService.getAll()),
+      tap((dateIdeas) => {
+        let nDateIdea = {
+          id: 'new',
+          idea: 'New date idea',
+          description: 'Description',
+          tags: Array<TagEntity>(),
+        };
+
+        let nDateIdeaTagId = 'n-tag';
+        for (let i = 0; i < 4; i++) {
+          nDateIdea.tags.push({ id: nDateIdeaTagId + i, name: 'New tag' });
+        }
+
+        for (let i = 0; i < 10; i++) {
+          nDateIdea.id = nDateIdea.id + '-' + i;
+          dateIdeas.push(Object.assign({}, nDateIdea));
+        }
+
+        this.dateIdeas.set(dateIdeas);
+      }),
+    ),
+  );
+
+  ngOnInit(): void {
+    this.allDateIdeas$();
+    this.allTags$();
+
+    if (this.isAdmin) {
+      this.displayedColumns.push('actions');
+    }
+  }
+
+  get isAdmin() {
+    return false;
+  }
+
+  get filteredIdeas() {
+    const filterValue = this.filterValue();
+    const filterTags = this.filterTags();
+
+    return this.dateIdeas().filter((idea) => {
+      const isIncludedOnIdea =
+        filterValue.length === 0 || idea.idea.includes(filterValue);
+      const isIncludedOnDescription =
+        filterValue.length === 0 || idea.description.includes(filterValue);
+      const hasTags =
+        filterTags.length === 0 ||
+        idea.tags.some((tag) =>
+          filterTags.some((filterTag) => tag.name === filterTag.name),
+        );
+      return (isIncludedOnIdea || isIncludedOnDescription) && hasTags;
+    });
+  }
+
+  get unselectedFilterTags() {
+    if (this.filterTags().length === 0) return this.allTags();
+    return this.allTags().filter((tag) => !this.filterTags().includes(tag));
+  }
+
+  editDateIdea(dateIdea: DateIdeaEntity) {
+    console.log('editDateIdeaTag', dateIdea);
+  }
+
+  deleteDateIdea(dateIdea: DateIdeaEntity) {
+    console.log('deleteDateIdea', dateIdea);
+  }
+
+  addDateIdeaTag(dateIdea: DateIdeaEntity) {
+    console.log('addDateIdeaTag', dateIdea);
+  }
+
+  removeDateIdeaTag(dateIdea: DateIdeaEntity, tag: TagEntity) {
+    console.log('removeDateIdeaTag', dateIdea, tag);
+  }
+
+  changeFilterIdea(event: KeyboardEvent) {
+    if (!event.target) return;
+    const { value } = event.target as HTMLInputElement;
+    this.filterValue.set(value);
+  }
+
+  selectFilterTag(event: MatAutocompleteSelectedEvent) {
+    this.filterTags.update((tags) => {
+      return [...tags, event.option.value];
+    });
+    event.option.deselect();
+  }
+
+  removeFilterTag(event: MatChipEvent, tag: TagEntity) {
+    const position = this.filterTags().indexOf(tag);
+    if (position === -1) return;
+    this.filterTags.update((tags) => {
+      tags.splice(position, 1);
+      return tags;
+    });
+  }
+}

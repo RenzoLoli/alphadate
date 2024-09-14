@@ -1,0 +1,20 @@
+<mat-toolbar color="primary">
+  @if (isAuthenticated) {
+    <div class="left-side">
+      <button mat-icon-button (click)="onToggleDrawer()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a href="/">
+        <img [src]="brandImage" alt="Brand Logo" />
+      </a>
+    </div>
+    <span class="spacer"></span>
+    <app-user-tag [minimal]="true" />
+  } @else {
+    <div class="left-side">
+      <a href="/">
+        <img [src]="brandService.getBrandImage()" alt="Brand Logo" />
+      </a>
+    </div>
+  }
+</mat-toolbar>

@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Idea Editor</h2>
+<mat-dialog-content>
+  @if (reqError()) {
+    <p class="request-error">{{ reqError() }}</p>
+  }
+  <form [formGroup]="updateIdeaForm">
+    <mat-form-field>
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="idea" />
+      @if (idea?.errors) {
+        <mat-error>Invalid title</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      @if (description?.errors) {
+        <mat-error>Invalid description</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSubmit()" [disabled]="disabled()">Create</button>
+</mat-dialog-actions>

@@ -28,8 +28,22 @@ img {
   margin: 2px;
 }
 
-mat-card-title p{
+mat-card-title p {
   font-size: 1rem;
   text-align: center;
   color: #fff;
+}
+
+menu-item {
+  padding-inline: 50px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding-inline: 50px;
+  padding-block: 10px;
+
+  color: #fff;
+  font-size: 1.1rem;
 }

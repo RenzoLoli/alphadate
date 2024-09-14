@@ -1,8 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { AuthStore } from '../../store/auth.store';
 
-const COMPONENTS = [MatCardModule, MatButtonModule];
+const COMPONENTS = [
+  MatCardModule,
+  MatButtonModule,
+  MatMenuModule,
+  MatIconModule,
+];
 
 @Component({
   selector: 'app-user-tag',
@@ -12,6 +20,19 @@ const COMPONENTS = [MatCardModule, MatButtonModule];
   styleUrl: './user-tag.component.css',
 })
 export class UserTagComponent {
-  @Input() img: string = '';
-  @Input() alias?: string;
+  authStore = inject(AuthStore);
+
+  @Input() minimal: boolean = false;
+
+  get alias() {
+    return this.authStore.getUser()?.username || '';
+  }
+
+  get photo() {
+    return this.authStore.getUser()?.photo || '';
+  }
+
+  logout() {
+    this.authStore.logout();
+  }
 }
