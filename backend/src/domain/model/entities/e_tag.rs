@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::domain::{model::value_objects::IdObject, TagUpdateCommand};
+use crate::domain::{model::value_objects::IdObject, TagCreateCommand, TagUpdateCommand};
 
 use super::Entity;
 
@@ -21,6 +21,15 @@ impl Entity for ETag {
 
     fn get_mut_id(&mut self) -> &mut IdObject {
         &mut self.id
+    }
+}
+
+impl From<TagCreateCommand> for ETag {
+    fn from(value: TagCreateCommand) -> Self {
+        Self {
+            id: IdObject::default(),
+            name: value.name,
+        }
     }
 }
 

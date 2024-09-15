@@ -1,9 +1,11 @@
-use actix_web::{delete, get, put, web, HttpResponse, Responder};
+use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    controllers::resources::{ErrorResource, TagResource},
-    domain::{GetAllTagsQuery, GetTagByIdQuery, TagDeleteCommand, TagUpdateCommand},
+    controllers::resources::{ErrorResource, TagCreateResource, TagResource},
+    domain::{
+        GetAllTagsQuery, GetTagByIdQuery, TagCreateCommand, TagDeleteCommand, TagUpdateCommand,
+    },
     services::{ContextServices, ServiceHandlerTrait},
 };
 
@@ -54,6 +56,29 @@ async fn get_tag_by_id(
     HttpResponse::Ok().json(resource)
 }
 
+#[post("")]
+async fn create_tag(
+    tag_create_resource: web::Json<TagCreateResource>,
+    services: ContextServices,
+) -> impl Responder {
+
+    // TODO: change all 304 modified to 500 internal server error
+    let tag_command_service = &services.tag_command_service;
+
+    let command = TagCreateCommand::from(tag_create_resource.into_inner());
+
+    let tag = match tag_command_service.handle(command).await {
+        Ok(tag) => tag,
+        Err(err) => {
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
+        }
+    };
+
+    let resource = TagResource::from(tag);
+
+    HttpResponse::Ok().json(resource)
+}
+
 #[put("/{id}")]
 async fn update_tag(
     path: web::Path<String>,
@@ -68,7 +93,7 @@ async fn update_tag(
     let tag = match tag_command_service.handle(command).await {
         Ok(tag) => tag,
         Err(err) => {
-            return HttpResponse::NotModified().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
@@ -88,7 +113,7 @@ async fn delete_tag(path: web::Path<(String,)>, services: ContextServices) -> im
     let tag = match tag_command_service.handle(command).await {
         Ok(tag) => tag,
         Err(err) => {
-            return HttpResponse::NotModified().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
@@ -101,5 +126,6 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(get_all_tags)
         .service(get_tag_by_id)
         .service(update_tag)
+        .service(create_tag)
         .service(delete_tag);
 }

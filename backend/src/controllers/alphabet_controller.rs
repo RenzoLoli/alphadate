@@ -90,7 +90,7 @@ async fn update_alphabet(
 
     let alphabet = match alphabet_command_service.handle(command).await {
         Ok(alphabet) => alphabet,
-        Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = AlphabetResource::from(alphabet);
@@ -108,7 +108,7 @@ async fn delete_alphabet(path: web::Path<(String,)>, services: ContextServices) 
 
     let alphabet = match alphabet_command_service.handle(command).await {
         Ok(alphabet) => alphabet,
-        Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = AlphabetResource::from(alphabet);
@@ -130,7 +130,7 @@ async fn add_date_idea_to_alphabet(
 
     let alphabet = match alphabet_command_service.handle(command).await {
         Ok(alphabet) => alphabet,
-        Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = AlphabetResource::from(alphabet);
@@ -152,7 +152,7 @@ async fn remove_date_idea_from_alphabet(
 
     let alphabet = match alphabet_command_service.handle(command).await {
         Ok(alphabet) => alphabet,
-        Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = AlphabetResource::from(alphabet);

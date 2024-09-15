@@ -63,7 +63,7 @@ async fn update_user(
     let user = match user_command_service.handle(command).await {
         Ok(user) => user,
         Err(err) => {
-            return HttpResponse::NotModified().json(ErrorResource::new(err.to_string().as_str()));
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()));
         }
     };
 
@@ -83,7 +83,7 @@ async fn delete_user(services: ContextServices, path: web::Path<(String,)>) -> i
     let user = match user_command_service.handle(command).await {
         Ok(user) => user,
         Err(err) => {
-            return HttpResponse::NotModified().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
@@ -93,6 +93,7 @@ async fn delete_user(services: ContextServices, path: web::Path<(String,)>) -> i
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {
+    // TODO: add VisualUser because password is shown in the response
     cfg.service(get_all_users)
         .service(get_user_by_id)
         .service(update_user)

@@ -65,7 +65,7 @@ async fn create_date_idea(
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::NotFound().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = DateIdeaResource::from(date_idea);
@@ -87,7 +87,7 @@ async fn update_date_idea(
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     HttpResponse::Ok().json(date_idea)
@@ -103,7 +103,7 @@ async fn delete_date_idea(path: web::Path<(String,)>, services: ContextServices)
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::NotModified().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = DateIdeaResource::from(date_idea);
@@ -111,7 +111,7 @@ async fn delete_date_idea(path: web::Path<(String,)>, services: ContextServices)
     HttpResponse::Ok().json(resource)
 }
 
-#[post("/{id}")]
+#[post("/{id}/tag")]
 async fn add_tag_to_date_idea(
     path: web::Path<(String,)>,
     date_idea_add_tag_resource: web::Json<DateIdeaAddTagResource>,
@@ -133,7 +133,7 @@ async fn add_tag_to_date_idea(
     HttpResponse::Ok().json(resource)
 }
 
-#[delete("/{id}")]
+#[delete("/{id}/tag")]
 async fn remove_tag_from_date_idea(
     path: web::Path<(String,)>,
     date_idea_remove_tag_resource: web::Json<DateIdeaRemoveTagResource>,

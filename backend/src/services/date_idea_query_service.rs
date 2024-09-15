@@ -1,7 +1,7 @@
 use std::{collections::HashSet, sync::Arc};
 
 use crate::{
-    domain::{DateIdeaAggregate, GetAllDateIdeasQuery, GetDateIdeaByIdQuery},
+    domain::{DateIdeaAggregate, GetAllDateIdeasQuery, GetDateIdeaByIdQuery, TagAggregate},
     repository::{BaseRepository, DateIdeaRepository, DateIdeaTagRepository, TagRepository},
 };
 
@@ -39,9 +39,14 @@ impl ServiceHandlerTrait<GetAllDateIdeasQuery, Vec<DateIdeaAggregate>> for DateI
         let date_idea_tags = self.date_idea_tag_repository.get_all().await;
         let tags = self.tag_repository.get_all().await;
 
-        let idea_tag_ids_set: HashSet<String> = date_idea_tags
+        let idea_tag_tag_ids_set: HashSet<(String, String)> = date_idea_tags
             .iter()
-            .map(|idea_tag| idea_tag.id.to_string())
+            .map(|idea_tag| {
+                (
+                    idea_tag.date_idea_id.to_string(),
+                    idea_tag.tag_id.to_string(),
+                )
+            })
             .collect();
 
         let aggregates = date_ideas
@@ -49,8 +54,14 @@ impl ServiceHandlerTrait<GetAllDateIdeasQuery, Vec<DateIdeaAggregate>> for DateI
             .map(|date_idea| {
                 let idea_tags = tags
                     .iter()
-                    .filter(|tag| idea_tag_ids_set.contains(&tag.id.to_string()))
-                    .cloned()
+                    .filter(|tag| {
+                        idea_tag_tag_ids_set
+                            .contains(&(date_idea.id.to_string(), tag.id.to_string()))
+                    })
+                    .map(|tag| TagAggregate {
+                        id: tag.id.to_string(),
+                        name: tag.name.clone(),
+                    })
                     .collect();
 
                 DateIdeaAggregate {
@@ -78,10 +89,19 @@ impl ServiceHandlerTrait<GetDateIdeaByIdQuery, DateIdeaAggregate> for DateIdeaQu
             .find_by_date_idea_id(&query.id)
             .await
             .into_iter()
-            .map(|date_idea_tag| date_idea_tag.id.to_string())
+            .map(|date_idea_tag| date_idea_tag.tag_id.to_string())
             .collect();
 
-        let tags = self.tag_repository.find_by_ids(idea_tag_ids).await;
+        let tags = self
+            .tag_repository
+            .find_by_ids(idea_tag_ids)
+            .await
+            .iter()
+            .map(|tag| TagAggregate {
+                id: tag.id.to_string(),
+                name: tag.name.clone(),
+            })
+            .collect();
 
         Ok(DateIdeaAggregate {
             id: query.id.to_string(),

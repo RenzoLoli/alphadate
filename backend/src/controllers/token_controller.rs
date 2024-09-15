@@ -16,7 +16,7 @@ async fn renew(req: HttpRequest) -> impl Responder {
 
     let token = match result {
         Some(token) => token,
-        None => return HttpResponse::NotModified().json(ErrorResource::new("Cannot renew Token")),
+        None => return HttpResponse::InternalServerError().json(ErrorResource::new("Cannot renew Token")),
     };
 
     let resource = TokenResource { token };

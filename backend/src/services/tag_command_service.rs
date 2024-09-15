@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    domain::{ETag, TagDeleteCommand, TagUpdateCommand},
+    domain::{ETag, TagCreateCommand, TagDeleteCommand, TagUpdateCommand},
     repository::{BaseRepository, DateIdeaTagRepository, TagRepository},
 };
 
@@ -70,5 +70,27 @@ impl ServiceHandlerTrait<TagDeleteCommand, ETag> for TagCommandService {
         }
 
         tag
+    }
+}
+
+impl ServiceHandlerTrait<TagCreateCommand, ETag> for TagCommandService {
+    async fn handle(&self, command: TagCreateCommand) -> Result<ETag, String> {
+        let finded_tag = self
+            .tag_repository
+            .find_by_name(command.name.as_str())
+            .await;
+
+        if !finded_tag.is_empty() {
+            return Err("Tag is already exists".to_owned());
+        }
+
+        let tag_ent = ETag::from(command);
+
+        let tag = self.tag_repository.create(tag_ent).await;
+
+        match tag {
+            Some(tag) => Ok(tag),
+            None => Err("Tag cannot be created".to_owned()),
+        }
     }
 }

@@ -9,7 +9,8 @@ mod services;
 
 use std::sync::Arc;
 
-use actix_web::{middleware::Logger, App, HttpServer};
+use actix_cors::Cors;
+use actix_web::{http::header, middleware::Logger, App, HttpServer};
 use config::ServerOptions;
 use database::{config_database, ConfigConnection, Connection};
 use env_logger::Env;
@@ -48,10 +49,28 @@ async fn main() -> std::io::Result<()> {
 
     // init server
     let server_opts = ServerOptions::load();
+
     HttpServer::new(move || {
+        let origins = server_opts.origins.clone();
         App::new()
             .app_data(ContextServices::from(services.clone()))
             // middlewares
+            .wrap(
+                Cors::default()
+                    .allowed_origin_fn(move |origin, _| {
+                        origins
+                            .iter()
+                            .any(|allowed| origin.as_bytes().starts_with(allowed.as_bytes()))
+                    })
+                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+                    .supports_credentials()
+                    .allowed_headers(vec![
+                        header::AUTHORIZATION,
+                        header::ACCEPT,
+                        header::CONTENT_TYPE,
+                    ])
+                    .max_age(3600),
+            )
             .wrap(Logger::default())
             // routing
             .configure(router::config)

@@ -6,6 +6,7 @@ use super::services::EnvService;
 pub struct ServerOptions {
     pub port: u16,
     pub host: String,
+    pub origins: Vec<String>,
 }
 
 impl ServerOptions {
@@ -16,6 +17,9 @@ impl ServerOptions {
                 .parse::<u16>()
                 .unwrap(),
             host: EnvService::get_env("HOST").unwrap_or(String::from("0.0.0.0")),
+            origins: EnvService::get_env("CORS_ORIGINS")
+                .map(|origins| origins.split(',').map(|s| s.to_string()).collect())
+                .unwrap_or(vec![]),
         }
     }
 }
