@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './user/pages/login/login.component';
-import { RegisterComponent } from './user/pages/register/register.component';
-import AuthGuard from './user/guards/auth.guard';
-import { ProfileComponent } from './user/pages/profile/profile.component';
 import { DateIdeasComponent } from './date-idea/pages/date-ideas/date-ideas.component';
+import AuthGuard from './user/guards/auth.guard';
+import { LoginComponent } from './user/pages/login/login.component';
+import { ProfileComponent } from './user/pages/profile/profile.component';
+import { RegisterComponent } from './user/pages/register/register.component';
 
 export const routes: Routes = [
   {
@@ -27,8 +27,8 @@ export const routes: Routes = [
       {
         path: 'date-ideas',
         title: 'Date Ideas',
-        component: DateIdeasComponent
-      }
+        component: DateIdeasComponent,
+      },
     ],
     canActivate: [AuthGuard],
     runGuardsAndResolvers: 'always',

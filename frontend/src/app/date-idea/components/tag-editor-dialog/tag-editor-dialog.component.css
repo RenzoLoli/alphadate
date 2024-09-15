@@ -1,0 +1,17 @@
+.add-tag-button {
+  margin-left: 1rem;
+}
+
+.request-error {
+  color: red;
+  font-size: 0.8rem;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: row;
+}
+
+mat-form-field {
+  width: 100%;
+}

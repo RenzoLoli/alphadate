@@ -1,13 +1,19 @@
 import { Component, inject, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { UserTagComponent } from '../../../user/components/user-tag/user-tag.component';
 import { AuthStore } from '../../../user/store/auth.store';
 import { BrandService } from '../../services/brand.service';
 
 const COMPONENTS: Array<any> = [UserTagComponent];
-const MATERIAL: Array<any> = [MatIconModule, MatButtonModule, MatMenuModule];
+const MATERIAL: Array<any> = [
+  MatIconModule,
+  MatButtonModule,
+  MatMenuModule,
+  MatListModule,
+];
 
 @Component({
   selector: 'app-sidebar',

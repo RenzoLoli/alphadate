@@ -42,9 +42,16 @@
             </button>
           </mat-chip>
         }
-        <button mat-icon-button (click)="onAddIdeaTag(dateIdea)">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>add</mat-icon>
         </button>
+        <mat-menu #menu>
+          @for (tag of missingTags(dateIdea); track tag.id) {
+            <button mat-menu-item (click)="onAddIdeaTag(dateIdea, tag)">
+              {{ tag.name }}
+            </button>
+          }
+        </mat-menu>
       </mat-chip-set>
     </td>
   </ng-container>

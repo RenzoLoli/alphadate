@@ -1,7 +1,16 @@
-import { Component, Input, OnInit, output, Signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  Input,
+  OnInit,
+  output,
+  Signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { DateIdeaEntity } from '../../models/date-idea.entity';
 import { TagEntity } from '../../models/tag.entity';
@@ -13,6 +22,7 @@ const MATERIAL: Array<any> = [
   MatIconModule,
   MatButtonModule,
   MatButtonModule,
+  MatMenuModule,
 ];
 
 @Component({
@@ -24,6 +34,7 @@ const MATERIAL: Array<any> = [
 })
 export class IdeasTableComponent implements OnInit {
   @Input({ required: true }) dateIdeas!: Signal<Array<DateIdeaEntity>>;
+  @Input({ required: true }) tags!: Signal<Array<TagEntity>>;
   @Input({ required: true }) admin!: boolean;
 
   displayedColumns: string[] = ['idea', 'description', 'tags'];
@@ -34,8 +45,13 @@ export class IdeasTableComponent implements OnInit {
     }
   }
 
+  missingTags = (dateIdea: DateIdeaEntity) =>
+    this.tags().filter((tag) => {
+      return !dateIdea.tags.some((dateIdeaTag) => tag.id === dateIdeaTag.id);
+    });
+
   removeIdeaTag = output<{ dateIdea: DateIdeaEntity; tag: TagEntity }>();
-  addIdeaTag = output<{ dateIdea: DateIdeaEntity }>();
+  addIdeaTag = output<{ dateIdea: DateIdeaEntity; tag: TagEntity }>();
   editIdea = output<{ dateIdea: DateIdeaEntity }>();
   deleteIdea = output<{ dateIdea: DateIdeaEntity }>();
   addIdeaAlphabet = output<{ dateIdea: DateIdeaEntity }>();
@@ -44,8 +60,8 @@ export class IdeasTableComponent implements OnInit {
     this.removeIdeaTag.emit({ dateIdea, tag });
   }
 
-  onAddIdeaTag(dateIdea: DateIdeaEntity) {
-    this.addIdeaTag.emit({ dateIdea });
+  onAddIdeaTag(dateIdea: DateIdeaEntity, tag: TagEntity) {
+    this.addIdeaTag.emit({ dateIdea, tag });
   }
 
   onEditIdea(dateIdea: DateIdeaEntity) {

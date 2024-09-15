@@ -1,21 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
 import { FilterComponent } from '../../components/filter/filter.component';
+import { IdeaAddFormDialogComponent } from '../../components/idea-add-form-dialog/idea-add-form-dialog.component';
+import { IdeaUpdateFormDialogComponent } from '../../components/idea-update-form-dialog/idea-update-form-dialog.component';
 import { IdeasTableComponent } from '../../components/ideas-table/ideas-table.component';
+import { TagEditorDialogComponent } from '../../components/tag-editor-dialog/tag-editor-dialog.component';
 import { DateIdeaEntity } from '../../models/date-idea.entity';
 import { TagEntity } from '../../models/tag.entity';
 import { DateIdeaService } from '../../services/date-idea.service';
 import { TagService } from '../../services/tag.service';
-import { MatDialog } from '@angular/material/dialog';
-import { IdeaAddFormDialogComponent } from '../../components/idea-add-form-dialog/idea-add-form-dialog.component';
-import { IdeaUpdateFormDialogComponent } from '../../components/idea-update-form-dialog/idea-update-form-dialog.component';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 const COMPONENTS: Array<any> = [IdeasTableComponent, FilterComponent];
-const MATERIAL: Array<any> = [MatButtonModule, MatIconModule];
+const MATERIAL: Array<any> = [MatButtonModule, MatIconModule, MatMenuModule];
 
 @Component({
   selector: 'app-date-ideas',
@@ -30,6 +33,8 @@ export class DateIdeasComponent implements OnInit {
 
   addIdeaDialog = inject(MatDialog);
   updateIdeaDialog = inject(MatDialog);
+  tagEditorDialog = inject(MatDialog);
+  confirmationDialog = inject(MatDialog);
 
   dateIdeas = signal(Array<DateIdeaEntity>());
   tags = signal(Array<TagEntity>());
@@ -87,9 +92,23 @@ export class DateIdeasComponent implements OnInit {
   }: {
     dateIdea: DateIdeaEntity;
     tag: TagEntity;
-  }) {}
+  }) {
+    this.dateIdeaService.removeTag(dateIdea.id, tag.id).subscribe(() => {
+      this.allDateIdeas$();
+    });
+  }
 
-  onAddIdeaTag({ dateIdea }: { dateIdea: DateIdeaEntity }) {}
+  onAddIdeaTag({
+    dateIdea,
+    tag,
+  }: {
+    dateIdea: DateIdeaEntity;
+    tag: TagEntity;
+  }) {
+    this.dateIdeaService.addTag(dateIdea.id, tag.id).subscribe(() => {
+      this.allDateIdeas$();
+    });
+  }
 
   onEditIdea({ dateIdea }: { dateIdea: DateIdeaEntity }) {
     const dialogRef = this.updateIdeaDialog.open(
@@ -104,7 +123,23 @@ export class DateIdeasComponent implements OnInit {
     });
   }
 
-  onDeleteIdea({ dateIdea }: { dateIdea: DateIdeaEntity }) {}
+  onDeleteIdea({ dateIdea }: { dateIdea: DateIdeaEntity }) {
+    const dialogRef = this.confirmationDialog.open(
+      ConfirmationDialogComponent,
+      {
+        data: {
+          message: 'Are you sure you want to delete this idea?',
+        },
+      },
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.dateIdeaService.delete(dateIdea.id).subscribe(() => {
+        this.allDateIdeas$();
+      });
+    });
+  }
 
   onAddIdeaAlphabet({ dateIdea }: { dateIdea: DateIdeaEntity }) {}
 
@@ -114,6 +149,17 @@ export class DateIdeasComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
       this.allDateIdeas$();
+    });
+  }
+
+  onTagEditor() {
+    const dialogRef = this.tagEditorDialog.open(TagEditorDialogComponent, {
+      data: this.tags(),
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.allDateIdeas$();
+      this.allTags$();
     });
   }
 }

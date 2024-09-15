@@ -10,7 +10,7 @@ import {
   WritableStateSource,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, of, pipe, switchMap, tap, throwError } from 'rxjs';
+import { catchError, pipe, switchMap, tap, throwError } from 'rxjs';
 import { SignInRequest } from '../models/sign-in.request';
 import { SignUpRequest } from '../models/sign-up.request';
 import {
@@ -123,11 +123,11 @@ export const AuthStore = signalStore(
 
             router.navigate(['/']);
           }),
-          catchError((error) => {
+          catchError((error, caught) => {
             errorState(store, error);
 
             authLocalStorageService.clear();
-            return of();
+            return caught;
           }),
         ),
       ),
@@ -142,9 +142,9 @@ export const AuthStore = signalStore(
             patchState(store, { loading: false });
             router.navigate(['/login']);
           }),
-          catchError((error) => {
+          catchError((error, caught) => {
             errorState(store, error);
-            return of();
+            return caught;
           }),
         ),
       ),
@@ -174,9 +174,9 @@ export const AuthStore = signalStore(
               user,
             });
           }),
-          catchError((error) => {
+          catchError((error, caught) => {
             patchState(store, { loading: false, error: error.message });
-            return of();
+            return caught;
           }),
         ),
       ),

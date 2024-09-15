@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, retry } from 'rxjs';
+import { Observable, retry, tap } from 'rxjs';
 import { BaseService } from '../../shared/services/base.service';
 import { DateIdeaCreateRequest } from '../models/date-idea-create.request';
 import { DateIdeaUpdateRequest } from '../models/date-idea-update.request';
@@ -17,12 +17,32 @@ export class DateIdeaService extends BaseService {
 
   getAll(): Observable<DateIdeaEntity[]> {
     const path = `${this.resourcePath()}/all`;
-    return this.http.get<DateIdeaEntity[]>(path);
+    return this.http.get<DateIdeaEntity[]>(path).pipe(retry(2));
   }
 
   getById(id: string): Observable<DateIdeaEntity> {
     const path = `${this.resourcePath()}/${id}`;
-    return this.http.get<DateIdeaEntity>(path);
+    return this.http.get<DateIdeaEntity>(path).pipe(retry(2));
+  }
+
+  addTag(ideaId: string, tagId: string): Observable<DateIdeaEntity> {
+    const path = `${this.resourcePath()}/${ideaId}/tag`;
+    return this.http
+      .post<DateIdeaEntity>(path, {
+        tag_id: tagId,
+      })
+      .pipe(retry(2));
+  }
+
+  removeTag(ideaId: string, tagId: string): Observable<DateIdeaEntity> {
+    const path = `${this.resourcePath()}/${ideaId}/tag`;
+    return this.http
+      .delete<DateIdeaEntity>(path, {
+        body: {
+          tag_id: tagId,
+        },
+      })
+      .pipe(retry(2));
   }
 
   update(
@@ -46,6 +66,10 @@ export class DateIdeaService extends BaseService {
 
   delete(id: string): Observable<void> {
     const path = `${this.resourcePath()}/${id}`;
-    return this.http.delete<void>(path).pipe(retry(2));
+    return this.http
+      .delete<void>(path, {
+        body: {},
+      })
+      .pipe(retry(2));
   }
 }

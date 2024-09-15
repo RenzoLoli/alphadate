@@ -30,9 +30,9 @@ export class TagService extends BaseService {
     return this.http.put<void>(path, tagUpdateRequest).pipe(retry(2));
   }
 
-  create(tagCreateRequest: TagCreateRequest): Observable<void> {
+  create(tagCreateRequest: TagCreateRequest): Observable<TagEntity> {
     const path = `${this.resourcePath()}`;
-    return this.http.post<void>(path, tagCreateRequest).pipe(retry(2));
+    return this.http.post<TagEntity>(path, tagCreateRequest).pipe(retry(2));
   }
 
   delete(id: string): Observable<void> {

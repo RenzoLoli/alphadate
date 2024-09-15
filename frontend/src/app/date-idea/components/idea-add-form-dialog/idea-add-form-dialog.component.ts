@@ -11,7 +11,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, map, of, pipe, switchMap, tap } from 'rxjs';
+import { catchError, map, pipe, switchMap, tap } from 'rxjs';
 import { DateIdeaCreateRequest } from '../../models/date-idea-create.request';
 import { DateIdeaEntity } from '../../models/date-idea.entity';
 import { DateIdeaService } from '../../services/date-idea.service';
@@ -44,9 +44,9 @@ export class IdeaAddFormDialogComponent {
       tap((dateIdea: DateIdeaEntity) => {
         this.dialogRef.close(dateIdea);
       }),
-      catchError((error) => {
+      catchError((error, caught) => {
         this.reqError.set(error.message);
-        return of(null);
+        return caught;
       }),
     ),
   );

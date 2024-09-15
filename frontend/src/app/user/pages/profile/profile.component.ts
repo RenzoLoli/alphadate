@@ -97,7 +97,6 @@ export class ProfileComponent implements OnInit {
   }
 
   fillForm() {
-    console.log('filled');
     this.formGroup.setValue({
       username: this.user == null ? '' : this.user.username,
       couplename: this.user == null ? '' : this.user.couplename,

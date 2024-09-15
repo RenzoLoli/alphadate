@@ -14,7 +14,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, of, pipe, switchMap, tap, throwError } from 'rxjs';
+import { catchError, pipe, switchMap, tap, throwError } from 'rxjs';
 import { DateIdeaCreateRequest } from '../../models/date-idea-create.request';
 import {
   checkUnnecessaryDateIdeaUpdateRequest,
@@ -56,9 +56,9 @@ export class IdeaUpdateFormDialogComponent implements OnInit {
       tap((dateIdea: DateIdeaEntity) => {
         this.dialogRef.close(dateIdea);
       }),
-      catchError((error) => {
+      catchError((error, caught) => {
         this.reqError.set(error.message);
-        return of(null);
+        return caught;
       }),
     ),
   );
