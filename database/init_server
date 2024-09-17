@@ -8,8 +8,8 @@ method="${S_METHOD:-}"
 dbpath="${S_DBPATH:-database}"
 loglevel="${S_LOGLEVEL:-debug}"
 
-if [ -z "$dbpath" ]; then
-  method=""
+if [ -n "$dbpath" ]; then
+  method="file://$dbpath"
 fi
 
 echo "Starting SurrealDB server with:"
@@ -19,6 +19,6 @@ echo "  Host: $host"
 echo "  Port: $port"
 echo "  Method: $method"
 echo "  Log level: $loglevel"
-sleep 2
+echo ""
 
-surreal start "$method" -A --username "$user" --password "$pass" --bind "$host":"$port" --log "$loglevel"
+surreal start "$method" -A --username "$user" --password "$pass" --bind "$host":"$port" --log "$loglevel" "$@"
