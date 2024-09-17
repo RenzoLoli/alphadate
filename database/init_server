@@ -1,10 +1,24 @@
 #!/bin/sh
 
-user=root
-pass=root
-port=4700
-host=127.0.0.1
-method=memory
-loglevel=debug
+user="${S_USER:-root}"
+pass="${S_PASS:-root}"
+port="${S_PORT:-4700}"
+host="${S_HOST:-127.0.0.1}"
+method="${S_METHOD:-}"
+dbpath="${S_DBPATH:-database}"
+loglevel="${S_LOGLEVEL:-debug}"
 
-surreal start $method -A --username $user --password $pass --bind "$host":"$port" --log "$loglevel"
+if [ -z "$dbpath" ]; then
+  method=""
+fi
+
+echo "Starting SurrealDB server with:"
+echo "  Username: $user"
+echo "  Password: $pass"
+echo "  Host: $host"
+echo "  Port: $port"
+echo "  Method: $method"
+echo "  Log level: $loglevel"
+sleep 2
+
+surreal start "$method" -A --username "$user" --password "$pass" --bind "$host":"$port" --log "$loglevel"

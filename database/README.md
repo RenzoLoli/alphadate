@@ -15,19 +15,20 @@ Database initialization using _SurrealDB_
 - env properties (Not implemented yet)
 
       # authentication
-      USER=
-      PASS=
+      S_USER=
+      S_PASS=
 
       # server binding
-      PORT=
-      HOST=
+      S_PORT=
+      S_HOST=
 
       # surreal properties
-      METHOD=
-      LOGLEVEL=
+      S_METHOD=
+      S_DBPATH=
+      S_LOGLEVEL=
 
       # One liner
-      USER= PASS= PORT= HOST= METHOD= LOGLEVEL=
+      S_USER= S_PASS= S_PORT= S_HOST= S_METHOD= S_DBPATH= S_LOGLEVEL=
 
 - initialize engine
 
