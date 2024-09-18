@@ -10,11 +10,6 @@ export const routes: Routes = [
     path: '',
     children: [
       {
-        path: '',
-        redirectTo: '/',
-        pathMatch: 'full',
-      },
-      {
         path: 'login',
         title: 'Login',
         component: LoginComponent,
@@ -36,7 +31,8 @@ export const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: '/',
+        redirectTo: '',
+        pathMatch: 'full',
       },
     ],
     canActivate: [AuthGuard],

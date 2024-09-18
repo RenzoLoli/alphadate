@@ -1,4 +1,10 @@
-import { Component, Input, Signal, WritableSignal } from '@angular/core';
+import {
+  Component,
+  Input,
+  signal,
+  Signal,
+  WritableSignal,
+} from '@angular/core';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
@@ -32,9 +38,12 @@ export class FilterComponent {
   @Input({ required: true }) filterTags!: WritableSignal<Array<TagEntity>>;
   @Input({ required: true }) admin!: boolean;
   @Input({ required: true }) tags!: Signal<Array<TagEntity>>;
+  tagInput = signal('');
 
   get unselectedTags(): Array<TagEntity> {
-    return this.tags().filter((t) => !this.filterTags().includes(t));
+    return this.tags().filter(
+      (t) => !this.filterTags().includes(t) && t.name.includes(this.tagInput()),
+    );
   }
 
   get isAdmin(): boolean {
@@ -53,5 +62,10 @@ export class FilterComponent {
   onSelectFilterTag(event: MatAutocompleteSelectedEvent) {
     this.filterTags.update((tags) => [...tags, event.option.value]);
     event.option.deselect();
+  }
+
+  onChangeFilterTag(event: KeyboardEvent) {
+    const { value } = event.target as HTMLInputElement;
+    this.tagInput.set(value);
   }
 }

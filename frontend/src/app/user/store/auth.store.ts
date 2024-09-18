@@ -10,7 +10,14 @@ import {
   WritableStateSource,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, pipe, switchMap, tap, throwError } from 'rxjs';
+import {
+  catchError,
+  firstValueFrom,
+  pipe,
+  switchMap,
+  tap,
+  throwError,
+} from 'rxjs';
 import { SignInRequest } from '../models/sign-in.request';
 import { SignUpRequest } from '../models/sign-up.request';
 import {
@@ -22,6 +29,8 @@ import { AuthService } from '../services/auth.service';
 import AuthLocalStorageService from '../services/user-local-storage.service';
 import { UserService } from '../services/user.service';
 import { TokenUtils } from '../utils/token.utils';
+import { TokenService } from '../services/token.service';
+import { TokenResponse } from '../models/token.response';
 
 export interface AuthState {
   token: string | null;
@@ -82,6 +91,7 @@ export const AuthStore = signalStore(
       router = inject(Router),
       authService = inject(AuthService),
       userService = inject(UserService),
+      tokenService = inject(TokenService),
       authLocalStorageService = inject(AuthLocalStorageService),
     ) => ({
       logout: () => {
@@ -176,6 +186,42 @@ export const AuthStore = signalStore(
           }),
           catchError((error, caught) => {
             patchState(store, { loading: false, error: error.message });
+            return caught;
+          }),
+        ),
+      ),
+      renewtoken: rxMethod<void>(
+        pipe(
+          tap(() => {
+            patchState(store, { loading: true });
+          }),
+          switchMap(() => {
+            return tokenService.renew();
+          }),
+          switchMap((tokenResponse) => {
+            authLocalStorageService.setToken(tokenResponse.token);
+            patchState(store, {
+              token: tokenResponse.token,
+              loading: false,
+              authenticated: true,
+            });
+
+            const userId = TokenUtils.getUserIdFromToken(tokenResponse.token);
+            if (!userId) return throwError(() => new Error('Invalid token'));
+
+            return userService.getUserById(userId);
+          }),
+          tap((user) => {
+            authLocalStorageService.setUser(user);
+            patchState(store, {
+              loading: false,
+              user,
+            });
+          }),
+          catchError((_, caught) => {
+            clearState(store);
+            authLocalStorageService.clear();
+            router.navigate(['/login']);
             return caught;
           }),
         ),

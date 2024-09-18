@@ -29,6 +29,7 @@
           #tagInput
           matInput
           aria-label="tags input"
+          (keyup)="onChangeFilterTag($event)"
           [matChipInputFor]="chipGrid"
           [matAutocomplete]="auto"
         />
