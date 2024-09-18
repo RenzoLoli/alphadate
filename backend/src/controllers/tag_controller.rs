@@ -62,7 +62,6 @@ async fn create_tag(
     services: ContextServices,
 ) -> impl Responder {
 
-    // TODO: change all 304 modified to 500 internal server error
     let tag_command_service = &services.tag_command_service;
 
     let command = TagCreateCommand::from(tag_create_resource.into_inner());

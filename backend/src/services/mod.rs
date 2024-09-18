@@ -53,6 +53,11 @@ pub struct Services {
     pub token_command_service: Arc<TokenCommandService>,
 }
 
+pub struct BaseOfServices {
+    pub password_service: Arc<PasswordService>,
+    pub repositories: Repositories,
+}
+
 impl Services {
     pub fn new() -> Self {
         Self {
@@ -69,7 +74,10 @@ impl Services {
         }
     }
 
-    pub fn load(mut self, repositories: Repositories) -> Self {
+    pub fn load(mut self, base_of_services: BaseOfServices) -> Self {
+        let repositories = base_of_services.repositories;
+        let password_service = base_of_services.password_service;
+
         self.user_query_service =
             Arc::new(UserQueryService::new(repositories.user_repository.clone()));
 
@@ -77,6 +85,7 @@ impl Services {
             repositories.user_repository.clone(),
         ));
         self.auth_command_service = Arc::new(AuthCommandService::new(
+            password_service.clone(),
             repositories.user_repository.clone(),
         ));
 

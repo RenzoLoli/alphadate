@@ -2,7 +2,7 @@ use actix_web::{delete, get, put, web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    controllers::resources::{AuthenticatedUserResource, ErrorResource, UserUpdateResource},
+    controllers::resources::{ErrorResource, UserUpdateResource},
     domain::{GetAllUsersQuery, GetUserByIdQuery, UserDeleteCommand, UserUpdateCommand},
     services::{ContextServices, ServiceHandlerTrait},
 };
@@ -23,12 +23,7 @@ async fn get_all_users(services: ContextServices) -> impl Responder {
         Err(_) => return HttpResponse::NotFound().json(ErrorResource::new("Cannot get users")),
     };
 
-    let resources: Vec<AuthenticatedUserResource> = users
-        .into_iter()
-        .map(AuthenticatedUserResource::from)
-        .collect();
-
-    HttpResponse::Ok().json(resources)
+    HttpResponse::Ok().json(users)
 }
 
 #[get("{id}")]
@@ -44,9 +39,7 @@ async fn get_user_by_id(services: ContextServices, path: web::Path<(String,)>) -
         Err(_) => return HttpResponse::NotFound().json(ErrorResource::new("Cannot get user")),
     };
 
-    let resource = AuthenticatedUserResource::from(user);
-
-    HttpResponse::Ok().json(resource)
+    HttpResponse::Ok().json(user)
 }
 
 #[put("/{id}")]
@@ -63,13 +56,12 @@ async fn update_user(
     let user = match user_command_service.handle(command).await {
         Ok(user) => user,
         Err(err) => {
-            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()));
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()));
         }
     };
 
-    let resource = AuthenticatedUserResource::from(user);
-
-    HttpResponse::Ok().json(resource)
+    HttpResponse::Ok().json(user)
 }
 
 #[delete("/{id}")]
@@ -83,13 +75,12 @@ async fn delete_user(services: ContextServices, path: web::Path<(String,)>) -> i
     let user = match user_command_service.handle(command).await {
         Ok(user) => user,
         Err(err) => {
-            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
-    let resource = AuthenticatedUserResource::from(user);
-
-    HttpResponse::Ok().json(resource)
+    HttpResponse::Ok().json(user)
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {

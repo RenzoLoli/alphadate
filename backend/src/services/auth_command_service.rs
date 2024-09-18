@@ -11,12 +11,19 @@ type Token = String;
 
 #[derive(Default)]
 pub struct AuthCommandService {
+    password_service: Arc<PasswordService>,
     user_repository: Arc<UserRepository>,
 }
 
 impl AuthCommandService {
-    pub fn new(user_repository: Arc<UserRepository>) -> Self {
-        Self { user_repository }
+    pub fn new(
+        password_service: Arc<PasswordService>,
+        user_repository: Arc<UserRepository>,
+    ) -> Self {
+        Self {
+            password_service,
+            user_repository,
+        }
     }
 }
 
@@ -28,7 +35,10 @@ impl ServiceHandlerTrait<SignInCommand, Token> for AuthCommandService {
             return Err("User not found".to_owned());
         };
 
-        if !PasswordService::validate(&query.password, &user.password) {
+        if !self
+            .password_service
+            .validate(&query.password, &user.password)
+        {
             return Err("Incorrect Password".to_owned());
         };
 
@@ -47,7 +57,15 @@ impl ServiceHandlerTrait<SignUpCommand, EUser> for AuthCommandService {
             return Err("User is already registered".to_owned());
         }
 
-        command.password = PasswordService::encrypt(&command.password);
+        let encrypted_password = match self.password_service.encrypt(&command.password) {
+            Ok(password) => password,
+            Err(error) => {
+                log::error!("{}", error);
+                return Err("Internal Server Error".to_owned());
+            }
+        };
+
+        command.password = encrypted_password;
 
         let created = self.user_repository.create(EUser::from(command)).await;
 

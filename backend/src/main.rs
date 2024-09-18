@@ -12,10 +12,10 @@ use std::sync::Arc;
 use actix_cors::Cors;
 use actix_web::{http::header, middleware::Logger, App, HttpServer};
 use config::ServerOptions;
-use database::{config_database, ConfigConnection, Connection};
+use database::{config_database, Connection};
 use env_logger::Env;
 use repository::Repositories;
-use services::{ContextServices, EnvService, Services};
+use services::{BaseOfServices, ContextServices, EnvService, PasswordService, Services};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -24,19 +24,17 @@ async fn main() -> std::io::Result<()> {
 
     // init logger
     env_logger::init_from_env(
-        Env::default().default_filter_or(&EnvService::get_env("LOG_LEVEL").unwrap()),
+        Env::default()
+            .default_filter_or(&EnvService::get_env("LOG_LEVEL").expect("LOG_LEVEL is not set")),
     );
+
+    // server options
+    let server_opts = ServerOptions::load();
 
     // load database connection
     let connection = Arc::new(
         Connection::default()
-            .connect(&ConfigConnection {
-                username: &EnvService::get_env("DB_USER").unwrap(),
-                password: &EnvService::get_env("DB_PASS").unwrap(),
-                address: &EnvService::get_env("DB_HOST").unwrap(),
-                namespace: &EnvService::get_env("DB_NAMESPACE").unwrap(),
-                database: &EnvService::get_env("DB_DATABASE").unwrap(),
-            })
+            .connect(&server_opts.config_connection)
             .await
             .expect("cannot connect to database"),
     );
@@ -44,11 +42,14 @@ async fn main() -> std::io::Result<()> {
     // config tables
     config_database(&connection).await;
 
-    let repositories = Repositories::new(connection);
-    let services = Arc::new(Services::new().load(repositories));
-
     // init server
-    let server_opts = ServerOptions::load();
+
+    let repositories = Repositories::new(connection);
+    let base_of_services = BaseOfServices {
+        password_service: Arc::new(PasswordService::new(&server_opts.password_encryption_key)),
+        repositories,
+    };
+    let services = Arc::new(Services::new().load(base_of_services));
 
     HttpServer::new(move || {
         let origins = server_opts.origins.clone();
