@@ -1,0 +1,15 @@
+th {
+  padding-block: 1rem;
+}
+
+td {
+  padding-block: 1rem;
+}
+
+table {
+  background: #2d3543;
+}
+
+tr:hover {
+  background: #3b4252;
+}

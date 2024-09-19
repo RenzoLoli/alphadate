@@ -1,0 +1,19 @@
+<div class="header">
+  <button mat-icon-button (click)="onToggleDrawer()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a href="/">
+    <img [src]="brandImage" alt="Brand Logo" />
+  </a>
+</div>
+<div class="divider"></div>
+<mat-action-list role="list">
+  <a mat-list-item href="/date-ideas">
+    <mat-icon matListItemIcon>calendar_today</mat-icon>
+    <span matListItemTitle>Date Ideas</span>
+  </a>
+</mat-action-list>
+<div class="divider"></div>
+<div class="bottom">
+  <app-user-tag />
+</div>

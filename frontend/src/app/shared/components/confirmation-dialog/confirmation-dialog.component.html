@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Confirmation</h2>
+<mat-dialog-content>
+  <p>{{ data.message }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onExit()">No</button>
+  <button mat-button (click)="onYes()" mat-dialog-close cdkFocusInitial>
+    Yes
+  </button>
+</mat-dialog-actions>

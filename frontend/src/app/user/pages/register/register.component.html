@@ -1,0 +1,64 @@
+<div class="register-panel">
+  <mat-card appearance="outlined" class="form-container">
+    <div class="form-header">
+      <h2>Register</h2>
+      @if (reqError) {
+        <p>{{ reqError }}</p>
+      }
+    </div>
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        @if (!email?.valid) {
+          <mat-error>Invalid email</mat-error>
+        }
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+        @if (!password?.valid) {
+          <mat-error>Invalid password</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Username</mat-label>
+        @if (!username?.valid) {
+          <mat-error>Invalid email</mat-error>
+        }
+        <input matInput type="text" formControlName="username" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Couplename</mat-label>
+        @if (!couplename?.valid) {
+          <mat-error>Invalid couplename</mat-error>
+        }
+        <input matInput type="text" formControlName="couplename" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Anniversary</mat-label>
+        @if (!anniversary?.valid) {
+          <mat-error>Invalid anniversary</mat-error>
+        }
+        <input matInput type="date" formControlName="anniversary" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Photo</mat-label>
+        @if (!photo?.valid) {
+          <mat-error>Invalid Photo</mat-error>
+        }
+        <input matInput type="url" formControlName="photo" />
+      </mat-form-field>
+
+      <div class="form-actions">
+        <a mat-button href="/login">Login</a>
+        <button mat-flat-button type="submit">Submit</button>
+      </div>
+    </form>
+  </mat-card>
+</div>
