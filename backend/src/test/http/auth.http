@@ -1,0 +1,23 @@
+## Login
+POST {{BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "password": "test"
+}
+
+###
+
+## Register
+POST {{BASE_URL}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "test",
+    "email": "test@test.com",
+    "password": "test",
+    "couplename": "couple",
+    "anniversary": "2022-01-01",
+    "photo": "http://test.com"
+}

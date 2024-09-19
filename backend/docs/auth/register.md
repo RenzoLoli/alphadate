@@ -1,14 +1,24 @@
 # Register
 
+<!--toc:start-->
+
+- [Register](#register)
+  - [Description](#description)
+  - [Data constraints](#data-constraints)
+  - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
+  - [Conflict Response](#conflict-response)
+  <!--toc:end-->
+
+## Description
+
 Used to register a new User.
 
-**URL** : `/api/v1/auth/register/`
+| URL                    | Method | Auth required | Description |
+| ---------------------- | ------ | ------------- | ----------- |
+| /api/v1/auth/register/ | POST   | NO            | Register    |
 
-**Method** : `POST`
-
-**Auth required** : NO
-
-**Data constraints**
+## Data constraints
 
 ```json
 {
@@ -16,21 +26,8 @@ Used to register a new User.
   "password": "[password in plain text]",
   "email": "[valid email address]",
   "couplename": "[couplename in plain text]",
-  "anniversary": "[date in format 'dd/mm/yyyy']",
+  "anniversary": "[date in format 'yyyy/mm/dd']",
   "photo": "[valid url pic]"
-}
-```
-
-**Data example**
-
-```json
-{
-  "username": "user123",
-  "password": "P4ssw0rd",
-  "email": "usermail@domain.com",
-  "couplename": "couple123",
-  "anniversary": "17/04/1999",
-  "photo": "http://www.freepic.com/love.png"
 }
 ```
 

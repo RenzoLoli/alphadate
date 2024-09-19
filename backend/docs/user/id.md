@@ -1,48 +1,39 @@
 # Get User By Id
 
-Used to collect first user matched by id.
+<!--toc:start-->
 
-**URL** : `/api/v1/auth/user?id={id}`
+- [Get User By Id](#get-user-by-id)
+  - [Description](#description)
+  - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
+  - [Unauthorized Response](#unauthorized-response)
+  - [Not Found Response](#not-found-response)
+  <!--toc:end-->
 
-**Method** : `GET`
+## Description
 
-**Auth required** : YES
+| URL                   | Method | Auth required | Description    |
+| --------------------- | ------ | ------------- | -------------- |
+| /api/v1/auth/user/:id | GET    | YES           | Get user by id |
 
 ## Success Response
 
 **Code** : `200 OK`
 
-**Content**
+**Content** :
 
 ```json
 {
-  "username": "[username in plain text]",
-  "password": "[password in plain text]",
-  "email": "[valid email address]",
-  "couplename": "[couplename in plain text]",
-  "anniversary": "[date in format 'dd/mm/yyyy']",
-  "photo": "[valid url pic]"
+  "username": "string",
+  "password": "string",
+  "email": "string",
+  "couplename": "string",
+  "anniversary": "string",
+  "photo": "string"
 }
 ```
 
-**Content Example**
-
-```json
-[
-  {
-    "username": "user123",
-    "password": "P4ssw0rd",
-    "email": "usermail@domain.com",
-    "couplename": "couple123",
-    "anniversary": "17/04/1999",
-    "photo": "http://www.freepic.com/love.png"
-  }
-]
-```
-
 ## Bad Request Response
-
-**Condition** : If query input is wrong.
 
 **Code** : `400 BAD REQUEST`
 
@@ -50,13 +41,23 @@ Used to collect first user matched by id.
 
 ```json
 {
-  "message": "[Cause of the error]"
+  "message": "string"
+}
+```
+
+## Unauthorized Response
+
+**Code** : `401 UNAUTHORIZED`
+
+**Content** :
+
+```json
+{
+  "message": "string"
 }
 ```
 
 ## Not Found Response
-
-**Condition** : If user is not found.
 
 **Code** : `404 NOT FOUND`
 
@@ -64,6 +65,6 @@ Used to collect first user matched by id.
 
 ```json
 {
-  "message": "[Cause of the error]"
+  "message": "string"
 }
 ```

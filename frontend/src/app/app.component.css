@@ -1,0 +1,33 @@
+.app {
+  min-width: 100dvw;
+  min-height: 100dvh;
+
+  max-width: 100dvw;
+  max-height: 100dvh;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  overflow: hidden;
+}
+
+main {
+  overflow-y: auto;
+
+  background: #384152;
+}
+
+* {
+  color: #fff;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+mat-drawer {
+  width: 15rem;
+}
+
+mat-drawer-container {
+  overflow: hidden;
+}

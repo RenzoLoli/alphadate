@@ -1,9 +1,0 @@
----
-import Layout from "@/layouts/Layout.astro";
-import authGuard from "@/guards/auth.guard";
-
-const res = authGuard(Astro.url.pathname, Astro.redirect);
-if (res) return res;
----
-
-<Layout title="Alphadate" />

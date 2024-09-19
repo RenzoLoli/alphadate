@@ -1,0 +1,41 @@
+@date_idea_id=
+
+## Get All Date Ideas
+GET {{BASE_URL}}/date-idea/all
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+## Get Date Idea By Id
+GET {{BASE_URL}}/date-idea/{{date_idea_id}}
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+## Create Date Idea
+POST {{BASE_URL}}/date-idea
+Authorization: Bearer {{AUTH_TOKEN}}
+Content-Type: application/json
+
+{
+    "idea": "Test",
+    "description": "Test",
+}
+
+###
+
+## Update Date Idea
+PUT {{BASE_URL}}/date-idea/{{date_idea_id}}
+Authorization: Bearer {{AUTH_TOKEN}}
+Content-Type: application/json
+
+{
+    "idea": "new idea",
+    "description": "this is a new idea",
+}
+
+###
+
+## Delete Date Idea
+DELETE {{BASE_URL}}/date-idea/{{date_idea_id}}
+Authorization: Bearer {{AUTH_TOKEN}}

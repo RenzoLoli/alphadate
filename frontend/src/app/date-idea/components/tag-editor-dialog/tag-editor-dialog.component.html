@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Tag Editor</h2>
+<mat-dialog-content>
+  @if (reqError()) {
+    <p class="request-error">{{ reqError() }}</p>
+  }
+  <div class="form-input">
+    <mat-form-field>
+      <mat-label>Tags</mat-label>
+      <input matInput type="text" (keyup)="onKeyUp($event)" #input />
+    </mat-form-field>
+    <button mat-icon-button (click)="onAddTag(input)" class="add-tag-button">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <mat-chip-set>
+    @for (tag of filteredTags(); track tag.id) {
+      <mat-chip-option (removed)="onRemoveTag(tag)" removable>
+        {{ tag.name }}
+        <button matChipRemove><mat-icon>cancel</mat-icon></button>
+      </mat-chip-option>
+    }
+  </mat-chip-set>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onExit()">Exit</button>
+</mat-dialog-actions>

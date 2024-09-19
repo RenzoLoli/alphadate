@@ -1,28 +1,29 @@
 # Login
 
+<!--toc:start-->
+
+- [Login](#login)
+  - [Description](#description)
+  - [Data constraints](#data-constraints)
+  - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
+  - [Not Found Response](#not-found-response)
+  <!--toc:end-->
+
+## Description
+
 Used to collect a Token for a registered User.
 
-**URL** : `/api/v1/auth/login/`
+| URL                 | Method | Auth required | Description |
+| ------------------- | ------ | ------------- | ----------- |
+| /api/v1/auth/login/ | POST   | NO            | Login       |
 
-**Method** : `POST`
-
-**Auth required** : NO
-
-**Data constraints**
+## Data constraints
 
 ```json
 {
   "email": "[valid email address]",
   "password": "[password in plain text]"
-}
-```
-
-**Data example**
-
-```json
-{
-  "username": "usermail@domain.com",
-  "password": "P4ssw0rd"
 }
 ```
 
@@ -56,7 +57,7 @@ Used to collect a Token for a registered User.
 
 ```json
 {
-  "message": "[Cause of the error]" 
+  "message": "[Cause of the error]"
 }
 ```
 
@@ -70,5 +71,6 @@ Used to collect a Token for a registered User.
 
 ```json
 {
-  "message": "[Cause of the error]" 
+  "message": "[Cause of the error]"
 }
+```

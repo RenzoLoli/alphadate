@@ -1,0 +1,23 @@
+<button [matMenuTriggerFor]="menu">
+  <mat-card class="user-tag">
+    <mat-card-header>
+      <img mat-card-avatar [src]="photo" alt="Avatar" />
+    </mat-card-header>
+    @if (!minimal) {
+      <mat-card-title>
+        <p>{{ "@" }}{{ alias }}</p>
+      </mat-card-title>
+    }
+  </mat-card>
+</button>
+<mat-menu #menu="matMenu" xPosition="after">
+  @if (alias) {
+    <div class="user-info">
+      <span>{{ "@" }}{{ alias || "" }}</span>
+    </div>
+  }
+  <a href="/profile" mat-menu-item><mat-icon>person</mat-icon>Profile</a>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>exit_to_app</mat-icon>Logout
+  </button>
+</mat-menu>

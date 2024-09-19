@@ -1,0 +1,28 @@
+<app-filter
+  [admin]="isAdmin"
+  [tags]="tags"
+  [filterValue]="filterValue"
+  [filterTags]="filterTags"
+></app-filter>
+@if (isAdmin) {
+  <div class="aditional-actions">
+    <button mat-raised-button (click)="onTagEditor()">
+      <mat-icon>editor</mat-icon>
+      Tag Editor
+    </button>
+    <button mat-raised-button (click)="onAddIdea()">
+      <mat-icon>add</mat-icon>
+      Add Idea
+    </button>
+  </div>
+}
+<app-ideas-table
+  [dateIdeas]="filteredDateIdeas"
+  [tags]="tags"
+  [admin]="isAdmin"
+  (removeIdeaTag)="onRemoveIdeaTag($event)"
+  (addIdeaTag)="onAddIdeaTag($event)"
+  (editIdea)="onEditIdea($event)"
+  (deleteIdea)="onDeleteIdea($event)"
+  (addIdeaAlphabet)="onAddIdeaAlphabet($event)"
+></app-ideas-table>

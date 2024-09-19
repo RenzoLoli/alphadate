@@ -1,13 +1,21 @@
-mod controllers;
-mod domain;
 mod config;
+mod controllers;
+mod database;
+mod domain;
+mod middlewares;
+mod repository;
 mod router;
 mod services;
 
-use actix_web::{middleware::Logger, App, HttpServer};
+use std::sync::Arc;
+
+use actix_cors::Cors;
+use actix_web::{http::header, middleware::Logger, App, HttpServer};
 use config::ServerOptions;
+use database::{config_database, Connection};
 use env_logger::Env;
-use services::EnvService;
+use repository::Repositories;
+use services::{BaseOfServices, ContextServices, EnvService, PasswordService, Services};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -15,12 +23,60 @@ async fn main() -> std::io::Result<()> {
     EnvService::load();
 
     // init logger
-    env_logger::init_from_env(Env::default().default_filter_or("info"));
+    env_logger::init_from_env(
+        Env::default()
+            .default_filter_or(&EnvService::get_env("LOG_LEVEL").expect("LOG_LEVEL is not set")),
+    );
+
+    // server options
+    let server_opts = ServerOptions::load();
+
+    // load database connection
+    let connection = Arc::new(
+        Connection::default()
+            .connect(&server_opts.config_connection)
+            .await
+            .expect("cannot connect to database"),
+    );
+
+    // config tables
+    config_database(&connection).await;
 
     // init server
-    let server_opts = ServerOptions::load();
-    HttpServer::new(|| App::new().wrap(Logger::default()).configure(router::config))
-        .bind((server_opts.host.clone(), server_opts.port))?
-        .run()
-        .await
+
+    let repositories = Repositories::new(connection);
+    let base_of_services = BaseOfServices {
+        password_service: Arc::new(PasswordService::new(&server_opts.password_encryption_key)),
+        repositories,
+    };
+    let services = Arc::new(Services::new().load(base_of_services));
+
+    HttpServer::new(move || {
+        let origins = server_opts.origins.clone();
+        App::new()
+            .app_data(ContextServices::from(services.clone()))
+            // middlewares
+            .wrap(
+                Cors::default()
+                    .allowed_origin_fn(move |origin, _| {
+                        origins
+                            .iter()
+                            .any(|allowed| origin.as_bytes().starts_with(allowed.as_bytes()))
+                    })
+                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+                    .supports_credentials()
+                    .allowed_headers(vec![
+                        header::AUTHORIZATION,
+                        header::ACCEPT,
+                        header::CONTENT_TYPE,
+                    ])
+                    .max_age(3600),
+            )
+            .wrap(Logger::default())
+            // routing
+            .configure(router::config)
+    })
+    .bind((server_opts.host.clone(), server_opts.port))?
+    .run()
+    .await
 }

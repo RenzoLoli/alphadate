@@ -1,0 +1,49 @@
+button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: grayscale(100%);
+}
+
+mat-card {
+  padding-inline: 8px;
+  padding-block: 6px;
+  gap: 2px;
+  background: #bd185c;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+mat-card-header {
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+img {
+  width: 60px;
+  height: 60px;
+  margin: 2px;
+}
+
+mat-card-title p {
+  font-size: 1rem;
+  text-align: center;
+  color: #fff;
+}
+
+menu-item {
+  padding-inline: 50px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding-inline: 50px;
+  padding-block: 10px;
+
+  color: #fff;
+  font-size: 1.1rem;
+}

@@ -9,22 +9,15 @@ struct Claims {
     exp: usize,
 }
 
-#[derive(Serialize, Deserialize)]
-struct UserId {
-    id: String,
-}
+type Token = String;
 
 pub struct TokenService;
 
 impl TokenService {
-    pub fn create_token(id: String) -> Result<String, String> {
-        let user_id = UserId { id };
-
-        let secret = EnvService::get_env("SECRET_KEY").map_err(|_| "Server Error".to_owned())?;
-        let payload = serde_json::to_string(&user_id).map_err(|_| "Server Error".to_owned())?;
-
+    pub fn create_token(id: &str) -> Result<Token, String> {
+        let secret = EnvService::get_env("SECRET_KEY")?;
         let claims = Claims {
-            sub: payload,
+            sub: id.to_string(),
             //TODO: improve maximum expiration time
             exp: (chrono::offset::Local::now() + chrono::Duration::days(1)).timestamp() as usize,
         };
@@ -33,20 +26,54 @@ impl TokenService {
             &claims,
             &EncodingKey::from_secret(secret.as_str().as_ref()),
         )
-        .map_err(|err| err.to_string())?;
+        .map_err(|err| {
+            log::error!("Invalid Token -> {}", err.to_string());
+            "Invalid Token".to_owned()
+        })?;
 
         Ok(token)
     }
 
-    pub fn validate_token(token: String) -> Result<(), String> {
-        let secret = EnvService::get_env("SECRET_KEY").map_err(|_| "Server Error".to_owned())?;
+    pub fn validate_token(token: Token) -> Result<(), String> {
+        let secret = EnvService::get_env("SECRET_KEY")?;
         decode::<Claims>(
             &token,
             &DecodingKey::from_secret(secret.as_str().as_ref()),
             &Validation::default(),
         )
-        .map_err(|err| err.to_string())?;
+        .map_err(|err| {
+            log::error!("Invalid Token -> {}", err.to_string());
+            "Invalid Token".to_owned()
+        })?;
 
         Ok(())
+    }
+
+    pub fn renew_token(token: Token) -> Result<Token, String> {
+        let token = EnvService::get_env("SECRET_KEY").and_then(|secret| {
+            decode::<Claims>(
+                &token,
+                &DecodingKey::from_secret(secret.as_str().as_ref()),
+                &Validation::default(),
+            )
+            .and_then(|data| {
+                let claims = Claims {
+                    sub: data.claims.sub,
+                    exp: (chrono::offset::Local::now() + chrono::Duration::days(1)).timestamp()
+                        as usize,
+                };
+                encode::<Claims>(
+                    &Header::default(),
+                    &claims,
+                    &EncodingKey::from_secret(secret.as_str().as_ref()),
+                )
+            })
+            .map_err(|err| {
+                log::error!("Invalid Token -> {}", err.to_string());
+                "Invalid Token".to_owned()
+            })
+        })?;
+
+        Ok(token)
     }
 }
