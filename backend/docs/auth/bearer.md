@@ -1,5 +1,15 @@
 # Bearer
 
+<!--toc:start-->
+
+- [Bearer](#bearer)
+  - [Description](#description)
+  - [Header Constraits](#header-constraits)
+  - [Header Examples](#header-examples)
+  <!--toc:end-->
+
+## Description
+
 Authorization mode with JWT and "Authorization" header
 
 ## Header Constraits

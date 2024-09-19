@@ -1,43 +1,58 @@
 # All Users
 
-Used to collect all users on memory.
+<!--toc:start-->
+- [All Users](#all-users)
+  - [Description](#description)
+  - [Success Response](#success-response)
+  - [Unauthorized Response](#unauthorized-response)
+  - [Not Found success](#not-found-success)
+<!--toc:end-->
 
-**URL** : `/api/v1/auth/users/`
+## Description
 
-**Method** : `GET`
-
-**Auth required** : YES
+| URL                 | Method | Auth required | Description   |
+| ------------------- | ------ | ------------- | ------------- |
+| /api/v1/auth/users/ | GET    | YES           | Get all users |
 
 ## Success Response
 
 **Code** : `200 OK`
 
-**Content**
+**Content** :
 
 ```json
 [
   {
-    "username": "[username in plain text]",
-    "password": "[password in plain text]",
-    "email": "[valid email address]",
-    "couplename": "[couplename in plain text]",
-  "anniversary": "[date in format 'yyyy/mm/dd']",
-    "photo": "[valid url pic]"
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "couplename": "string",
+    "anniversary": "string",
+    "photo": "string"
   }
 ]
 ```
 
-**Content Example**
+## Unauthorized Response
+
+**Code** : `401 UNAUTHORIZED`
+
+**Content** :
 
 ```json
-[
-  {
-    "username": "user123",
-    "password": "P4ssw0rd",
-    "email": "usermail@domain.com",
-    "couplename": "couple123",
-    "anniversary": "17/04/1999",
-    "photo": "http://www.freepic.com/love.png"
-  }
-]
+{
+  "message": "string"
+}
+```
+
+## Not Found success
+
+**Code** : `404 NOT FOUND`
+
+**Content** :
+
+```json
+{
+  "message": "string"
+}
 ```

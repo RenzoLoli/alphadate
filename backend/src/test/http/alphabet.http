@@ -1,0 +1,41 @@
+@alphabet_id=
+@user_id=
+
+## Get All Alphabets
+GET {{BASE_URL}}/alphabet/all/{{user_id}}
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+## Get Alphabet By Id
+GET {{BASE_URL}}/alphabet/{{alphabet_id}}
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+## Create Alphabet
+POST {{BASE_URL}}/alphabet
+Authorization: Bearer {{AUTH_TOKEN}}
+Content-Type: application/json
+
+{
+    "title": "Test",
+    "user_id": {{user_id}},
+}
+
+###
+
+## Update Alphabet
+PUT {{BASE_URL}}/alphabet/{{alphabet_id}}
+Authorization: Bearer {{AUTH_TOKEN}}
+Content-Type: application/json
+
+{
+    "title": "new name",
+}
+
+###
+
+## Delete Alphabet
+DELETE {{BASE_URL}}/alphabet/{{alphabet_id}}
+Authorization: Bearer {{AUTH_TOKEN}}

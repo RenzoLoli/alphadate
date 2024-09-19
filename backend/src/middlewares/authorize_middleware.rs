@@ -10,7 +10,7 @@ use actix_web::{
     Error, HttpResponse,
 };
 
-use crate::{domain::ErrorResponse, services::TokenService};
+use crate::{controllers::resources::ErrorResource, services::TokenService};
 
 type LocalBoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + 'a>>;
 
@@ -54,22 +54,17 @@ where
             .and_then(|header| header.to_str().ok())
             .filter(|auth_str| auth_str.starts_with("Bearer "))
             .map(|auth_str| &auth_str["Bearer ".len()..])
-            .and_then(|token| {
-                TokenService::validate_token(token.to_string()).ok()
-            });
+            .and_then(|token| TokenService::validate_token(token.to_string()).ok());
 
         if token_result.is_none() {
             return Box::pin(async move {
-                let json = HttpResponse::Unauthorized()
-                    .json(ErrorResponse::new("Needed Authentication".to_owned()));
+                let json =
+                    HttpResponse::Unauthorized().json(ErrorResource::new("Needed Authentication"));
                 Ok(req.into_response(json))
             });
         }
 
         let fut = self.service.call(req);
-        Box::pin(async move {
-            let res = fut.await?;
-            Ok(res)
-        })
+        Box::pin(fut)
     }
 }

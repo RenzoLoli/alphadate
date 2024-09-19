@@ -1,42 +1,44 @@
 # Renew token
 
-Used to renew requested tokens.
+<!--toc:start-->
 
-**URL** : `/api/v1/token/renew`
+- [Renew token](#renew-token)
+  - [Description](#description)
+  - [Success Response](#success-response)
+  - [Unauthorized Response](#unauthorized-response)
+  <!--toc:end-->
 
-**Method** : `POST`
+## Description
 
-**Auth required** : YES
+| URL                 | Method | Auth required | Description |
+| ------------------- | ------ | ------------- | ----------- |
+| /api/v1/auth/renew/ | POST   | YES           | Renew token |
 
 ## Success Response
 
 **Code** : `200 OK`
 
-**Content**
+**Content** :
 
 ```json
 {
-  "token": "[token generated]"
+  "token": "string"
 }
 ```
 
-## Bad Request Response
+## Unauthorized Response
 
-**Condition** : bad token request.
-
-**Code** : `400 BAD REQUEST`
+**Code** : `401 UNAUTHORIZED`
 
 **Content** :
 
 ```json
 {
-  "message": "[Cause of the error]"
+  "message": "string"
 }
 ```
 
-## Not Modified
-
-**Condition** : Some server error or token is invalid.
+## Not Modified Response
 
 **Code** : `304 NOT MODIFIED`
 
@@ -44,6 +46,6 @@ Used to renew requested tokens.
 
 ```json
 {
-  "message": "Cannot renew token"
+  "message": "string"
 }
 ```

@@ -1,0 +1,30 @@
+@tag_id=
+
+###
+
+## Get All Tags
+GET {{BASE_URL}}/tag/all
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+## Get Tag By Id
+GET {{BASE_URL}}/tag/{{tagId}}
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+## Update Tag
+PUT {{BASE_URL}}/tag/{{tagId}}
+Authorization: Bearer {{AUTH_TOKEN}}
+Content-Type: application/json
+
+{
+    "name": "new-tagname",
+}
+
+###
+
+## Delete Tag
+DELETE {{BASE_URL}}/tag/{{tagId}}
+Authorization: Bearer {{AUTH_TOKEN}}
