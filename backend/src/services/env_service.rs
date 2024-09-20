@@ -10,6 +10,7 @@ impl EnvService {
 
     pub fn get_env(var: &str) -> Result<String, String> {
         _get_env(var)
+            .inspect(|val| log::info!("Getting env ${var}: {val}"))
             .inspect_err(|err| log::error!("{}", err.to_string()))
             .map_err(|_| format!("Cannot get ${var}"))
     }
