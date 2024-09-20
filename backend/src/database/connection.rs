@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use serde::{Deserialize, Serialize};
 use surrealdb::{
     engine::remote::ws::{Client, Ws},
@@ -12,6 +14,22 @@ pub struct ConfigConnection {
     pub address: String,
     pub namespace: String,
     pub database: String,
+}
+
+impl Display for ConfigConnection {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "ConfigConnection {{\n
+        \tusername: \"{}\",\n
+        \tpassword: \"{}\",\n
+        \taddress: \"{}\",\n
+        \tnamespace: \"{}\",\n
+        \tdatabase: \"{}\",\n
+        }}",
+            self.username, self.password, self.address, self.namespace, self.database
+        )
+    }
 }
 
 #[derive(Clone)]
@@ -35,6 +53,7 @@ impl Connection {
 
 impl Connection {
     pub async fn connect(&self, config_connection: &ConfigConnection) -> Result<Self, String> {
+        log::info!("Connecting to database...");
         self.db
             .connect::<Ws>(config_connection.address.as_str())
             .await
