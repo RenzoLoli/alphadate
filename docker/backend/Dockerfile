@@ -1,0 +1,27 @@
+FROM rust:1.78.0
+
+WORKDIR /usr/src/alphadate
+COPY ../../backend/ .
+# delete file
+RUN rm -rf .env
+
+ENV SECRET_KEY=ZOREN
+ENV PASSWORD_ENCRYPTION_KEY=4WOLu6iFbO4XIXLTPwst1cFYEwGQ7vRUGXoOSxBWFuM=
+ENV PORT=3000
+ENV HOST=0.0.0.0
+
+ENV LOG_LEVEL=Debug
+
+ENV DB_USER=root
+ENV DB_PASS=root
+ENV DB_HOST=127.0.0.1:4700
+ENV DB_NAMESPACE=alphadate
+ENV DB_DATABASE=resources
+
+ENV CORS_ORIGINS=http://127.0.0.1:4200,
+
+EXPOSE $PORT
+
+RUN cargo install --path .
+
+CMD ["backend"]

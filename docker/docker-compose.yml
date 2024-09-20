@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+  database:
+    container_name: database
+    build:
+      context: ../
+      dockerfile: docker/database/Dockerfile
+    ports:
+      - 4700:4700
+    environment:
+      - S_USER=root
+      - S_PASS=root
+      - S_PORT=4700
+      - S_HOST=127.0.0.1
+      - S_METHOD=
+      - S_DBPATH=/var/lib/database
+      - S_LOGLEVEL=debug
+    networks:
+      - database-net
+  backend:
+    container_name: backend
+    build:
+      context: ../
+      dockerfile: docker/backend/Dockerfile
+    environment:
+      - SECRET_KEY=ZOREN
+      - PASSWORD_ENCRYPTION_KEY=4WOLu6iFbO4XIXLTPwst1cFYEwGQ7vRUGXoOSxBWFuM=
+      - LOG_LEVEL=Debug
+      - DB_USER=root
+      - DB_PASS=root
+      - DB_HOST=database-net:4700
+      - DB_NAMESPACE=alphadate
+      - DB_DATABASE=resources
+      - CORS_ORIGINS=http://frontend-net:4200,
+    ports:
+      - 3000:3000
+    networks:
+      - backend-net
+  frontend:
+    container_name: frontend
+    build:
+      context: ../
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - 4200:4200
+    networks:
+      - backend-net
+
+networks:
+  backend-net:
+    driver: bridge
+  database-net:
+    driver: bridge
+  frontend-net:
+    driver: bridge
