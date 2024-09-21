@@ -5,18 +5,18 @@ services:
     build:
       context: ../
       dockerfile: docker/database/Dockerfile
-    ports:
-      - 4700:4700
     environment:
       - S_USER=root
       - S_PASS=root
       - S_PORT=4700
-      - S_HOST=127.0.0.1
+      - S_HOST=0.0.0.0
       - S_METHOD=
       - S_DBPATH=/var/lib/database
       - S_LOGLEVEL=debug
+    ports:
+      - 4700:4700
     networks:
-      - database-net
+      - internal-net
   backend:
     container_name: backend
     build:
@@ -28,14 +28,16 @@ services:
       - LOG_LEVEL=Debug
       - DB_USER=root
       - DB_PASS=root
-      - DB_HOST=database-net:4700
+      - DB_HOST=database:4700
       - DB_NAMESPACE=alphadate
       - DB_DATABASE=resources
-      - CORS_ORIGINS=http://frontend-net:4200,
+      - CORS_ORIGINS=http://frontend:4200,
+    depends_on:
+      - database
     ports:
       - 3000:3000
     networks:
-      - backend-net
+      - internal-net
   frontend:
     container_name: frontend
     build:
@@ -44,12 +46,8 @@ services:
     ports:
       - 4200:4200
     networks:
-      - backend-net
+      - internal-net
 
 networks:
-  backend-net:
-    driver: bridge
-  database-net:
-    driver: bridge
-  frontend-net:
+  internal-net:
     driver: bridge
