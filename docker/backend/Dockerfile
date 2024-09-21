@@ -1,4 +1,4 @@
-FROM rust:1.78.0
+FROM rust:1.80.1
 
 WORKDIR /usr/src/alphadate
 COPY ../../backend/ .
