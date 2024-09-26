@@ -1,3 +1,4 @@
+use chrono::Utc;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
@@ -24,10 +25,14 @@ impl TokenService {
     pub fn create_token(&self, id: &str) -> Result<Token, String> {
         log::debug!("Creating token for user <{}>", id);
 
+        let now = Utc::now();
+        let days = chrono::Duration::days(1);
+        let expiration = now + days;
+
         let claims = Claims {
             sub: id.to_string(),
             //TODO: improve maximum expiration time
-            exp: (chrono::offset::Local::now() + chrono::Duration::days(1)).timestamp() as usize,
+            exp: expiration.timestamp_millis() as usize,
         };
 
         let token = encode::<Claims>(
