@@ -7,7 +7,7 @@ use surrealdb::{
     Surreal,
 };
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct ConfigConnection {
     pub username: String,
     pub password: String,
@@ -31,8 +31,7 @@ impl Display for ConfigConnection {
         )
     }
 }
-
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Connection {
     db: Surreal<Client>,
 }
@@ -53,7 +52,7 @@ impl Connection {
 
 impl Connection {
     pub async fn connect(&self, config_connection: &ConfigConnection) -> Result<Self, String> {
-        log::info!("Connecting to database...");
+        log::info!("Connecting to database");
         self.db
             .connect::<Ws>(config_connection.address.as_str())
             .await
@@ -64,17 +63,20 @@ impl Connection {
             password: config_connection.password.as_str(),
         };
 
+        log::debug!("Authenticating");
         self.db
             .signin(credentials)
             .await
             .map_err(|err| err.to_string())?;
 
+        log::debug!("Selecting database");
         self.db
             .use_ns(config_connection.namespace.as_str())
             .use_db(config_connection.database.as_str())
             .await
             .map_err(|err| err.to_string())?;
 
+        log::info!("Connected to database!!");
         Ok(self.to_owned())
     }
 

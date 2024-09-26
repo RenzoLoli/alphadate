@@ -19,11 +19,15 @@ impl UserCommandService {
 }
 
 impl ServiceHandlerTrait<UserUpdateCommand, UserAggregate> for UserCommandService {
-    async fn handle(&self, command: UserUpdateCommand) -> Result<UserAggregate, String> {
+    async fn _handle(&self, command: UserUpdateCommand) -> Result<UserAggregate, String> {
         let mut user = match self.user_repository.find_by_id(command.id.as_str()).await {
             Some(user) => user,
             None => return Err("User not found".to_owned()),
         };
+
+        if !command.need_changes() {
+            return Err("No changes to update".to_owned());
+        }
 
         user.update(command);
 
@@ -35,7 +39,7 @@ impl ServiceHandlerTrait<UserUpdateCommand, UserAggregate> for UserCommandServic
 }
 
 impl ServiceHandlerTrait<UserDeleteCommand, UserAggregate> for UserCommandService {
-    async fn handle(&self, command: UserDeleteCommand) -> Result<UserAggregate, String> {
+    async fn _handle(&self, command: UserDeleteCommand) -> Result<UserAggregate, String> {
         let _ = match self.user_repository.find_by_id(&command.id).await {
             Some(user) => user,
             None => return Err("User not found".to_owned()),

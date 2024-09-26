@@ -17,6 +17,8 @@ async fn login(
 
     let singin_command = SignInCommand::from(signin_resource.into_inner());
 
+    log::debug!("Logging in user <{}>", singin_command.email);
+
     let token = auth_command_service.handle(singin_command).await;
 
     match token {
@@ -33,6 +35,8 @@ async fn register(
     let auth_service = &services.auth_command_service;
 
     let user_command = SignUpCommand::from(user_req.into_inner());
+
+    log::debug!("Registering user <{}>", user_command.email);
 
     let user = auth_service.handle(user_command).await;
 

@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use serde::{de::DeserializeOwned, Serialize};
 
 use crate::{
@@ -7,9 +9,11 @@ use crate::{
 
 pub trait BaseRepository<T>
 where
-    T: Clone + DeserializeOwned + Serialize + Entity,
+    T: Clone + DeserializeOwned + Serialize + Entity + Debug + 'static,
 {
     async fn query_search(&self, query: String) -> Vec<T> {
+        log::debug!("query_search for <{}>", T::get_table_name());
+
         let db = self.get_connection().db();
 
         match db
@@ -17,9 +21,12 @@ where
             .await
             .and_then(|mut res| res.take::<Vec<T>>(0))
         {
-            Ok(res) => res,
+            Ok(res) => {
+                log::debug!("{} items found", res.len());
+                res
+            }
             Err(err) => {
-                log::error!("{}", err.to_string());
+                log::debug!("Error querying database: {}", err);
                 vec![]
             }
         }
@@ -27,15 +34,27 @@ where
 
     async fn get_all(&self) -> Vec<T> {
         let table_name = T::get_table_name();
+        log::debug!("Getting all entities <{}>", table_name);
         let db = self.get_connection().db();
 
-        let entities: Vec<T> = db.select(table_name).await.ok().unwrap_or(vec![]);
+        let entities: Vec<T> = match db.select(table_name).await {
+            Ok(res) => {
+                log::debug!("result -> {:?}", res);
+                res
+            }
+            Err(err) => {
+                log::debug!("Error querying database: {}", err);
+                vec![]
+            }
+        };
 
         entities.into_iter().collect()
     }
 
     async fn find_by_ids(&self, ids: Vec<String>) -> Vec<T> {
         let table_name = T::get_table_name();
+        log::debug!("Getting entities by ids <{}>", table_name);
+        log::debug!("ids -> {:?}", ids.len());
         let parsed_ids = DbHelper::ids_to_things(table_name, ids);
 
         let query = QueryBuilder::new(table_name)
@@ -48,6 +67,8 @@ where
 
     async fn find_by_id(&self, id: &str) -> Option<T> {
         let table_name = T::get_table_name();
+        log::debug!("Getting entity by id <{}>", table_name);
+        log::debug!("id: {:?}", id);
         let parsed_id = DbHelper::id_to_thing(table_name, id);
 
         let query = QueryBuilder::new(table_name)
@@ -60,38 +81,59 @@ where
 
     async fn create(&self, entity: T) -> Option<T> {
         let table_name = T::get_table_name();
+        log::debug!("Creating entity <{}>", table_name);
+        log::debug!("entity: {:#?}", entity);
         let db = self.get_connection().db();
 
         let mut entity = entity.clone();
         entity.generate_id();
 
-        db.create(table_name)
-            .content(entity)
-            .await
-            .inspect_err(|err| log::error!("{}", err.to_string()))
-            .map(|mut res| res.pop())
-            .ok()?
+        match db.create(table_name).content(entity).await {
+            Ok(res) => {
+                log::debug!("result -> {:#?}", res);
+                res
+            }
+            Err(err) => {
+                log::debug!("Error creating entity: {}", err);
+                None
+            }
+        }
     }
     async fn update(&self, entity: T) -> Option<T> {
         let table_name = T::get_table_name();
+        log::debug!("Updating entity <{}>", table_name);
+        log::debug!("entity: {:#?}", entity);
         let db = self.get_connection().db();
 
         let id = entity.get_id().to_string();
 
-        db.update((table_name, id))
-            .merge(entity)
-            .await
-            .inspect_err(|err| log::error!("{}", err.to_string()))
-            .ok()?
+        match db.update((table_name, id)).merge(entity).await {
+            Ok(res) => {
+                log::debug!("result -> {:#?}", res);
+                res
+            }
+            Err(err) => {
+                log::debug!("Error updating entity: {}", err);
+                None
+            }
+        }
     }
     async fn delete(&self, id: &str) -> Option<T> {
         let table_name = T::get_table_name();
+        log::debug!("Deleting entity <{}>", table_name);
+        log::debug!("id: {:?}", id);
         let db = self.get_connection().db();
 
-        db.delete((table_name, id))
-            .await
-            .inspect_err(|err| log::error!("{}", err.to_string()))
-            .ok()?
+        match db.delete((table_name, id)).await {
+            Ok(res) => {
+                log::debug!("result -> {:#?}", res);
+                res
+            }
+            Err(err) => {
+                log::debug!("{}", err.to_string());
+                None
+            }
+        }
     }
 
     fn get_connection(&self) -> &Connection;

@@ -35,6 +35,7 @@ impl QueryBuilder {
         self
     }
 
+    #[allow(dead_code)]
     pub fn q_and_in(mut self, field: &str, values: Vec<String>) -> QueryBuilder {
         let query = format!("AND {} IN [{}]\n", field, values.join(","));
         self.body.push_str(query.as_str());

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::TagAggregate;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DateIdeaAggregate {
     pub id: String,
     pub idea: String,

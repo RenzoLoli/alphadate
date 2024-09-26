@@ -32,7 +32,7 @@ impl DateIdeaCommandService {
 }
 
 impl ServiceHandlerTrait<DateIdeaUpdateCommand, EDateIdea> for DateIdeaCommandService {
-    async fn handle(&self, command: DateIdeaUpdateCommand) -> Result<EDateIdea, String> {
+    async fn _handle(&self, command: DateIdeaUpdateCommand) -> Result<EDateIdea, String> {
         let mut date_idea = match self
             .date_idea_repository
             .find_by_id(command.id.as_str())
@@ -41,6 +41,10 @@ impl ServiceHandlerTrait<DateIdeaUpdateCommand, EDateIdea> for DateIdeaCommandSe
             Some(date_idea) => date_idea,
             None => return Err("Date Idea not found".to_owned()),
         };
+
+        if !command.need_changes() {
+            return Err("No changes to update".to_owned());
+        }
 
         date_idea.update(command);
 
@@ -52,7 +56,7 @@ impl ServiceHandlerTrait<DateIdeaUpdateCommand, EDateIdea> for DateIdeaCommandSe
 }
 
 impl ServiceHandlerTrait<DateIdeaDeleteCommand, EDateIdea> for DateIdeaCommandService {
-    async fn handle(&self, command: DateIdeaDeleteCommand) -> Result<EDateIdea, String> {
+    async fn _handle(&self, command: DateIdeaDeleteCommand) -> Result<EDateIdea, String> {
         let date_idea = match self.date_idea_repository.find_by_id(&command.id).await {
             Some(date_idea) => date_idea,
             None => return Err("Date Idea not found".to_owned()),
@@ -81,7 +85,7 @@ impl ServiceHandlerTrait<DateIdeaDeleteCommand, EDateIdea> for DateIdeaCommandSe
 }
 
 impl ServiceHandlerTrait<DateIdeaCreateCommand, EDateIdea> for DateIdeaCommandService {
-    async fn handle(&self, command: DateIdeaCreateCommand) -> Result<EDateIdea, String> {
+    async fn _handle(&self, command: DateIdeaCreateCommand) -> Result<EDateIdea, String> {
         let finded_idea = self.date_idea_repository.find_by_idea(&command.idea).await;
 
         if !finded_idea.is_empty() {
@@ -100,7 +104,7 @@ impl ServiceHandlerTrait<DateIdeaCreateCommand, EDateIdea> for DateIdeaCommandSe
 }
 
 impl ServiceHandlerTrait<DateIdeaAddTagCommand, EDateIdea> for DateIdeaCommandService {
-    async fn handle(&self, command: DateIdeaAddTagCommand) -> Result<EDateIdea, String> {
+    async fn _handle(&self, command: DateIdeaAddTagCommand) -> Result<EDateIdea, String> {
         let date_idea = match self
             .date_idea_repository
             .find_by_id(&command.date_idea_id)
@@ -132,7 +136,7 @@ impl ServiceHandlerTrait<DateIdeaAddTagCommand, EDateIdea> for DateIdeaCommandSe
 }
 
 impl ServiceHandlerTrait<DateIdeaRemoveTagCommand, EDateIdea> for DateIdeaCommandService {
-    async fn handle(&self, command: DateIdeaRemoveTagCommand) -> Result<EDateIdea, String> {
+    async fn _handle(&self, command: DateIdeaRemoveTagCommand) -> Result<EDateIdea, String> {
         let date_idea = match self
             .date_idea_repository
             .find_by_id(&command.date_idea_id)

@@ -29,7 +29,7 @@ impl AlphabetQueryService {
 }
 
 impl ServiceHandlerTrait<GetAllAlphabetsQuery, Vec<AlphabetAggregate>> for AlphabetQueryService {
-    async fn handle(&self, query: GetAllAlphabetsQuery) -> Result<Vec<AlphabetAggregate>, String> {
+    async fn _handle(&self, query: GetAllAlphabetsQuery) -> Result<Vec<AlphabetAggregate>, String> {
         if (self.user_repository.find_by_id(&query.user_id).await).is_none() {
             return Err("User not found".to_owned());
         };
@@ -72,7 +72,7 @@ impl ServiceHandlerTrait<GetAllAlphabetsQuery, Vec<AlphabetAggregate>> for Alpha
 }
 
 impl ServiceHandlerTrait<GetAlphabetByIdQuery, AlphabetAggregate> for AlphabetQueryService {
-    async fn handle(&self, query: GetAlphabetByIdQuery) -> Result<AlphabetAggregate, String> {
+    async fn _handle(&self, query: GetAlphabetByIdQuery) -> Result<AlphabetAggregate, String> {
         let alphabet_ent = match self.alphabet_repository.find_by_id(&query.id).await {
             Some(alphabet_ent) => alphabet_ent,
             None => return Err("alphabet not found".to_owned()),

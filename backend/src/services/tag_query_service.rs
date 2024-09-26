@@ -19,13 +19,13 @@ impl TagQueryService {
 }
 
 impl ServiceHandlerTrait<GetAllTagsQuery, Vec<ETag>> for TagQueryService {
-    async fn handle(&self, _query: GetAllTagsQuery) -> Result<Vec<ETag>, String> {
+    async fn _handle(&self, _query: GetAllTagsQuery) -> Result<Vec<ETag>, String> {
         Ok(self.tag_repository.get_all().await)
     }
 }
 
 impl ServiceHandlerTrait<GetTagByIdQuery, ETag> for TagQueryService {
-    async fn handle(&self, query: GetTagByIdQuery) -> Result<ETag, String> {
+    async fn _handle(&self, query: GetTagByIdQuery) -> Result<ETag, String> {
         let finded = self.tag_repository.find_by_id(&query.id).await;
 
         match finded {

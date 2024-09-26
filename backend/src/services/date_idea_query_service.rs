@@ -29,7 +29,10 @@ impl DateIdeaQueryService {
 }
 
 impl ServiceHandlerTrait<GetAllDateIdeasQuery, Vec<DateIdeaAggregate>> for DateIdeaQueryService {
-    async fn handle(&self, _query: GetAllDateIdeasQuery) -> Result<Vec<DateIdeaAggregate>, String> {
+    async fn _handle(
+        &self,
+        _query: GetAllDateIdeasQuery,
+    ) -> Result<Vec<DateIdeaAggregate>, String> {
         let date_ideas = self.date_idea_repository.get_all().await;
 
         if date_ideas.is_empty() {
@@ -78,7 +81,7 @@ impl ServiceHandlerTrait<GetAllDateIdeasQuery, Vec<DateIdeaAggregate>> for DateI
 }
 
 impl ServiceHandlerTrait<GetDateIdeaByIdQuery, DateIdeaAggregate> for DateIdeaQueryService {
-    async fn handle(&self, query: GetDateIdeaByIdQuery) -> Result<DateIdeaAggregate, String> {
+    async fn _handle(&self, query: GetDateIdeaByIdQuery) -> Result<DateIdeaAggregate, String> {
         let date_idea = match self.date_idea_repository.find_by_id(&query.id).await {
             Some(date_idea) => date_idea,
             None => return Err("Date Idea not found".to_owned()),

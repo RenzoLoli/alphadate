@@ -26,7 +26,7 @@ impl TagCommandService {
 }
 
 impl ServiceHandlerTrait<TagUpdateCommand, ETag> for TagCommandService {
-    async fn handle(&self, input: TagUpdateCommand) -> Result<ETag, String> {
+    async fn _handle(&self, input: TagUpdateCommand) -> Result<ETag, String> {
         let mut tag = match self.tag_repository.find_by_id(input.id.as_str()).await {
             Some(tag) => tag,
             None => return Err("Tag not found".to_owned()),
@@ -42,7 +42,7 @@ impl ServiceHandlerTrait<TagUpdateCommand, ETag> for TagCommandService {
 }
 
 impl ServiceHandlerTrait<TagDeleteCommand, ETag> for TagCommandService {
-    async fn handle(&self, input: TagDeleteCommand) -> Result<ETag, String> {
+    async fn _handle(&self, input: TagDeleteCommand) -> Result<ETag, String> {
         let _ = match self.tag_repository.find_by_id(input.id.as_str()).await {
             Some(tag) => tag.to_owned(),
             None => return Err("Tag not found".to_owned()),
@@ -74,7 +74,7 @@ impl ServiceHandlerTrait<TagDeleteCommand, ETag> for TagCommandService {
 }
 
 impl ServiceHandlerTrait<TagCreateCommand, ETag> for TagCommandService {
-    async fn handle(&self, command: TagCreateCommand) -> Result<ETag, String> {
+    async fn _handle(&self, command: TagCreateCommand) -> Result<ETag, String> {
         let finded_tag = self
             .tag_repository
             .find_by_name(command.name.as_str())

@@ -37,7 +37,7 @@ impl AlphabetCommandService {
 }
 
 impl ServiceHandlerTrait<AlphabetCreateCommand, EAlphabet> for AlphabetCommandService {
-    async fn handle(&self, command: AlphabetCreateCommand) -> Result<EAlphabet, String> {
+    async fn _handle(&self, command: AlphabetCreateCommand) -> Result<EAlphabet, String> {
         if (self.user_repository.find_by_id(&command.user_id).await).is_none() {
             return Err("User not found".to_owned());
         };
@@ -53,11 +53,15 @@ impl ServiceHandlerTrait<AlphabetCreateCommand, EAlphabet> for AlphabetCommandSe
 }
 
 impl ServiceHandlerTrait<AlphabetUpdateCommand, EAlphabet> for AlphabetCommandService {
-    async fn handle(&self, command: AlphabetUpdateCommand) -> Result<EAlphabet, String> {
+    async fn _handle(&self, command: AlphabetUpdateCommand) -> Result<EAlphabet, String> {
         let mut entity = match self.alphabet_repository.find_by_id(&command.id).await {
             Some(alphabet_ent) => alphabet_ent,
             None => return Err("alphabet not found".to_owned()),
         };
+
+        if !command.need_changes() {
+            return Err("No changes to update".to_owned());
+        }
 
         entity.update(command);
 
@@ -71,7 +75,7 @@ impl ServiceHandlerTrait<AlphabetUpdateCommand, EAlphabet> for AlphabetCommandSe
 }
 
 impl ServiceHandlerTrait<AlphabetDeleteCommand, EAlphabet> for AlphabetCommandService {
-    async fn handle(&self, command: AlphabetDeleteCommand) -> Result<EAlphabet, String> {
+    async fn _handle(&self, command: AlphabetDeleteCommand) -> Result<EAlphabet, String> {
         let entity = match self.alphabet_repository.find_by_id(&command.id).await {
             Some(alphabet_ent) => alphabet_ent,
             None => return Err("alphabet not found".to_owned()),
@@ -100,7 +104,7 @@ impl ServiceHandlerTrait<AlphabetDeleteCommand, EAlphabet> for AlphabetCommandSe
 }
 
 impl ServiceHandlerTrait<AlphabetAddDateIdeaCommand, EAlphabet> for AlphabetCommandService {
-    async fn handle(&self, mut command: AlphabetAddDateIdeaCommand) -> Result<EAlphabet, String> {
+    async fn _handle(&self, mut command: AlphabetAddDateIdeaCommand) -> Result<EAlphabet, String> {
         let alphabet_ent = match self
             .alphabet_repository
             .find_by_id(&command.alphabet_id)
@@ -144,7 +148,7 @@ impl ServiceHandlerTrait<AlphabetAddDateIdeaCommand, EAlphabet> for AlphabetComm
 }
 
 impl ServiceHandlerTrait<AlphabetRemoveDateIdeaCommand, EAlphabet> for AlphabetCommandService {
-    async fn handle(&self, command: AlphabetRemoveDateIdeaCommand) -> Result<EAlphabet, String> {
+    async fn _handle(&self, command: AlphabetRemoveDateIdeaCommand) -> Result<EAlphabet, String> {
         let alphabet_ent = match self
             .alphabet_repository
             .find_by_id(&command.alphabet_id)

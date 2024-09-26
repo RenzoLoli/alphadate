@@ -24,6 +24,8 @@ struct IdQuery {
 async fn get_all_date_ideas(services: ContextServices) -> impl Responder {
     let date_idea_query_service = &services.date_idea_query_service;
 
+    log::debug!("Getting all date ideas");
+
     let query = GetAllDateIdeasQuery {};
 
     let ideas = match date_idea_query_service.handle(query).await {
@@ -44,6 +46,8 @@ async fn get_date_idea_by_id(
     let date_idea_query_service = &services.date_idea_query_service;
     let id = path.into_inner().0;
 
+    log::debug!("Getting date idea with id: {}", id);
+
     let query = GetDateIdeaByIdQuery { id };
 
     let date_idea = match date_idea_query_service.handle(query).await {
@@ -63,9 +67,13 @@ async fn create_date_idea(
 
     let command = DateIdeaCreateCommand::from(date_idea_create_resource.into_inner());
 
+    log::debug!("Creating date idea");
+
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
+        Err(err) => {
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str()))
+        }
     };
 
     let resource = DateIdeaResource::from(date_idea);
@@ -83,11 +91,15 @@ async fn update_date_idea(
     let id = path.into_inner().0;
     let resource = date_idea_update_resource.into_inner();
 
+    log::debug!("Updating date idea with id: {}", id.clone());
+
     let command = DateIdeaUpdateCommand::from((id, resource));
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
+        Err(err) => {
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str()))
+        }
     };
 
     HttpResponse::Ok().json(date_idea)
@@ -99,11 +111,15 @@ async fn delete_date_idea(path: web::Path<(String,)>, services: ContextServices)
 
     let (id,) = path.into_inner();
 
+    log::debug!("Deleting date idea with id: {}", id.clone());
+
     let command = DateIdeaDeleteCommand { id };
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
+        Err(err) => {
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str()))
+        }
     };
 
     let resource = DateIdeaResource::from(date_idea);
@@ -119,9 +135,11 @@ async fn add_tag_to_date_idea(
 ) -> impl Responder {
     let date_idea_command_service = &services.date_idea_command_service;
     let id = path.into_inner().0;
-    let resource = (id, date_idea_add_tag_resource.into_inner());
+    let resource = (id.clone(), date_idea_add_tag_resource.into_inner());
 
     let command = DateIdeaAddTagCommand::from(resource);
+
+    log::debug!("Adding tag to date idea with id: {}", id.clone());
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
@@ -141,9 +159,11 @@ async fn remove_tag_from_date_idea(
 ) -> impl Responder {
     let date_idea_command_service = &services.date_idea_command_service;
     let id = path.into_inner().0;
-    let resource = (id, date_idea_remove_tag_resource.into_inner());
+    let resource = (id.clone(), date_idea_remove_tag_resource.into_inner());
 
     let command = DateIdeaRemoveTagCommand::from(resource);
+
+    log::debug!("Removing tag from date idea with id: {}", id.clone());
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,

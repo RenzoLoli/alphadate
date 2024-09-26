@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::domain::EUser;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UserAggregate {
     pub id: String,
     pub email: String,

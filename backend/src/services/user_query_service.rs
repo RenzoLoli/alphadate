@@ -17,14 +17,14 @@ impl UserQueryService {
 }
 
 impl ServiceHandlerTrait<GetAllUsersQuery, Vec<UserAggregate>> for UserQueryService {
-    async fn handle(&self, _query: GetAllUsersQuery) -> Result<Vec<UserAggregate>, String> {
+    async fn _handle(&self, _query: GetAllUsersQuery) -> Result<Vec<UserAggregate>, String> {
         let users = self.user_repository.get_all().await;
         Ok(users.into_iter().map(UserAggregate::from).collect())
     }
 }
 
 impl ServiceHandlerTrait<GetUserByIdQuery, UserAggregate> for UserQueryService {
-    async fn handle(&self, query: GetUserByIdQuery) -> Result<UserAggregate, String> {
+    async fn _handle(&self, query: GetUserByIdQuery) -> Result<UserAggregate, String> {
         let finded = self.user_repository.find_by_id(&query.id).await;
 
         match finded {
@@ -35,7 +35,7 @@ impl ServiceHandlerTrait<GetUserByIdQuery, UserAggregate> for UserQueryService {
 }
 
 impl ServiceHandlerTrait<GetUserByEmailQuery, UserAggregate> for UserQueryService {
-    async fn handle(&self, query: GetUserByEmailQuery) -> Result<UserAggregate, String> {
+    async fn _handle(&self, query: GetUserByEmailQuery) -> Result<UserAggregate, String> {
         let finded = self.user_repository.find_by_email(&query.email).await;
 
         match finded {
