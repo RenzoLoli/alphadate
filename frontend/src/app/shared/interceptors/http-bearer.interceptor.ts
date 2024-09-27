@@ -9,6 +9,11 @@ export const httpBearerInterceptor: HttpInterceptorFn = (req, next) => {
   const token = authStore.getToken();
   if (!token) return next(req);
 
+  if (TokenUtils.isExpired(token)) {
+    authStore.logout();
+    return next(req);
+  }
+
   const twoHours = 1000 * 60 * 60 * 2;
   if (TokenUtils.isExpiredIn(token, twoHours)) {
     authStore.renewtoken();
