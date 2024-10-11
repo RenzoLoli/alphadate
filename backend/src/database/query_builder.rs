@@ -23,12 +23,6 @@ impl QueryBuilder {
         self
     }
 
-    pub fn q_where_in(mut self, field: &str, values: Vec<String>) -> QueryBuilder {
-        let query = format!("WHERE {} IN [{}]\n", field, values.join(","));
-        self.body.push_str(query.as_str());
-        self
-    }
-
     pub fn q_and_eq(mut self, field: &str, value: &str) -> QueryBuilder {
         let query = format!("AND {} = {}\n", field, value);
         self.body.push_str(query.as_str());
@@ -43,7 +37,6 @@ impl QueryBuilder {
     }
 
     pub fn get_query(self) -> String {
-        log::debug!("Query: {}", self.body);
         self.body
     }
 }

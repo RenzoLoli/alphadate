@@ -9,8 +9,8 @@ pub struct ServerOptions {
     pub port: u16,
     pub host: String,
     pub secret: String,
-    pub log_level: String,
     pub password_encryption_key: String,
+    pub expiration_token_time: usize,
     pub origins: Vec<String>,
     pub config_connection: ConfigConnection,
 }
@@ -35,13 +35,16 @@ impl ServerOptions {
             EnvService::get_env("PASSWORD_ENCRYPTION_KEY").unwrap_or(String::from(""));
         log::debug!("password_encryption_key: {}", password_encryption_key);
 
+        let expiration_token_time = EnvService::get_env("EXPIRATION_TOKEN_TIME_IN_MS")
+            .unwrap_or(String::from("86400000"))
+            .parse::<usize>()
+            .unwrap();
+        log::debug!("expiration_token_time: {}", expiration_token_time);
+
         let origins: Vec<String> = EnvService::get_env("CORS_ORIGINS")
             .map(|origins| origins.split(',').map(|s| s.to_string()).collect())
             .unwrap_or_default();
         log::debug!("origins: {:?}", origins);
-
-        let log_level = EnvService::get_env("LOG_LEVEL").unwrap_or(String::from("info"));
-        log::debug!("log_level: {}", log_level);
 
         // config database variables
         let username = EnvService::get_env("DB_USER").unwrap_or(String::from("root"));
@@ -64,10 +67,10 @@ impl ServerOptions {
             port,
             host,
             password_encryption_key,
+            expiration_token_time,
             secret,
             origins,
             config_connection,
-            log_level,
         }
     }
 }

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::domain::{model::value_objects::IdObject, AlphabetCreateCommand, AlphabetUpdateCommand};
 
-use super::Entity;
+use super::{EUser, Entity};
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct EAlphabet {
@@ -30,7 +30,7 @@ impl From<AlphabetCreateCommand> for EAlphabet {
         Self {
             id: IdObject::default(),
             title: value.title,
-            user_id: IdObject::new("alphabets", &value.user_id),
+            user_id: IdObject::new(EUser::get_table_name(), &value.user_id),
         }
     }
 }

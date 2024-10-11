@@ -13,11 +13,15 @@ type Token = String;
 #[derive(Default)]
 pub struct TokenService {
     secret_key: String,
+    expiration_time: usize,
 }
 
 impl TokenService {
-    pub fn new(secret_key: String) -> Self {
-        Self { secret_key }
+    pub fn new(secret_key: String, expiration_time: usize) -> Self {
+        Self {
+            secret_key,
+            expiration_time,
+        }
     }
 }
 
@@ -26,12 +30,11 @@ impl TokenService {
         log::debug!("Creating token for user <{}>", id);
 
         let now = Utc::now();
-        let days = chrono::Duration::days(1);
-        let expiration = now + days;
+        let exp = chrono::Duration::milliseconds(self.expiration_time as i64);
+        let expiration = now + exp;
 
         let claims = Claims {
             sub: id.to_string(),
-            //TODO: improve maximum expiration time
             exp: expiration.timestamp_millis() as usize,
         };
 

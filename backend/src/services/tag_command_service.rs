@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     domain::{ETag, TagCreateCommand, TagDeleteCommand, TagUpdateCommand},
-    repository::{BaseRepository, DateIdeaTagRepository, TagRepository},
+    repository::{BaseTransactions, DateIdeaTagRepository, TagRepository},
 };
 
 use super::ServiceHandlerTrait;

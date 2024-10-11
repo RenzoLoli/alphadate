@@ -11,6 +11,7 @@ mod tag_query_service;
 mod token_command_service;
 mod token_service;
 mod user_command_service;
+mod user_date_command_service;
 mod user_query_service;
 
 use std::{fmt::Display, sync::Arc};
@@ -28,6 +29,7 @@ pub use tag_query_service::TagQueryService;
 pub use token_command_service::TokenCommandService;
 pub use token_service::TokenService;
 pub use user_command_service::UserCommandService;
+pub use user_date_command_service::UserDateCommandService;
 pub use user_query_service::UserQueryService;
 
 use crate::repository::Repositories;
@@ -49,6 +51,8 @@ pub struct Services {
 
     pub tag_query_service: Arc<TagQueryService>,
     pub tag_command_service: Arc<TagCommandService>,
+
+    pub user_date_command_service: Arc<UserDateCommandService>,
 
     pub token_command_service: Arc<TokenCommandService>,
 
@@ -83,6 +87,7 @@ impl Services {
             token_command_service: Arc::default(),
             token_util_service: Arc::default(),
             password_util_service: Arc::default(),
+            user_date_command_service: Arc::default(),
         }
     }
 
@@ -106,10 +111,14 @@ impl Services {
             repositories.user_repository.clone(),
         ));
 
-        self.alphabet_query_service = Arc::new(AlphabetQueryService::new(
+        self.user_date_command_service = Arc::new(UserDateCommandService::new(
             repositories.alphabet_repository.clone(),
             repositories.user_date_repository.clone(),
-            repositories.user_repository.clone(),
+        ));
+
+        self.alphabet_query_service = Arc::new(AlphabetQueryService::new(
+            repositories.alphabet_repository.clone(),
+            repositories.alphabet_ref_repository.clone(),
         ));
         self.alphabet_command_service = Arc::new(AlphabetCommandService::new(
             repositories.alphabet_repository.clone(),
@@ -122,11 +131,10 @@ impl Services {
             repositories.date_idea_repository.clone(),
             repositories.date_idea_tag_repository.clone(),
             repositories.tag_repository.clone(),
+            repositories.user_date_repository.clone(),
         ));
         self.date_idea_query_service = Arc::new(DateIdeaQueryService::new(
-            repositories.date_idea_repository.clone(),
-            repositories.date_idea_tag_repository.clone(),
-            repositories.tag_repository.clone(),
+            repositories.date_idea_tag_ref_repository.clone(),
         ));
         self.tag_query_service =
             Arc::new(TagQueryService::new(repositories.tag_repository.clone()));

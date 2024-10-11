@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::domain::{model::value_objects::IdObject, DateIdeaAddTagCommand};
+use crate::domain::{DateIdeaAddTagCommand, IdObject};
 
-use super::Entity;
+use super::{EDateIdea, ETag, Entity};
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct EDateIdeaTag {
@@ -27,10 +27,8 @@ impl Entity for EDateIdeaTag {
 
 impl From<DateIdeaAddTagCommand> for EDateIdeaTag {
     fn from(value: DateIdeaAddTagCommand) -> Self {
-        let table_name = EDateIdeaTag::get_table_name();
-
-        let date_idea_id = IdObject::new(table_name, &value.date_idea_id);
-        let tag_id = IdObject::new(table_name, &value.tag_id);
+        let date_idea_id = IdObject::new(EDateIdea::get_table_name(), &value.date_idea_id);
+        let tag_id = IdObject::new(ETag::get_table_name(), &value.tag_id);
 
         Self {
             id: Default::default(),

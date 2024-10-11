@@ -7,12 +7,14 @@ use crate::{
     domain::Entity,
 };
 
-pub trait BaseRepository<T>
+pub trait BaseQuerySearch<T>: BaseRepository<T>
 where
     T: Clone + DeserializeOwned + Serialize + Entity + Debug + 'static,
 {
     async fn query_search(&self, query: String) -> Vec<T> {
         log::debug!("query_search for <{}>", T::get_table_name());
+
+        log::debug!("QUERY -> {:#}", query);
 
         let db = self.get_connection().db();
 
@@ -31,7 +33,12 @@ where
             }
         }
     }
+}
 
+pub trait BaseTransactions<T>: BaseQuerySearch<T>
+where
+    T: Clone + DeserializeOwned + Serialize + Entity + Debug + 'static,
+{
     async fn get_all(&self) -> Vec<T> {
         let table_name = T::get_table_name();
         log::debug!("Getting all entities <{}>", table_name);
@@ -49,20 +56,6 @@ where
         };
 
         entities.into_iter().collect()
-    }
-
-    async fn find_by_ids(&self, ids: Vec<String>) -> Vec<T> {
-        let table_name = T::get_table_name();
-        log::debug!("Getting entities by ids <{}>", table_name);
-        log::debug!("ids -> {:?}", ids.len());
-        let parsed_ids = DbHelper::ids_to_things(table_name, ids);
-
-        let query = QueryBuilder::new(table_name)
-            .q_select()
-            .q_where_in("id", parsed_ids)
-            .get_query();
-
-        self.query_search(query).await
     }
 
     async fn find_by_id(&self, id: &str) -> Option<T> {
@@ -135,6 +128,11 @@ where
             }
         }
     }
+}
 
+pub trait BaseRepository<T>
+where
+    T: Clone + DeserializeOwned + Serialize + Entity + Debug + 'static,
+{
     fn get_connection(&self) -> &Connection;
 }

@@ -1,6 +1,8 @@
+mod alphabet_ref_repository;
 mod alphabet_repository;
 mod base_repository;
 mod date_idea_repository;
+mod date_idea_tag_ref_repository;
 mod date_idea_tag_repository;
 mod tag_repository;
 mod user_date_repository;
@@ -8,10 +10,14 @@ mod user_repository;
 
 use std::sync::Arc;
 
+pub use base_repository::BaseQuerySearch;
 pub use base_repository::BaseRepository;
+pub use base_repository::BaseTransactions;
 
+pub use alphabet_ref_repository::AlphabetRefRepository;
 pub use alphabet_repository::AlphabetRepository;
 pub use date_idea_repository::DateIdeaRepository;
+pub use date_idea_tag_ref_repository::DateIdeaTagRefRepository;
 pub use date_idea_tag_repository::DateIdeaTagRepository;
 pub use tag_repository::TagRepository;
 pub use user_date_repository::UserDateRepository;
@@ -26,6 +32,8 @@ pub struct Repositories {
     pub date_idea_tag_repository: Arc<DateIdeaTagRepository>,
     pub user_date_repository: Arc<UserDateRepository>,
     pub alphabet_repository: Arc<AlphabetRepository>,
+    pub alphabet_ref_repository: Arc<AlphabetRefRepository>,
+    pub date_idea_tag_ref_repository: Arc<DateIdeaTagRefRepository>,
 }
 
 impl Repositories {
@@ -37,6 +45,10 @@ impl Repositories {
             date_idea_tag_repository: Arc::new(DateIdeaTagRepository::new(connection.clone())),
             user_date_repository: Arc::new(UserDateRepository::new(connection.clone())),
             alphabet_repository: Arc::new(AlphabetRepository::new(connection.clone())),
+            alphabet_ref_repository: Arc::new(AlphabetRefRepository::new(connection.clone())),
+            date_idea_tag_ref_repository: Arc::new(DateIdeaTagRefRepository::new(
+                connection.clone(),
+            )),
         }
     }
 }

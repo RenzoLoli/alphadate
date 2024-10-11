@@ -5,7 +5,10 @@ use crate::{
         DateIdeaAddTagCommand, DateIdeaCreateCommand, DateIdeaDeleteCommand,
         DateIdeaRemoveTagCommand, DateIdeaUpdateCommand, EDateIdea, EDateIdeaTag,
     },
-    repository::{BaseRepository, DateIdeaRepository, DateIdeaTagRepository, TagRepository},
+    repository::{
+        BaseTransactions, DateIdeaRepository, DateIdeaTagRepository, TagRepository,
+        UserDateRepository,
+    },
 };
 
 use super::ServiceHandlerTrait;
@@ -15,6 +18,7 @@ pub struct DateIdeaCommandService {
     tag_repository: Arc<TagRepository>,
     date_idea_repository: Arc<DateIdeaRepository>,
     date_idea_tag_repository: Arc<DateIdeaTagRepository>,
+    user_date_repository: Arc<UserDateRepository>,
 }
 
 impl DateIdeaCommandService {
@@ -22,11 +26,13 @@ impl DateIdeaCommandService {
         date_idea_repository: Arc<DateIdeaRepository>,
         date_idea_tag_repository: Arc<DateIdeaTagRepository>,
         tag_repository: Arc<TagRepository>,
+        user_date_repository: Arc<UserDateRepository>,
     ) -> Self {
         Self {
             tag_repository,
             date_idea_repository,
             date_idea_tag_repository,
+            user_date_repository,
         }
     }
 }
@@ -61,6 +67,18 @@ impl ServiceHandlerTrait<DateIdeaDeleteCommand, EDateIdea> for DateIdeaCommandSe
             Some(date_idea) => date_idea,
             None => return Err("Date Idea not found".to_owned()),
         };
+
+        let user_dates = self
+            .user_date_repository
+            .find_by_date_idea_id(&command.id)
+            .await;
+
+        for date in user_dates {
+            log::debug!("Deleting {} user_date", date.id);
+            if (self.user_date_repository.delete(&date.id.to_string()).await).is_none() {
+                log::debug!("Cannot delete {} user_date", date.id.to_string());
+            };
+        }
 
         let date_idea_tags = self.date_idea_tag_repository.get_all().await;
 

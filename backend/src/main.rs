@@ -21,14 +21,16 @@ use services::{
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // init logger
+    let log_level = EnvService::get_env("LOG_LEVEL").unwrap_or(String::from("info"));
+    log::debug!("log_level: {}", log_level);
+    env_logger::init_from_env(Env::default().default_filter_or(log_level));
+
     // load env variables
     EnvService::load();
 
     // server options
     let server_opts = ServerOptions::load();
-
-    // init logger
-    env_logger::init_from_env(Env::default().default_filter_or(server_opts.log_level));
 
     // load database connection
     let connection = Arc::new(
@@ -49,7 +51,10 @@ async fn main() -> std::io::Result<()> {
     log::info!("Creating services");
     let base_of_services = BaseOfServices {
         password_service: Arc::new(PasswordService::new(&server_opts.password_encryption_key)),
-        token_service: Arc::new(TokenService::new(server_opts.secret.clone())),
+        token_service: Arc::new(TokenService::new(
+            server_opts.secret.clone(),
+            server_opts.expiration_token_time,
+        )),
         repositories,
     };
 
@@ -71,7 +76,7 @@ async fn main() -> std::io::Result<()> {
                             .iter()
                             .any(|allowed| origin.as_bytes().starts_with(allowed.as_bytes()))
                     })
-                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"])
                     .supports_credentials()
                     .allowed_headers(vec![
                         header::AUTHORIZATION,

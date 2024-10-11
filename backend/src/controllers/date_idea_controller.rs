@@ -3,7 +3,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     controllers::resources::{
-        DateIdeaAddTagResource, DateIdeaResource, DateIdeaUpdateResource, ErrorResource,
+        DateIdeaAddTagResource, DateIdeaCompleteResource, DateIdeaResource, DateIdeaUpdateResource,
+        ErrorResource,
     },
     domain::{
         DateIdeaAddTagCommand, DateIdeaCreateCommand, DateIdeaDeleteCommand,
@@ -35,7 +36,12 @@ async fn get_all_date_ideas(services: ContextServices) -> impl Responder {
         }
     };
 
-    HttpResponse::Ok().json(ideas)
+    let resources = ideas
+        .into_iter()
+        .map(DateIdeaCompleteResource::from)
+        .collect::<Vec<DateIdeaCompleteResource>>();
+
+    HttpResponse::Ok().json(resources)
 }
 
 #[get("/{id}")]
@@ -55,7 +61,9 @@ async fn get_date_idea_by_id(
         Err(err) => return HttpResponse::NotFound().json(ErrorResource::new(err.as_str())),
     };
 
-    HttpResponse::Ok().json(date_idea)
+    let resource = DateIdeaCompleteResource::from(date_idea);
+
+    HttpResponse::Ok().json(resource)
 }
 
 #[post("")]
@@ -102,7 +110,9 @@ async fn update_date_idea(
         }
     };
 
-    HttpResponse::Ok().json(date_idea)
+    let resource = DateIdeaResource::from(date_idea);
+
+    HttpResponse::Ok().json(resource)
 }
 
 #[delete("/{id}")]

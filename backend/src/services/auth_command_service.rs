@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     domain::{EUser, Entity, SignInCommand, SignUpCommand},
-    repository::{BaseRepository, UserRepository},
+    repository::{BaseTransactions, UserRepository},
 };
 
 use super::{PasswordService, ServiceHandlerTrait, TokenService};

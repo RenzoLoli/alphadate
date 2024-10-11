@@ -10,7 +10,7 @@ where
             self._handle(input)
                 .await
                 .inspect(|_| log::debug!("Handled!"))
-                .inspect_err(|err| log::error!("Error -> {}", err))
+                .inspect_err(|err| log::debug!("Error -> {}", err))
         }
     }
 }
