@@ -4,11 +4,23 @@ import AuthGuard from './user/guards/auth.guard';
 import { LoginComponent } from './user/pages/login/login.component';
 import { ProfileComponent } from './user/pages/profile/profile.component';
 import { RegisterComponent } from './user/pages/register/register.component';
+import { HomeComponent } from './alphabet/pages/home/home.component';
+import { LogoutComponent } from './user/pages/logout/logout.component';
 
 export const routes: Routes = [
   {
     path: '',
     children: [
+      {
+        path: '',
+        title: 'Home',
+        component: HomeComponent,
+      },
+      {
+        path: 'logout',
+        title: 'logout',
+        component: LogoutComponent,
+      },
       {
         path: 'login',
         title: 'Login',

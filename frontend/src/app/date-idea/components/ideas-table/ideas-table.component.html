@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dateIdeas()">
+<table mat-table id="table" [dataSource]="dateIdeas()">
   <ng-container matColumnDef="idea">
     <th
       mat-header-cell
@@ -74,9 +74,11 @@
           <mat-icon>delete</mat-icon>
         </button>
       }
-      <button mat-icon-button (click)="onAddIdeaAlphabet(dateIdea)">
-        <mat-icon>add</mat-icon>
-      </button>
+      @if (currAlphabetId) {
+        <button mat-icon-button (click)="onAddIdeaAlphabet(dateIdea)">
+          <mat-icon>add</mat-icon>
+        </button>
+      }
     </td>
   </ng-container>
 
