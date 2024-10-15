@@ -66,10 +66,11 @@ export class DateIdeaService extends BaseService {
 
   delete(id: string): Observable<void> {
     const path = `${this.resourcePath()}/${id}`;
-    return this.http
-      .delete<void>(path, {
-        body: {},
-      })
-      .pipe(retry(2));
+    return this.http.delete<void>(path).pipe(retry(2));
+  }
+
+  randomIdea(alphabetId: string): Observable<DateIdeaEntity> {
+    const path = `${this.resourcePath()}/random/${alphabetId}`;
+    return this.http.get<DateIdeaEntity>(path).pipe(retry(2));
   }
 }

@@ -32,6 +32,8 @@ import { AlphabetBaseEntity } from '../../models/alphabet-base.entity';
 import { UserDateEntity } from '../../models/user-date.entity';
 import { AlphabetService } from '../../services/alphabet.service';
 import { AlphabetStore } from '../../store/alphabet.store';
+import { DateIdeaService } from '../../../date-idea/services/date-idea.service';
+import { RandomIdeaComponent } from '../../components/random-idea/random-idea.component';
 
 const COMPONENTS: any[] = [];
 const MATERIAL: any[] = [
@@ -61,6 +63,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   addAlphabetBaseDialog = inject(MatDialog);
   confirmDeleteAlphabetDialog = inject(MatDialog);
+  randomIdeaDialog = inject(MatDialog);
 
   alphabetTitles = signal<AlphabetBaseEntity[]>([]);
 
@@ -73,6 +76,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   alphabetService = inject(AlphabetService);
+  dateIdeaService = inject(DateIdeaService);
+
   $getAllTitles = rxMethod<void>(
     pipe(
       switchMap(() => {
@@ -222,6 +227,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
       complete: () => {
         complete.disabled = false;
       },
+    });
+  }
+
+  onRandomIdea() {
+    const alphabetId = this.alphabetStore.getCurrentAlphabetId();
+    if (!alphabetId) return;
+
+    const currAlphabet = this.alphabetStore.getCurrentAlphabet();
+    if (!currAlphabet) return;
+
+    const dialogRef =
+      this.confirmDeleteAlphabetDialog.open(RandomIdeaComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+
+      const dateIdea = result.dateIdea;
+
+      this.alphabetStore.addDateIdea(dateIdea.id).subscribe(() => {
+        window.location.href = `/?letter=${dateIdea.idea.charAt(0)}`;
+      });
     });
   }
 }
