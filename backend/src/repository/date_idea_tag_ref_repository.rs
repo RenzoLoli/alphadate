@@ -41,6 +41,25 @@ impl DateIdeaTagRefRepository {
         self.query_search(query.to_owned()).await
     }
 
+    pub async fn find_ref_not_by_letters(&self, letters: Vec<String>) -> Vec<RDateIdeaTag> {
+        let letters = DbHelper::as_db_string_array(letters);
+
+        let query = format!(
+            "SELECT *,
+            (SELECT
+                (SELECT *
+                FROM tags
+                WHERE $parent.tag_id = id) as tags
+            FROM date_idea_tags
+            WHERE $parent.id = date_idea_id).tags[0] as tags
+        FROM date_ideas
+        WHERE !{}.some(|$letter| string::starts_with(idea, $letter))",
+            letters
+        );
+
+        self.query_search(query).await
+    }
+
     pub async fn find_ref(&self, id: &str) -> Option<RDateIdeaTag> {
         let query = format!(
             "SELECT *,

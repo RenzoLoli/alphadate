@@ -135,6 +135,7 @@ impl Services {
         ));
         self.date_idea_query_service = Arc::new(DateIdeaQueryService::new(
             repositories.date_idea_tag_ref_repository.clone(),
+            repositories.user_date_repository.clone(),
         ));
         self.tag_query_service =
             Arc::new(TagQueryService::new(repositories.tag_repository.clone()));

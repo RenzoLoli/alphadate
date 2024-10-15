@@ -9,7 +9,7 @@ use crate::{
     domain::{
         DateIdeaAddTagCommand, DateIdeaCreateCommand, DateIdeaDeleteCommand,
         DateIdeaRemoveTagCommand, DateIdeaUpdateCommand, GetAllDateIdeasQuery,
-        GetDateIdeaByIdQuery,
+        GetDateIdeaByIdQuery, GetRandomDateIdeaQuery,
     },
     services::{ContextServices, ServiceHandlerTrait},
 };
@@ -42,6 +42,32 @@ async fn get_all_date_ideas(services: ContextServices) -> impl Responder {
         .collect::<Vec<DateIdeaCompleteResource>>();
 
     HttpResponse::Ok().json(resources)
+}
+
+#[get("/random/{alphabet_id}")]
+async fn get_random_date_idea(
+    path: web::Path<(String,)>,
+    services: ContextServices,
+) -> impl Responder {
+    let date_idea_query_service = &services.date_idea_query_service;
+
+    let (alphabet_id,) = path.into_inner();
+
+    log::debug!("Getting random date idea");
+
+    let query = GetRandomDateIdeaQuery { alphabet_id };
+
+    let date_idea = match date_idea_query_service.handle(query).await {
+        Ok(date_idea) => date_idea,
+        Err(err) => {
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()))
+        }
+    };
+
+    let resource = DateIdeaCompleteResource::from(date_idea);
+
+    HttpResponse::Ok().json(resource)
 }
 
 #[get("/{id}")]
@@ -192,5 +218,6 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         .service(update_date_idea)
         .service(add_tag_to_date_idea)
         .service(remove_tag_from_date_idea)
-        .service(delete_date_idea);
+        .service(delete_date_idea)
+        .service(get_random_date_idea);
 }

@@ -12,4 +12,23 @@ impl DbHelper {
             DbHelper::as_db_string(id)
         )
     }
+
+    pub fn as_db_string_array(values: Vec<String>) -> String {
+        if values.is_empty() {
+            return String::from("[]");
+        }
+
+        let mut result = String::from("[");
+
+        for value in values {
+            result.push_str(DbHelper::as_db_string(&value).as_str());
+            result.push(',');
+        }
+
+        result.pop();
+
+        result.push(']');
+
+        result
+    }
 }

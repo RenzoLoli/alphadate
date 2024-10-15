@@ -27,6 +27,19 @@ impl BaseQuerySearch<EUserDate> for UserDateRepository {}
 impl BaseTransactions<EUserDate> for UserDateRepository {}
 
 impl UserDateRepository {
+    pub async fn find_by_alphabet_id(&self, alphabet_id: &str) -> Vec<EUserDate> {
+        let table_name = EUserDate::get_table_name();
+        let query = QueryBuilder::new(table_name)
+            .q_select()
+            .q_where_eq(
+                "alphabet_id",
+                &DbHelper::id_to_thing("alphabets", alphabet_id),
+            )
+            .get_query();
+
+        self.query_search(query).await
+    }
+
     pub async fn find_by_alphabet_and_date_idea_id(
         &self,
         alphabet_id: &str,
