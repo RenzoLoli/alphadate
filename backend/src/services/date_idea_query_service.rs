@@ -43,23 +43,25 @@ impl ServiceHandlerTrait<GetDateIdeaByIdQuery, RDateIdeaTag> for DateIdeaQuerySe
 
 impl ServiceHandlerTrait<GetRandomDateIdeaQuery, RDateIdeaTag> for DateIdeaQueryService {
     async fn _handle(&self, query: GetRandomDateIdeaQuery) -> Result<RDateIdeaTag, String> {
-        let alphabet_id = query.alphabet_id;
+        let refs = if query.exclude_active {
+            let alphabet_id = query.alphabet_id;
 
-        let user_dates = self
-            .user_date_repository
-            .find_by_alphabet_id(&alphabet_id)
-            .await;
+            let user_dates = self
+                .user_date_repository
+                .find_by_alphabet_id(&alphabet_id)
+                .await;
 
-        let active_letters = user_dates
-            .iter()
-            //trim
-            .map(|user_date| user_date.letter.clone())
-            .collect::<Vec<String>>();
+            let active_letters = user_dates
+                .iter()
+                .map(|user_date| user_date.letter.clone())
+                .collect::<Vec<String>>();
 
-        let refs = self
-            .date_idea_tag_ref_repository
-            .find_ref_not_by_letters(active_letters)
-            .await;
+            self.date_idea_tag_ref_repository
+                .find_ref_not_by_letters(active_letters)
+                .await
+        } else {
+            self.date_idea_tag_ref_repository.get_refs().await
+        };
 
         if refs.is_empty() {
             return Err("No dates found".to_owned());

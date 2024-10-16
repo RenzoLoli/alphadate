@@ -44,18 +44,30 @@ async fn get_all_date_ideas(services: ContextServices) -> impl Responder {
     HttpResponse::Ok().json(resources)
 }
 
+#[derive(Deserialize)]
+struct RandomIdeaQuery {
+    #[serde(default)]
+    exclude_active: bool,
+}
+
 #[get("/random/{alphabet_id}")]
 async fn get_random_date_idea(
     path: web::Path<(String,)>,
+    params: web::Query<RandomIdeaQuery>,
     services: ContextServices,
 ) -> impl Responder {
     let date_idea_query_service = &services.date_idea_query_service;
 
     let (alphabet_id,) = path.into_inner();
 
+    let exclude_active = params.into_inner().exclude_active;
+
     log::debug!("Getting random date idea");
 
-    let query = GetRandomDateIdeaQuery { alphabet_id };
+    let query = GetRandomDateIdeaQuery {
+        alphabet_id,
+        exclude_active,
+    };
 
     let date_idea = match date_idea_query_service.handle(query).await {
         Ok(date_idea) => date_idea,

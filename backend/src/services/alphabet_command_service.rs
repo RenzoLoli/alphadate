@@ -143,15 +143,14 @@ impl ServiceHandlerTrait<AlphabetAddDateIdeaCommand, EAlphabet> for AlphabetComm
             None => return Err("Something is wrong with date idea".to_owned()),
         };
 
-        if self
+        if let Some(date) = self
             .user_date_repository
             .find_by_alphabet_id_and_letter(&command.alphabet_id, command.letter.as_str())
             .await
             .pop()
-            .is_some()
         {
-            return Err("Letter is already used".to_owned());
-        };
+            self.user_date_repository.delete(&date.id.to_string()).await;
+        }
 
         let user_date_ent = EUserDate::from(command);
 
