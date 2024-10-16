@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import {
   MatSelect,
   MatSelectChange,
@@ -23,7 +23,7 @@ import {
 } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, pipe, switchMap, tap, throwError } from 'rxjs';
+import { catchError, finalize, pipe, switchMap, tap, throwError } from 'rxjs';
 import { DateIdeaEntity } from '../../../date-idea/models/date-idea.entity';
 import { AuthStore } from '../../../user/store/auth.store';
 import { AlphabetAddFormDialogComponent } from '../../components/alphabet-add-form-dialog/alphabet-add-form-dialog.component';
@@ -184,7 +184,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   onDeleteIdeaAlphabet(dateIdea: DateIdeaEntity) {
-    this.alphabetStore.removeDateIdea(dateIdea.id);
+    this.alphabetStore
+      .removeDateIdea(dateIdea.id)
+      .pipe(
+        tap(() => {
+          window.location.href = '/';
+        }),
+      )
+      .subscribe();
   }
 
   onExportAlphabet() {
@@ -205,6 +212,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   onChangeCheckboxCompleteDate(
     userDate: UserDateEntity,
     complete: MatCheckbox,
+    checkedIcon: MatIcon,
     event: MouseEvent,
   ) {
     complete.disabled = true;
@@ -220,8 +228,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (!element) return;
         if (complete.checked) {
           element.classList.add('checked');
+          checkedIcon._elementRef.nativeElement.style.opacity = '1';
         } else {
           element.classList.remove('checked');
+          checkedIcon._elementRef.nativeElement.style.opacity = '0';
         }
       },
       complete: () => {

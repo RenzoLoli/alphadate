@@ -1,19 +1,27 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, model, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, pipe, switchMap, tap, throwError } from 'rxjs';
+import { DateIdeaRandomRequest } from '../../../date-idea/models/date-idea-random.request';
 import { DateIdeaEntity } from '../../../date-idea/models/date-idea.entity';
 import { DateIdeaService } from '../../../date-idea/services/date-idea.service';
 import { AlphabetStore } from '../../store/alphabet.store';
 
 const COMPONENTS: Array<any> = [];
-const MATERIAL: Array<any> = [MatDialogModule, MatButtonModule];
+const MATERIAL: Array<any> = [
+  MatDialogModule,
+  MatButtonModule,
+  MatCheckboxModule,
+];
+const ADITIONAL: Array<any> = [FormsModule];
 
 @Component({
   selector: 'app-random-idea',
   standalone: true,
-  imports: [COMPONENTS, MATERIAL],
+  imports: [COMPONENTS, MATERIAL, ADITIONAL],
   templateUrl: './random-idea.component.html',
   styleUrl: './random-idea.component.css',
 })
@@ -25,13 +33,21 @@ export class RandomIdeaComponent implements OnInit {
   dateIdeaService = inject(DateIdeaService);
   alphabetStore = inject(AlphabetStore);
 
+  excludeMode = model(false);
+
   $randomIdea = rxMethod<void>(
     pipe(
       switchMap(() => {
         const alphabetId = this.alphabetStore.getCurrentAlphabetId();
         if (!alphabetId) return throwError(() => new Error('Invalid alphabet'));
 
-        return this.dateIdeaService.randomIdea(alphabetId);
+        const excludeActive = this.excludeMode();
+
+        const request: DateIdeaRandomRequest = {
+          alphabetId,
+          excludeActive,
+        };
+        return this.dateIdeaService.randomIdea(request);
       }),
       tap((dateIdea) => {
         this.dateIdea.set(dateIdea);

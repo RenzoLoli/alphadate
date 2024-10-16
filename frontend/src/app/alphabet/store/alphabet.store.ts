@@ -8,15 +8,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import {
-  catchError,
-  interval,
-  of,
-  pipe,
-  switchMap,
-  tap,
-  throwError,
-} from 'rxjs';
+import { catchError, of, pipe, switchMap, tap, throwError } from 'rxjs';
 import { AlphabetAddDateIdeaRequest } from '../models/alphabet-add-date-idea.request';
 import { AlphabetRemoveDateIdeaRequest } from '../models/alphabet-remove-date-idea.request';
 import { AlphabetToggleCompleteDateRequest } from '../models/alphabet-toggle-complete-date-request';
@@ -195,14 +187,12 @@ export const AlphabetStore = signalStore(
         }),
       );
     },
-    removeDateIdea: rxMethod<string>(
-      pipe(
-        switchMap((dateIdeaId) => {
+    removeDateIdea(dateIdeaId: string) {
+      return of(null).pipe(
+        switchMap(() => {
           const alphabetId = store.getCurrentAlphabetId();
-
           if (!alphabetId)
             return throwError(() => new Error('Invalid alphabet id'));
-
           const request: AlphabetRemoveDateIdeaRequest = {
             id: alphabetId,
             date_idea_id: dateIdeaId,
@@ -211,14 +201,33 @@ export const AlphabetStore = signalStore(
         }),
         tap(() => {
           patchState(store, { error: null });
-          window.location.href = '/';
         }),
-        catchError((error, caught) => {
-          patchState(store, { error: error.message });
-          return caught;
-        }),
-      ),
-    ),
+      );
+    },
+    // removeDateIdea: rxMethod<string>(
+    //   pipe(
+    //     switchMap((dateIdeaId) => {
+    //       const alphabetId = store.getCurrentAlphabetId();
+    //
+    //       if (!alphabetId)
+    //         return throwError(() => new Error('Invalid alphabet id'));
+    //
+    //       const request: AlphabetRemoveDateIdeaRequest = {
+    //         id: alphabetId,
+    //         date_idea_id: dateIdeaId,
+    //       };
+    //       return alphabetService.removeDateIdeaTo(request);
+    //     }),
+    //     tap(() => {
+    //       patchState(store, { error: null });
+    //       window.location.href = '/';
+    //     }),
+    //     catchError((error, caught) => {
+    //       patchState(store, { error: error.message });
+    //       return caught;
+    //     }),
+    //   ),
+    // ),
     toggleCompleteDate(userDateId: string) {
       return of(userDateId).pipe(
         switchMap(() => {

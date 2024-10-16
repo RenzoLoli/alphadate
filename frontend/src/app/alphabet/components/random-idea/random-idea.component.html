@@ -16,7 +16,10 @@
     } @else {
       <p>Do you want something new?</p>
     }
-    <button mat-flat-button (click)="onSpin()">Spin!!</button>
+    <div class="actions">
+      <mat-checkbox [(ngModel)]="excludeMode">Exclude?</mat-checkbox>
+      <button mat-flat-button (click)="onSpin()">Spin!!</button>
+    </div>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions>

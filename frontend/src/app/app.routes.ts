@@ -13,7 +13,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        title: 'Home',
+        title: 'Alphadate',
         component: HomeComponent,
       },
       {

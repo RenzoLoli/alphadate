@@ -42,15 +42,19 @@
     <mat-expansion-panel [class.exist]="dateIdea" [id]="'panel-' + letter">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <button mat-icon-button>
-            {{ letter.toUpperCase() }}
-          </button>
+          {{ letter.toUpperCase() }}
         </mat-panel-title>
         @if (dateIdea) {
           <mat-panel-description>
-            <p>{{ dateIdea.description }}</p>
+            <p>{{ dateIdea.idea }}</p>
           </mat-panel-description>
         }
+        <mat-icon
+          #checkedIcon
+          [style.opacity]="date[1]?.completed ? '1' : '0'"
+          class="checked-icon"
+          >checked</mat-icon
+        >
       </mat-expansion-panel-header>
       <mat-divider [vertical]="false"></mat-divider>
       <br />
@@ -60,7 +64,12 @@
             #completeCheckbox
             [checked]="date[1].completed"
             (click)="
-              onChangeCheckboxCompleteDate(date[1], completeCheckbox, $event)
+              onChangeCheckboxCompleteDate(
+                date[1],
+                completeCheckbox,
+                checkedIcon,
+                $event
+              )
             "
           >
           </mat-checkbox>
