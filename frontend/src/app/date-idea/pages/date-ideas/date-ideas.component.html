@@ -4,12 +4,12 @@
   [filterValue]="filterValue"
   [filterTags]="filterTags"
 ></app-filter>
-@if (isAdmin) {
-  <div class="aditional-actions">
-    <button mat-raised-button (click)="onClearFilters()">
-      <mat-icon>clear</mat-icon>
-      Clear Filters
-    </button>
+<div class="aditional-actions">
+  <button mat-raised-button (click)="onClearFilters()">
+    <mat-icon>clear</mat-icon>
+    Clear Filters
+  </button>
+  @if (isAdmin) {
     <button mat-raised-button (click)="onTagEditor()">
       <mat-icon>editor</mat-icon>
       Tag Editor
@@ -18,12 +18,16 @@
       <mat-icon>add</mat-icon>
       Add Idea
     </button>
-    <button mat-raised-button (click)="onExportDateIdeas()">
-      <mat-icon>download</mat-icon>
-      Export Ideas
-    </button>
-  </div>
-}
+  }
+  <button mat-raised-button (click)="onExportDateIdeas()">
+    <mat-icon>download</mat-icon>
+    Export Ideas
+  </button>
+  <button mat-raised-button (click)="onRandomIdea()">
+    <mat-icon>shuffle</mat-icon>
+    Random Idea
+  </button>
+</div>
 <app-alphabet-letters [letterFilter]="filterLetter"></app-alphabet-letters>
 <app-ideas-table
   [dateIdeas]="filteredDateIdeas"

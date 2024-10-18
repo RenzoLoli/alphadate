@@ -6,6 +6,16 @@
   padding: 1rem;
 }
 
+@media (max-width: 600px) {
+  mat-icon {
+    opacity: 0;
+  }
+
+  button {
+    border-radius: 0.3rem;
+  }
+}
+
 .aditional-actions {
   display: flex;
   flex-direction: row;

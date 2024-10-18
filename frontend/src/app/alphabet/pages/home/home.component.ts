@@ -23,17 +23,18 @@ import {
 } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, finalize, pipe, switchMap, tap, throwError } from 'rxjs';
+import { catchError, pipe, switchMap, tap, throwError } from 'rxjs';
 import { DateIdeaEntity } from '../../../date-idea/models/date-idea.entity';
+import { DateIdeaService } from '../../../date-idea/services/date-idea.service';
 import { AuthStore } from '../../../user/store/auth.store';
 import { AlphabetAddFormDialogComponent } from '../../components/alphabet-add-form-dialog/alphabet-add-form-dialog.component';
 import { ConfirmDeleteAlphabetDialogComponent } from '../../components/confirm-delete-alphabet-dialog/confirm-delete-alphabet-dialog.component';
+import { RandomIdeaComponent } from '../../components/random-idea/random-idea.component';
 import { AlphabetBaseEntity } from '../../models/alphabet-base.entity';
 import { UserDateEntity } from '../../models/user-date.entity';
 import { AlphabetService } from '../../services/alphabet.service';
 import { AlphabetStore } from '../../store/alphabet.store';
-import { DateIdeaService } from '../../../date-idea/services/date-idea.service';
-import { RandomIdeaComponent } from '../../components/random-idea/random-idea.component';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 const COMPONENTS: any[] = [];
 const MATERIAL: any[] = [
@@ -64,6 +65,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   addAlphabetBaseDialog = inject(MatDialog);
   confirmDeleteAlphabetDialog = inject(MatDialog);
   randomIdeaDialog = inject(MatDialog);
+  confirmationDialog = inject(MatDialog);
 
   alphabetTitles = signal<AlphabetBaseEntity[]>([]);
 
@@ -184,14 +186,26 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   onDeleteIdeaAlphabet(dateIdea: DateIdeaEntity) {
-    this.alphabetStore
-      .removeDateIdea(dateIdea.id)
-      .pipe(
-        tap(() => {
-          window.location.href = '/';
-        }),
-      )
-      .subscribe();
+    const dialogRef = this.confirmationDialog.open(
+      ConfirmationDialogComponent,
+      {
+        data: {
+          message: 'Are you sure you want to delete "' + dateIdea.idea + '"?',
+        },
+      },
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.alphabetStore
+        .removeDateIdea(dateIdea.id)
+        .pipe(
+          tap(() => {
+            window.location.href = '/';
+          }),
+        )
+        .subscribe();
+    });
   }
 
   onExportAlphabet() {

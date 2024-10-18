@@ -21,6 +21,7 @@ import { DateIdeaEntity } from '../../models/date-idea.entity';
 import { TagEntity } from '../../models/tag.entity';
 import { DateIdeaService } from '../../services/date-idea.service';
 import { TagService } from '../../services/tag.service';
+import { RandomDateIdeaDialogComponent } from '../../components/random-date-idea-dialog/random-date-idea-dialog.component';
 
 const COMPONENTS: Array<any> = [
   IdeasTableComponent,
@@ -49,6 +50,7 @@ export class DateIdeasComponent implements OnInit {
   tagEditorDialog = inject(MatDialog);
   confirmationDialog = inject(MatDialog);
   confirmAddIdeaAlphabetDialog = inject(MatDialog);
+  randomIdeaDialog = inject(MatDialog);
 
   dateIdeas = signal(Array<DateIdeaEntity>());
   tags = signal(Array<TagEntity>());
@@ -235,5 +237,25 @@ export class DateIdeasComponent implements OnInit {
     this.filterValue.set('');
     this.filterTags.set([]);
     this.filterLetter.set('');
+  }
+
+  onRandomIdea() {
+    const filteredDateIdeas = this.filterDateIdeas();
+    if (!filteredDateIdeas) return;
+
+    const dialogRef = this.randomIdeaDialog.open(
+      RandomDateIdeaDialogComponent,
+      {
+        data: filteredDateIdeas,
+      },
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+
+      this.alphabetStore.addDateIdea(result.dateIdea.id).subscribe(() => {
+        window.location.href = '/?letter=' + result.dateIdea.idea.charAt(0);
+      });
+    });
   }
 }
