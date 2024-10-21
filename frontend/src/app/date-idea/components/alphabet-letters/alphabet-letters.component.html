@@ -1,0 +1,11 @@
+<mat-chip-set cdkDropListOrientation="horizontal">
+  @for (letter of letters; track letter[0]) {
+    <mat-chip
+      (click)="onClickLetter(letter[0])"
+      [class.letter-active]="letter[1]"
+      [class.letter-selected]="letterFilter() === letter[0]"
+    >
+      <p>{{ letter[0].toUpperCase() }}</p>
+    </mat-chip>
+  }
+</mat-chip-set>

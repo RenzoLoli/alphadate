@@ -2,12 +2,10 @@
   <mat-drawer #sidebar mode="over" autoFocus="false">
     <app-sidebar (toggleDrawer)="sidebar.toggle()" />
   </mat-drawer>
-  <mat-drawer-content>
-    <div class="app">
-      <app-toolbar (toggleDrawer)="sidebar.toggle()" />
-      <main>
-        <router-outlet></router-outlet>
-      </main>
-    </div>
-  </mat-drawer-content>
+  <div class="app">
+    <app-toolbar (toggleDrawer)="sidebar.toggle()" />
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </mat-drawer-container>

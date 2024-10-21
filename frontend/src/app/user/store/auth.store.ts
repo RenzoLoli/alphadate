@@ -10,14 +10,7 @@ import {
   WritableStateSource,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import {
-  catchError,
-  firstValueFrom,
-  pipe,
-  switchMap,
-  tap,
-  throwError,
-} from 'rxjs';
+import { catchError, pipe, switchMap, tap, throwError } from 'rxjs';
 import { SignInRequest } from '../models/sign-in.request';
 import { SignUpRequest } from '../models/sign-up.request';
 import {
@@ -30,7 +23,6 @@ import AuthLocalStorageService from '../services/user-local-storage.service';
 import { UserService } from '../services/user.service';
 import { TokenUtils } from '../utils/token.utils';
 import { TokenService } from '../services/token.service';
-import { TokenResponse } from '../models/token.response';
 
 export interface AuthState {
   token: string | null;
@@ -97,7 +89,6 @@ export const AuthStore = signalStore(
       logout: () => {
         clearState(store);
         authLocalStorageService.clear();
-        router.navigate(['/login']);
       },
 
       login: rxMethod<SignInRequest>(

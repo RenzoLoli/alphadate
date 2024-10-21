@@ -1,0 +1,19 @@
+mat-chip-set {
+  padding-block: 1rem;
+}
+
+mat-chip {
+  border: 1px solid transparent !important;
+}
+
+.letter-active {
+  background-color: #4caf50 !important;
+
+  p {
+    color: white !important;
+  }
+}
+
+.letter-selected {
+  border-color: gold !important;
+}

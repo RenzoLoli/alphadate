@@ -1,0 +1,117 @@
+<div class="header">
+  <div class="left-side">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Select an alphabet</mat-label>
+      <mat-select #selectHtml (selectionChange)="onSelectTitle($event)">
+        @for (title of alphabetTitles(); track title.id) {
+          <mat-option [value]="title.id"> {{ title.title }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    @if (currAlphabetId) {
+      <button
+        mat-icon-button
+        class="delete-button"
+        (click)="onDeleteAlphabet()"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    }
+  </div>
+  <div class="aditional-actions">
+    <button mat-raised-button (click)="onRandomIdea()">
+      <mat-icon>shuffle</mat-icon>
+      Random
+    </button>
+    <button mat-raised-button (click)="onAddAlphabet()">
+      <mat-icon>add</mat-icon>
+      Create
+    </button>
+    @if (currAlphabetId) {
+      <button mat-raised-button (click)="onExportAlphabet()">
+        <mat-icon>download</mat-icon>
+        Export
+      </button>
+    }
+  </div>
+</div>
+<mat-accordion>
+  @for (date of alphabetDates.entries(); track date[0]) {
+    @let letter = date[0];
+    @let dateIdea = date[1]?.date_idea;
+    <mat-expansion-panel [class.exist]="dateIdea" [id]="'panel-' + letter">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ letter.toUpperCase() }}
+        </mat-panel-title>
+        @if (dateIdea) {
+          <mat-panel-description>
+            <p>{{ dateIdea.idea }}</p>
+          </mat-panel-description>
+        }
+        <mat-icon
+          #checkedIcon
+          [style.opacity]="date[1]?.completed ? '1' : '0'"
+          class="checked-icon"
+          >checked</mat-icon
+        >
+      </mat-expansion-panel-header>
+      <mat-divider [vertical]="false"></mat-divider>
+      <br />
+      <div class="content">
+        @if (dateIdea && date[1]) {
+          <mat-checkbox
+            #completeCheckbox
+            [checked]="date[1].completed"
+            (click)="
+              onChangeCheckboxCompleteDate(
+                date[1],
+                completeCheckbox,
+                checkedIcon,
+                $event
+              )
+            "
+          >
+          </mat-checkbox>
+          <p class="description">{{ dateIdea.description }}</p>
+          <mat-chip-set cdkDropListOrientation="horizontal">
+            @for (tag of dateIdea.tags; track tag.id) {
+              <mat-chip>
+                <p>{{ tag.name }}</p>
+              </mat-chip>
+            }
+          </mat-chip-set>
+          <div class="content-actions">
+            @if (currAlphabetTitle) {
+              <button
+                mat-icon-button
+                class="delete-button"
+                (click)="onDeleteIdeaAlphabet(dateIdea)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                class="add-idea-alphabet"
+                (click)="onAddLetter(letter)"
+              >
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            }
+          </div>
+        } @else {
+          <p>{{ "No Idea" }}</p>
+          <div class="content-actions">
+            <button
+              mat-icon-button
+              class="add-idea-alphabet"
+              (click)="onAddLetter(letter)"
+            >
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    </mat-expansion-panel>
+  }
+</mat-accordion>

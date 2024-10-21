@@ -8,6 +8,10 @@
 </div>
 <div class="divider"></div>
 <mat-action-list role="list">
+  <a mat-list-item href="/">
+    <mat-icon matListItemIcon>home</mat-icon>
+    <span matListItemTitle>Alphabets</span>
+  </a>
   <a mat-list-item href="/date-ideas">
     <mat-icon matListItemIcon>calendar_today</mat-icon>
     <span matListItemTitle>Date Ideas</span>
@@ -15,5 +19,14 @@
 </mat-action-list>
 <div class="divider"></div>
 <div class="bottom">
-  <app-user-tag />
+  <mat-action-list role="list">
+    <a mat-list-item href="/profile">
+      <mat-icon matListItemIcon>person</mat-icon>
+      <span matListItemTitle>Profile</span>
+    </a>
+    <a mat-list-item href="/logout">
+      <mat-icon matListItemIcon>logout</mat-icon>
+      <span matListItemTitle>Logout</span>
+    </a>
+  </mat-action-list>
 </div>
