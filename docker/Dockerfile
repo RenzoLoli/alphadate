@@ -9,6 +9,16 @@ COPY backend/src/ src/
 
 RUN cargo build --release
 
+### build frontend dist ###
+
+FROM node:latest as frontend
+
+WORKDIR /app/frontend
+
+COPY frontend/ .
+
+RUN npm install && node run build
+
 ### base image ###
 
 FROM ubuntu:22.04
@@ -24,17 +34,6 @@ RUN apt-get update && \
   xz-utils \
   && rm -rf /var/lib/apt/lists/*
 
-# install node and npm
-
-WORKDIR /tmp
-
-RUN curl -o node-v18.20.4-linux-x64.tar.xz https://nodejs.org/dist/v18.20.4/node-v18.20.4-linux-x64.tar.xz \
-  && tar -xf node-v18.20.4-linux-x64.tar.xz \
-  && mv node-v18.20.4-linux-x64 /usr/local/node \
-  && ln -s /usr/local/node/bin/node /usr/bin/node \
-  && ln -s /usr/local/node/bin/npm /usr/bin/npm \
-  && rm node-v18.20.4-linux-x64.tar.xz
-
 # install bun and pm2
 
 WORKDIR /data
@@ -44,6 +43,14 @@ RUN sh -c "curl -fsSL https://bun.sh/install | bash -s \"bun-v1.1.29\"" \
   && bun install -g pm2@5.4.2 \
   && ln -s /root/.bun/bin/pm2 /usr/bin/pm2 \
   && mkdir /pm2
+
+# config hosting
+
+WORKDIR /app/hosting
+
+RUN apt-get install -y nginx
+
+COPY hosting/nginx.conf /etc/nginx/nginx.conf
 
 # config database
 
@@ -67,9 +74,10 @@ ENV S_LOGLEVEL=debug
 
 WORKDIR /app/frontend
 
-COPY frontend/ .
+COPY --from=frontend /app/frontend/dist .
 
-RUN bun install
+## frontend env variables
+ENV FRONTEND_API_URL=http://127.0.0.1:3000/api/v1
 
 # config backend
 
@@ -105,8 +113,7 @@ RUN chmod +x ./entry.sh \
   && chmod +x ./entry.backend.sh \
   && chmod +x ./entry.frontend.sh
 
-EXPOSE 4200
-EXPOSE 3000
+EXPOSE 80
 
 ENTRYPOINT ["./entry.sh"]
 
