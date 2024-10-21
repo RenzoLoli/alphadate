@@ -7,12 +7,12 @@ pub struct AlphabetRemoveDateIdeaResource {
     pub date_idea_id: String,
 }
 
-impl From<(String, AlphabetRemoveDateIdeaResource)> for AlphabetRemoveDateIdeaCommand {
-    fn from(value: (String, AlphabetRemoveDateIdeaResource)) -> Self {
-        let (alphabet_id, resource) = value;
+impl From<(String, String)> for AlphabetRemoveDateIdeaCommand {
+    fn from(value: (String, String)) -> Self {
+        let (alphabet_id, date_idea_id) = value;
         Self {
             alphabet_id,
-            date_idea_id: resource.date_idea_id,
+            date_idea_id,
         }
     }
 }

@@ -31,7 +31,7 @@ impl PasswordService {
         let decrypted = match self.decrypt(saved) {
             Ok(decrypted) => decrypted,
             Err(err) => {
-                log::error!("decrypt error: {}", err);
+                log::debug!("decrypt error: {}", err);
                 return false;
             }
         };

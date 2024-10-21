@@ -7,13 +7,13 @@ pub struct AlphabetAddDateIdeaResource {
     pub date_idea_id: String,
 }
 
-impl From<(String, AlphabetAddDateIdeaResource)> for AlphabetAddDateIdeaCommand {
-    fn from(value: (String, AlphabetAddDateIdeaResource)) -> Self {
-        let (alphabet_id, resource) = value;
+impl From<(String, String)> for AlphabetAddDateIdeaCommand {
+    fn from(value: (String, String)) -> Self {
+        let (alphabet_id, date_idea_id) = value;
         Self {
             alphabet_id,
-            date_idea_id: resource.date_idea_id,
-            letter: char::default(),
+            date_idea_id,
+            letter: String::new(),
         }
     }
 }

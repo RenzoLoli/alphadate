@@ -5,7 +5,7 @@ use crate::{
     domain::{ETag, Entity},
 };
 
-use super::BaseRepository;
+use super::{BaseQuerySearch, BaseRepository, BaseTransactions};
 
 #[derive(Default)]
 pub struct TagRepository {
@@ -23,6 +23,8 @@ impl BaseRepository<ETag> for TagRepository {
         &self.connection
     }
 }
+impl BaseTransactions<ETag> for TagRepository {}
+impl BaseQuerySearch<ETag> for TagRepository {}
 
 impl TagRepository {
     pub async fn find_by_name(&self, name: &str) -> Vec<ETag> {

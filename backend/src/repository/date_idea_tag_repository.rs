@@ -6,6 +6,7 @@ use crate::{
 };
 
 use super::BaseRepository;
+use super::{BaseQuerySearch, BaseTransactions};
 
 #[derive(Default)]
 pub struct DateIdeaTagRepository {
@@ -23,46 +24,35 @@ impl BaseRepository<EDateIdeaTag> for DateIdeaTagRepository {
         &self.connection
     }
 }
+impl BaseQuerySearch<EDateIdeaTag> for DateIdeaTagRepository {}
+impl BaseTransactions<EDateIdeaTag> for DateIdeaTagRepository {}
 
 impl DateIdeaTagRepository {
-    pub async fn find_by_tag_id(&self, tag_id: &str) -> Vec<EDateIdeaTag> {
-        let table_name = EDateIdeaTag::get_table_name();
-        let query = QueryBuilder::new(table_name)
-            .q_select()
-            .q_where_eq("tag_id", &DbHelper::id_to_thing(table_name, tag_id))
-            .get_query();
-
-        self.query_search(query).await
-    }
-
-    pub async fn find_by_date_idea_id(&self, date_idea_id: &str) -> Vec<EDateIdeaTag> {
-        let table_name = EDateIdeaTag::get_table_name();
-        let query = QueryBuilder::new(table_name)
-            .q_select()
-            .q_where_eq(
-                "date_idea_id",
-                &DbHelper::id_to_thing(table_name, date_idea_id),
-            )
-            .get_query();
-
-        self.query_search(query).await
-    }
-
     pub async fn find_by_date_idea_and_tag_id(
         &self,
         date_idea_id: &str,
         tag_id: &str,
     ) -> Option<EDateIdeaTag> {
-        let table_name = EDateIdeaTag::get_table_name();
-        let query = QueryBuilder::new(table_name)
+        let table = EDateIdeaTag::get_table_name();
+        let query = QueryBuilder::new(table)
             .q_select()
             .q_where_eq(
                 "date_idea_id",
-                &DbHelper::id_to_thing(table_name, date_idea_id),
+                &DbHelper::id_to_thing("date_ideas", date_idea_id),
             )
-            .q_and_eq("tag_id", &DbHelper::id_to_thing(table_name, tag_id))
+            .q_and_eq("tag_id", &DbHelper::id_to_thing("tags", tag_id))
             .get_query();
 
         self.query_search(query).await.pop()
+    }
+
+    pub async fn find_by_tag_id(&self, tag_id: &str) -> Vec<EDateIdeaTag> {
+        let table = EDateIdeaTag::get_table_name();
+        let query = QueryBuilder::new(table)
+            .q_select()
+            .q_where_eq("tag_id", &DbHelper::id_to_thing("tags", tag_id))
+            .get_query();
+
+        self.query_search(query).await
     }
 }

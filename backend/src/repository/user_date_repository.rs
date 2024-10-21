@@ -5,7 +5,7 @@ use crate::{
     domain::{EUserDate, Entity},
 };
 
-use super::BaseRepository;
+use super::{BaseQuerySearch, BaseRepository, BaseTransactions};
 
 #[derive(Default)]
 pub struct UserDateRepository {
@@ -23,6 +23,8 @@ impl BaseRepository<EUserDate> for UserDateRepository {
         &self.connection
     }
 }
+impl BaseQuerySearch<EUserDate> for UserDateRepository {}
+impl BaseTransactions<EUserDate> for UserDateRepository {}
 
 impl UserDateRepository {
     pub async fn find_by_alphabet_id(&self, alphabet_id: &str) -> Vec<EUserDate> {
@@ -31,7 +33,7 @@ impl UserDateRepository {
             .q_select()
             .q_where_eq(
                 "alphabet_id",
-                &DbHelper::id_to_thing(table_name, alphabet_id),
+                &DbHelper::id_to_thing("alphabets", alphabet_id),
             )
             .get_query();
 
@@ -48,26 +50,43 @@ impl UserDateRepository {
             .q_select()
             .q_where_eq(
                 "alphabet_id",
-                &DbHelper::id_to_thing(table_name, alphabet_id),
+                &DbHelper::id_to_thing("alphabets", alphabet_id),
             )
             .q_and_eq(
                 "date_idea_id",
-                &DbHelper::id_to_thing(table_name, date_idea_id),
+                &DbHelper::id_to_thing("date_ideas", date_idea_id),
             )
             .get_query();
 
         self.query_search(query).await.pop()
     }
 
-    pub async fn find_by_alphabet_id_and_letter(&self, letter: char) -> Vec<EUserDate> {
+    pub async fn find_by_alphabet_id_and_letter(
+        &self,
+        alphabet_id: &str,
+        letter: &str,
+    ) -> Vec<EUserDate> {
         let table_name = EUserDate::get_table_name();
         let query = QueryBuilder::new(table_name)
             .q_select()
             .q_where_eq(
                 "alphabet_id",
-                &DbHelper::id_to_thing(table_name, table_name),
+                &DbHelper::id_to_thing("alphabets", alphabet_id),
             )
-            .q_and_eq("letter", &DbHelper::as_db_string(&letter.to_string()))
+            .q_and_eq("letter", &DbHelper::as_db_string(letter))
+            .get_query();
+
+        self.query_search(query).await
+    }
+
+    pub async fn find_by_date_idea_id(&self, date_idea_id: &str) -> Vec<EUserDate> {
+        let table_name = EUserDate::get_table_name();
+        let query = QueryBuilder::new(table_name)
+            .q_select()
+            .q_where_eq(
+                "date_idea_id",
+                &DbHelper::id_to_thing("date_ideas", date_idea_id),
+            )
             .get_query();
 
         self.query_search(query).await
