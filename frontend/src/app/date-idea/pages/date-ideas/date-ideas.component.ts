@@ -4,8 +4,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
+import { AlphabetStore } from '../../../alphabet/store/alphabet.store';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { AlphabetLettersComponent } from '../../components/alphabet-letters/alphabet-letters.component';
+import { ConfirmAddIdeaAlphabetDialogComponent } from '../../components/confirm-add-idea-alphabet-dialog/confirm-add-idea-alphabet-dialog.component';
 import { FilterComponent } from '../../components/filter/filter.component';
 import { IdeaAddFormDialogComponent } from '../../components/idea-add-form-dialog/idea-add-form-dialog.component';
 import { IdeaUpdateFormDialogComponent } from '../../components/idea-update-form-dialog/idea-update-form-dialog.component';
@@ -15,9 +21,13 @@ import { DateIdeaEntity } from '../../models/date-idea.entity';
 import { TagEntity } from '../../models/tag.entity';
 import { DateIdeaService } from '../../services/date-idea.service';
 import { TagService } from '../../services/tag.service';
-import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { RandomDateIdeaDialogComponent } from '../../components/random-date-idea-dialog/random-date-idea-dialog.component';
 
-const COMPONENTS: Array<any> = [IdeasTableComponent, FilterComponent];
+const COMPONENTS: Array<any> = [
+  IdeasTableComponent,
+  FilterComponent,
+  AlphabetLettersComponent,
+];
 const MATERIAL: Array<any> = [MatButtonModule, MatIconModule, MatMenuModule];
 
 @Component({
@@ -31,16 +41,23 @@ export class DateIdeasComponent implements OnInit {
   dateIdeaService = inject(DateIdeaService);
   tagService = inject(TagService);
 
+  _snackBar = inject(MatSnackBar);
+
+  alphabetStore = inject(AlphabetStore);
+
   addIdeaDialog = inject(MatDialog);
   updateIdeaDialog = inject(MatDialog);
   tagEditorDialog = inject(MatDialog);
   confirmationDialog = inject(MatDialog);
+  confirmAddIdeaAlphabetDialog = inject(MatDialog);
+  randomIdeaDialog = inject(MatDialog);
 
   dateIdeas = signal(Array<DateIdeaEntity>());
   tags = signal(Array<TagEntity>());
 
   filterValue = signal('');
   filterTags = signal(Array<TagEntity>());
+  filterLetter = signal('');
   filteredDateIdeas = computed(() => this.filterDateIdeas());
 
   allTags$ = rxMethod<void>(
@@ -60,6 +77,17 @@ export class DateIdeasComponent implements OnInit {
     ),
   );
 
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      const letter = params['letter'];
+      if (!letter) return;
+      this.filterLetter.set(letter);
+    });
+  }
+
   ngOnInit(): void {
     this.allDateIdeas$();
     this.allTags$();
@@ -72,6 +100,7 @@ export class DateIdeasComponent implements OnInit {
   filterDateIdeas = () => {
     const filterValue = this.filterValue();
     const filterTags = this.filterTags();
+    const filterLetter = this.filterLetter();
     return this.dateIdeas().filter((idea) => {
       const isIncludedOnIdea =
         filterValue.length === 0 || idea.idea.includes(filterValue);
@@ -82,7 +111,13 @@ export class DateIdeasComponent implements OnInit {
         filterTags.every((tag) =>
           idea.tags.some((filterTag) => tag.name === filterTag.name),
         );
-      return (isIncludedOnIdea || isIncludedOnDescription) && hasTags;
+      const startWithLetter =
+        filterLetter.length === 0 || idea.idea.startsWith(filterLetter);
+      return (
+        (isIncludedOnIdea || isIncludedOnDescription) &&
+        hasTags &&
+        startWithLetter
+      );
     });
   };
 
@@ -141,7 +176,28 @@ export class DateIdeasComponent implements OnInit {
     });
   }
 
-  onAddIdeaAlphabet({ dateIdea }: { dateIdea: DateIdeaEntity }) {}
+  onAddIdeaAlphabet({ dateIdea }: { dateIdea: DateIdeaEntity }) {
+    const dialogRef = this.confirmAddIdeaAlphabetDialog.open(
+      ConfirmAddIdeaAlphabetDialogComponent,
+      {
+        data: dateIdea,
+      },
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.alphabetStore.addDateIdea(dateIdea.id).subscribe({
+        next: () => {
+          window.location.href = '/?letter=' + dateIdea.idea.charAt(0);
+        },
+        error: (err) => {
+          this._snackBar.open(err.message, 'close', {
+            duration: 3000,
+          });
+        },
+      });
+    });
+  }
 
   onAddIdea() {
     const dialogRef = this.addIdeaDialog.open(IdeaAddFormDialogComponent);
@@ -160,6 +216,46 @@ export class DateIdeasComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       this.allDateIdeas$();
       this.allTags$();
+    });
+  }
+
+  onExportDateIdeas() {
+    const dateIdeas = this.dateIdeas();
+    const blob = new Blob([JSON.stringify(dateIdeas)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'date-ideas.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    a.remove();
+  }
+
+  onClearFilters() {
+    this.filterValue.set('');
+    this.filterTags.set([]);
+    this.filterLetter.set('');
+  }
+
+  onRandomIdea() {
+    const filteredDateIdeas = this.filterDateIdeas();
+    if (!filteredDateIdeas) return;
+
+    const dialogRef = this.randomIdeaDialog.open(
+      RandomDateIdeaDialogComponent,
+      {
+        data: filteredDateIdeas,
+      },
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+
+      this.alphabetStore.addDateIdea(result.dateIdea.id).subscribe(() => {
+        window.location.href = '/?letter=' + result.dateIdea.idea.charAt(0);
+      });
     });
   }
 }

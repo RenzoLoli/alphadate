@@ -22,6 +22,8 @@ async fn get_all_tags(services: ContextServices) -> impl Responder {
 
     let query = GetAllTagsQuery {};
 
+    log::debug!("Getting all tags");
+
     let tags = match tag_service.handle(query).await {
         Ok(tags) => tags,
         Err(err) => {
@@ -42,7 +44,9 @@ async fn get_tag_by_id(
     let tag_service = &services.tag_query_service;
 
     let id = id_query.into_inner().0;
-    let query = GetTagByIdQuery { id };
+    let query = GetTagByIdQuery { id: id.clone() };
+
+    log::debug!("Getting tag by id: {}", id.clone());
 
     let tag = match tag_service.handle(query).await {
         Ok(tag) => tag,
@@ -61,15 +65,17 @@ async fn create_tag(
     tag_create_resource: web::Json<TagCreateResource>,
     services: ContextServices,
 ) -> impl Responder {
-
     let tag_command_service = &services.tag_command_service;
 
     let command = TagCreateCommand::from(tag_create_resource.into_inner());
 
+    log::debug!("Creating tag");
+
     let tag = match tag_command_service.handle(command).await {
         Ok(tag) => tag,
         Err(err) => {
-            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
@@ -87,12 +93,15 @@ async fn update_tag(
     let id = path.into_inner();
     let tag_command_service = &services.tag_command_service;
 
-    let command = TagUpdateCommand::from((id, tag_update_resource.into_inner()));
+    let command = TagUpdateCommand::from((id.clone(), tag_update_resource.into_inner()));
+
+    log::debug!("Updating tag with id: {}", id.clone());
 
     let tag = match tag_command_service.handle(command).await {
         Ok(tag) => tag,
         Err(err) => {
-            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
@@ -107,12 +116,15 @@ async fn delete_tag(path: web::Path<(String,)>, services: ContextServices) -> im
 
     let (id,) = path.into_inner();
 
-    let command = TagDeleteCommand { id };
+    let command = TagDeleteCommand { id: id.clone() };
+
+    log::debug!("Deleting tag with id: {}", id.clone());
 
     let tag = match tag_command_service.handle(command).await {
         Ok(tag) => tag,
         Err(err) => {
-            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 

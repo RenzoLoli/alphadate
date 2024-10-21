@@ -46,7 +46,6 @@ impl From<SignUpCommand> for EUser {
 
 impl EUser {
     pub fn update(&mut self, command: UserUpdateCommand) {
-        // TODO: check if parameters are equal to the current values (unnecessary update)
         if let Some(username) = command.username {
             self.username = username;
         }

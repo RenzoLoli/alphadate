@@ -1,0 +1,106 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+mat-accordion {
+  width: 90%;
+  margin-top: 1rem;
+}
+
+mat-expansion-panel.exist:not(.mat-expanded):nth-child(2n) {
+  background-color: #005555;
+}
+
+mat-expansion-panel.exist:not(.mat-expanded):nth-child(2n + 1) {
+  background-color: #018989;
+}
+
+mat-panel-title {
+  font-size: 1.4rem;
+}
+
+.checked-icon {
+  opacity: 1;
+  color: #00ff00;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.mat-expanded {
+  background-color: #1c691c;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .content-actions {
+    display: flex;
+    gap: 0.5rem;
+
+    .add-idea-alphabet {
+      background-color: orange;
+      color: black;
+    }
+  }
+
+  .description {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+button {
+  margin-block: auto;
+}
+
+.delete-button {
+  color: #ffffff;
+  background-color: #bb3333;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 90%;
+
+  .left-side {
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+.aditional-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.added-row {
+  z-index: 999;
+  animation: fadeIn 0.8s ease-in-out 0.5s;
+}
+
+.checked {
+  z-index: 999;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}

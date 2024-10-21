@@ -17,12 +17,18 @@ async fn login(
 
     let singin_command = SignInCommand::from(signin_resource.into_inner());
 
-    let token = auth_command_service.handle(singin_command).await;
+    log::debug!("Logging in user <{}>", singin_command.email);
 
-    match token {
-        Ok(token) => HttpResponse::Ok().json(TokenResource::new(token.as_str())),
-        Err(err) => HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str())),
-    }
+    let token = match auth_command_service.handle(singin_command).await {
+        Ok(token) => token,
+        Err(err) => {
+            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+        }
+    };
+
+    let resource = TokenResource::new(token.as_str());
+
+    HttpResponse::Ok().json(resource)
 }
 
 #[post("/register")]
@@ -34,12 +40,18 @@ async fn register(
 
     let user_command = SignUpCommand::from(user_req.into_inner());
 
-    let user = auth_service.handle(user_command).await;
+    log::debug!("Registering user <{}>", user_command.email);
 
-    match user {
-        Ok(_) => HttpResponse::Ok().json(OkResource::new("Registered Succesfully")),
-        Err(err) => HttpResponse::Conflict().json(ErrorResource::new(err.to_string().as_str())),
-    }
+    let _user = match auth_service.handle(user_command).await {
+        Ok(user) => user,
+        Err(err) => {
+            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+        }
+    };
+
+    let resource = OkResource::new("Registered Succesfully");
+
+    HttpResponse::Ok().json(resource)
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {

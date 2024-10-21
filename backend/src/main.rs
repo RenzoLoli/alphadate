@@ -15,18 +15,19 @@ use config::ServerOptions;
 use database::{config_database, Connection};
 use env_logger::Env;
 use repository::Repositories;
-use services::{BaseOfServices, ContextServices, EnvService, PasswordService, Services};
+use services::{
+    BaseOfServices, ContextServices, EnvService, PasswordService, Services, TokenService,
+};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // init logger
+    let log_level = EnvService::get_env("LOG_LEVEL").unwrap_or(String::from("info"));
+    log::debug!("log_level: {}", log_level);
+    env_logger::init_from_env(Env::default().default_filter_or(log_level));
+
     // load env variables
     EnvService::load();
-
-    // init logger
-    env_logger::init_from_env(
-        Env::default()
-            .default_filter_or(&EnvService::get_env("LOG_LEVEL").expect("LOG_LEVEL is not set")),
-    );
 
     // server options
     let server_opts = ServerOptions::load();
@@ -42,18 +43,30 @@ async fn main() -> std::io::Result<()> {
     // config tables
     config_database(&connection).await;
 
-    // init server
+    // dependencies
 
+    log::info!("Creating repositories");
     let repositories = Repositories::new(connection);
+
+    log::info!("Creating services");
     let base_of_services = BaseOfServices {
         password_service: Arc::new(PasswordService::new(&server_opts.password_encryption_key)),
+        token_service: Arc::new(TokenService::new(
+            server_opts.secret.clone(),
+            server_opts.expiration_token_time,
+        )),
         repositories,
     };
+
     let services = Arc::new(Services::new().load(base_of_services));
 
+    // init server
+
+    log::info!("Starting server");
     HttpServer::new(move || {
         let origins = server_opts.origins.clone();
         App::new()
+            // context data
             .app_data(ContextServices::from(services.clone()))
             // middlewares
             .wrap(
@@ -63,7 +76,7 @@ async fn main() -> std::io::Result<()> {
                             .iter()
                             .any(|allowed| origin.as_bytes().starts_with(allowed.as_bytes()))
                     })
-                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"])
                     .supports_credentials()
                     .allowed_headers(vec![
                         header::AUTHORIZATION,

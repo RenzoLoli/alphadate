@@ -53,7 +53,7 @@ where
             let res = fut.await?;
 
             if res.status() == StatusCode::BAD_REQUEST {
-                log::warn!("Bad Request - {:?}", res.response().error());
+                log::debug!("Bad Request - {:?}", res.response().error());
                 return Ok(res.into_response(
                     HttpResponse::BadRequest().json(ErrorResource::new("Bad Request")),
                 ));

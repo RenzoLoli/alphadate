@@ -6,10 +6,20 @@
   padding: 1rem;
 }
 
+@media (max-width: 600px) {
+  mat-icon {
+    opacity: 0;
+  }
+
+  button {
+    border-radius: 0.3rem;
+  }
+}
+
 .aditional-actions {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   margin-bottom: 1rem;
-  gap: 0.5rem;
+  gap: 0.1rem;
 }

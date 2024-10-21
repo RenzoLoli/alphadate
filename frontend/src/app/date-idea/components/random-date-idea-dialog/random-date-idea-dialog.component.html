@@ -1,0 +1,27 @@
+<mat-dialog-content>
+  <div class="content">
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+    @let ideaObj = dateIdea();
+    @if (ideaObj) {
+      <p class="header">Here is your idea:</p>
+      <span>
+        <button mat-icon-button>
+          {{ ideaObj.idea.charAt(0).toUpperCase() }}
+        </button>
+        <p class="idea">{{ ideaObj.idea }}</p>
+        <div></div>
+      </span>
+    } @else {
+      <p>Do you want something new?</p>
+    }
+    <div class="actions">
+      <button mat-flat-button (click)="onSpin()">Spin!!</button>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSubmit()">Add</button>
+</mat-dialog-actions>

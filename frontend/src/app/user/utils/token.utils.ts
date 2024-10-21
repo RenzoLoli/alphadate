@@ -22,6 +22,15 @@ export class TokenUtils {
     return diff > 0 && diff <= time;
   }
 
+  static isExpired(token: string): boolean {
+    const now = Date.now();
+    const expirationTime = this.getExpirationFromToken(token);
+    if (!expirationTime) return true;
+
+    const diff = expirationTime.getTime() - now;
+    return diff <= 0;
+  }
+
   private static getExpirationFromToken(token: string): Date | null {
     const payload = this.getPayload(token);
     if (!payload) return null;

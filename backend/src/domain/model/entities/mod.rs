@@ -1,15 +1,21 @@
 mod e_alphabet;
-mod e_user;
 mod e_date_idea;
 mod e_date_idea_tag;
 mod e_tag;
+mod e_user;
 mod e_user_date;
 mod entity;
+mod r_date_idea_tag;
+mod r_alphabet;
+mod r_user_date;
 
-pub use e_user::EUser;
 pub use e_alphabet::EAlphabet;
 pub use e_date_idea::EDateIdea;
 pub use e_date_idea_tag::EDateIdeaTag;
-pub use e_user_date::EUserDate;
 pub use e_tag::ETag;
+pub use e_user::EUser;
+pub use e_user_date::EUserDate;
 pub use entity::Entity;
+pub use r_user_date::RUserDate;
+pub use r_alphabet::RAlphabet;
+pub use r_date_idea_tag::RDateIdeaTag;

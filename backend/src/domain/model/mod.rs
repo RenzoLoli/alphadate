@@ -4,7 +4,6 @@ mod entities;
 mod queries;
 mod value_objects;
 
-pub use aggregates::*;
 pub use commands::*;
 pub use entities::*;
 pub use queries::*;

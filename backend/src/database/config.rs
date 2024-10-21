@@ -1,7 +1,10 @@
 use super::Connection;
 
 pub async fn config_database(conn: &Connection) {
+    log::info!("Configuring database");
+
     // users table
+    log::debug!("Creating 'users' table");
     conn.db()
         .query(
             "
@@ -21,6 +24,7 @@ pub async fn config_database(conn: &Connection) {
         .expect("cannot create table users");
 
     // alphabets table
+    log::debug!("Creating 'alphabets' table");
     conn.db()
         .query(
             "
@@ -34,6 +38,7 @@ pub async fn config_database(conn: &Connection) {
         .expect("cannot create table alphabets");
 
     // user_dates table
+    log::debug!("Creating 'user_dates' table");
     conn.db()
         .query(
             "
@@ -49,6 +54,7 @@ pub async fn config_database(conn: &Connection) {
         .expect("cannot create table user_dates");
 
     // date_ideas table
+    log::debug!("Creating 'date_ideas' table");
     conn.db()
         .query(
             "
@@ -62,6 +68,7 @@ pub async fn config_database(conn: &Connection) {
         .expect("cannot create table date_ideas");
 
     // date_idea_tags table
+    log::debug!("Creating 'date_idea_tags' table");
     conn.db()
         .query(
             "
@@ -75,6 +82,7 @@ pub async fn config_database(conn: &Connection) {
         .expect("cannot create table date_idea_tags");
 
     // tags table
+    log::debug!("Creating 'tags' table");
     conn.db()
         .query(
             "

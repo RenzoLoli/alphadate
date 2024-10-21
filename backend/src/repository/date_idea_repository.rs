@@ -5,7 +5,7 @@ use crate::{
     domain::{EDateIdea, Entity},
 };
 
-use super::BaseRepository;
+use super::{BaseQuerySearch, BaseRepository, BaseTransactions};
 
 #[derive(Default)]
 pub struct DateIdeaRepository {
@@ -23,6 +23,8 @@ impl BaseRepository<EDateIdea> for DateIdeaRepository {
         &self.connection
     }
 }
+impl BaseTransactions<EDateIdea> for DateIdeaRepository {}
+impl BaseQuerySearch<EDateIdea> for DateIdeaRepository {}
 
 impl DateIdeaRepository {
     pub async fn find_by_idea(&self, idea: &str) -> Vec<EDateIdea> {
