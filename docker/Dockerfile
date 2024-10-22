@@ -4,53 +4,57 @@ FROM rust:1.80.1 as backend
 
 WORKDIR /app
 
-COPY backend/Cargo.toml backend/Cargo.lock ./
+COPY backend/Cargo.toml ./
 COPY backend/src/ src/
 
 RUN cargo build --release
 
 ### build frontend dist ###
 
-FROM node:latest as frontend
+FROM node:18.20.1 as frontend
 
 WORKDIR /app/frontend
 
 COPY frontend/ .
 
-RUN npm install && node run build
+RUN npm install && npm run build
 
 ### base image ###
 
-FROM ubuntu:22.04
-
-SHELL [ "/bin/sh", "-c" ]
+FROM nginx:latest
 
 # install global dependencies
 
-RUN apt-get update && \
-  apt-get install -y \
+RUN apt-get update \
+  && apt-get install -y \
   curl \
   unzip \
-  xz-utils \
-  && rm -rf /var/lib/apt/lists/*
+  xz-utils
 
 # install bun and pm2
 
 WORKDIR /data
 
-RUN sh -c "curl -fsSL https://bun.sh/install | bash -s \"bun-v1.1.29\"" \
-  && ln -s /root/.bun/bin/bun /usr/bin/bun \
-  && bun install -g pm2@5.4.2 \
-  && ln -s /root/.bun/bin/pm2 /usr/bin/pm2 \
+# RUN sh -c "curl -fsSL https://bun.sh/install | bash -s \"bun-v1.1.29\"" \
+#   && ln -s /root/.bun/bin/bun /usr/bin/bun \
+#   && bun install -g pm2@5.4.2 \
+#   && ln -s /root/.bun/bin/pm2 /usr/bin/pm2 \
+#   && mkdir /pm2
+
+RUN apt-get install nodejs npm -y \
+  && npm install -g pm2@5.4.2 \
   && mkdir /pm2
 
 # config hosting
 
 WORKDIR /app/hosting
 
-RUN apt-get install -y nginx
-
 COPY hosting/nginx.conf /etc/nginx/nginx.conf
+
+## hosting env variables
+
+ENV HOSTING_FRONTEND_URL=http://127.0.0.1:4200
+ENV HOSTING_BACKEND_URL=http://127.0.0.1:3000
 
 # config database
 
@@ -74,7 +78,7 @@ ENV S_LOGLEVEL=debug
 
 WORKDIR /app/frontend
 
-COPY --from=frontend /app/frontend/dist .
+COPY --from=frontend /app/frontend/dist/frontend .
 
 ## frontend env variables
 ENV FRONTEND_API_URL=http://127.0.0.1:3000/api/v1
