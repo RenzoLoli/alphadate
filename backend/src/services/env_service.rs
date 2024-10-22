@@ -5,12 +5,14 @@ pub struct EnvService;
 
 impl EnvService {
     pub fn load() {
+        log::info!("Loading dotenv variables");
         dotenv().ok();
     }
 
     pub fn get_env(var: &str) -> Result<String, String> {
         _get_env(var)
-            .inspect_err(|err| log::error!("{}", err.to_string()))
-            .map_err(|_| format!("Cannot get ${var}"))
+            .map_err(|e| e.to_string())
+            .inspect(|res| log::debug!("env var {} = {}", var, res))
+            .inspect_err(|e| log::debug!("failed to get env var <{}>: {}", var, e))
     }
 }

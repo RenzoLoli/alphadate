@@ -1,113 +1,74 @@
-use std::{collections::HashSet, sync::Arc};
+use rand::prelude::*;
+use std::sync::Arc;
 
 use crate::{
-    domain::{DateIdeaAggregate, GetAllDateIdeasQuery, GetDateIdeaByIdQuery, TagAggregate},
-    repository::{BaseRepository, DateIdeaRepository, DateIdeaTagRepository, TagRepository},
+    domain::{GetAllDateIdeasQuery, GetDateIdeaByIdQuery, GetRandomDateIdeaQuery, RDateIdeaTag},
+    repository::{DateIdeaTagRefRepository, UserDateRepository},
 };
 
 use super::ServiceHandlerTrait;
 
 #[derive(Default)]
 pub struct DateIdeaQueryService {
-    date_idea_repository: Arc<DateIdeaRepository>,
-    date_idea_tag_repository: Arc<DateIdeaTagRepository>,
-    tag_repository: Arc<TagRepository>,
+    date_idea_tag_ref_repository: Arc<DateIdeaTagRefRepository>,
+    user_date_repository: Arc<UserDateRepository>,
 }
 
 impl DateIdeaQueryService {
     pub fn new(
-        date_idea_repository: Arc<DateIdeaRepository>,
-        date_idea_tag_repository: Arc<DateIdeaTagRepository>,
-        tag_repository: Arc<TagRepository>,
+        date_idea_tag_ref_repository: Arc<DateIdeaTagRefRepository>,
+        user_date_repository: Arc<UserDateRepository>,
     ) -> Self {
         Self {
-            date_idea_repository,
-            date_idea_tag_repository,
-            tag_repository,
+            date_idea_tag_ref_repository,
+            user_date_repository,
         }
     }
 }
 
-impl ServiceHandlerTrait<GetAllDateIdeasQuery, Vec<DateIdeaAggregate>> for DateIdeaQueryService {
-    async fn handle(&self, _query: GetAllDateIdeasQuery) -> Result<Vec<DateIdeaAggregate>, String> {
-        let date_ideas = self.date_idea_repository.get_all().await;
-
-        if date_ideas.is_empty() {
-            return Ok(vec![]);
-        }
-
-        let date_idea_tags = self.date_idea_tag_repository.get_all().await;
-        let tags = self.tag_repository.get_all().await;
-
-        let idea_tag_tag_ids_set: HashSet<(String, String)> = date_idea_tags
-            .iter()
-            .map(|idea_tag| {
-                (
-                    idea_tag.date_idea_id.to_string(),
-                    idea_tag.tag_id.to_string(),
-                )
-            })
-            .collect();
-
-        let aggregates = date_ideas
-            .iter()
-            .map(|date_idea| {
-                let idea_tags = tags
-                    .iter()
-                    .filter(|tag| {
-                        idea_tag_tag_ids_set
-                            .contains(&(date_idea.id.to_string(), tag.id.to_string()))
-                    })
-                    .map(|tag| TagAggregate {
-                        id: tag.id.to_string(),
-                        name: tag.name.clone(),
-                    })
-                    .collect();
-
-                DateIdeaAggregate {
-                    id: date_idea.id.to_string(),
-                    idea: date_idea.idea.clone(),
-                    description: date_idea.description.clone(),
-                    tags: idea_tags,
-                }
-            })
-            .collect();
-
-        Ok(aggregates)
+impl ServiceHandlerTrait<GetAllDateIdeasQuery, Vec<RDateIdeaTag>> for DateIdeaQueryService {
+    async fn _handle(&self, _query: GetAllDateIdeasQuery) -> Result<Vec<RDateIdeaTag>, String> {
+        Ok(self.date_idea_tag_ref_repository.get_refs().await)
     }
 }
 
-impl ServiceHandlerTrait<GetDateIdeaByIdQuery, DateIdeaAggregate> for DateIdeaQueryService {
-    async fn handle(&self, query: GetDateIdeaByIdQuery) -> Result<DateIdeaAggregate, String> {
-        let date_idea = match self.date_idea_repository.find_by_id(&query.id).await {
-            Some(date_idea) => date_idea,
-            None => return Err("Date Idea not found".to_owned()),
+impl ServiceHandlerTrait<GetDateIdeaByIdQuery, RDateIdeaTag> for DateIdeaQueryService {
+    async fn _handle(&self, query: GetDateIdeaByIdQuery) -> Result<RDateIdeaTag, String> {
+        match self.date_idea_tag_ref_repository.find_ref(&query.id).await {
+            Some(date_idea_ref) => Ok(date_idea_ref),
+            None => Err("Date Idea not found".to_owned()),
+        }
+    }
+}
+
+impl ServiceHandlerTrait<GetRandomDateIdeaQuery, RDateIdeaTag> for DateIdeaQueryService {
+    async fn _handle(&self, query: GetRandomDateIdeaQuery) -> Result<RDateIdeaTag, String> {
+        let refs = if query.exclude_active {
+            let alphabet_id = query.alphabet_id;
+
+            let user_dates = self
+                .user_date_repository
+                .find_by_alphabet_id(&alphabet_id)
+                .await;
+
+            let active_letters = user_dates
+                .iter()
+                .map(|user_date| user_date.letter.clone())
+                .collect::<Vec<String>>();
+
+            self.date_idea_tag_ref_repository
+                .find_ref_not_by_letters(active_letters)
+                .await
+        } else {
+            self.date_idea_tag_ref_repository.get_refs().await
         };
 
-        let idea_tag_ids = self
-            .date_idea_tag_repository
-            .find_by_date_idea_id(&query.id)
-            .await
-            .into_iter()
-            .map(|date_idea_tag| date_idea_tag.tag_id.to_string())
-            .collect();
+        if refs.is_empty() {
+            return Err("No dates found".to_owned());
+        }
 
-        let tags = self
-            .tag_repository
-            .find_by_ids(idea_tag_ids)
-            .await
-            .iter()
-            .map(|tag| TagAggregate {
-                id: tag.id.to_string(),
-                name: tag.name.clone(),
-            })
-            .collect();
+        let random = rand::thread_rng().gen_range(0..refs.len());
 
-        Ok(DateIdeaAggregate {
-            id: query.id.to_string(),
-            idea: date_idea.idea,
-            description: date_idea.description,
-            tags,
-        })
+        Ok(refs[random].clone())
     }
 }

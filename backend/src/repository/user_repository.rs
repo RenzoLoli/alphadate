@@ -6,6 +6,8 @@ use crate::{database::Connection, domain::EUser};
 
 use crate::repository::BaseRepository;
 
+use super::{BaseQuerySearch, BaseTransactions};
+
 #[derive(Default)]
 pub struct UserRepository {
     connection: Arc<Connection>,
@@ -22,6 +24,8 @@ impl BaseRepository<EUser> for UserRepository {
         &self.connection
     }
 }
+impl BaseTransactions<EUser> for UserRepository {}
+impl BaseQuerySearch<EUser> for UserRepository {}
 
 impl UserRepository {
     pub async fn find_by_email(&self, email: &str) -> Option<EUser> {

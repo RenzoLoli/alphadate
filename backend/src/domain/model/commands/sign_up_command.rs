@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct SignUpCommand {
     pub username: String,
     pub password: String,

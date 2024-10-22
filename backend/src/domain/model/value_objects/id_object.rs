@@ -42,7 +42,11 @@ impl Eq for IdObject {}
 
 impl IdObject {
     pub fn generate(&mut self, table: &str) {
-        self.id = Id::uuid();
+        log::debug!("Generating id for <{}>", table);
+
+        self.id = Id::rand();
         self.tb = table.to_string();
+
+        log::debug!("id -> {:?}", self.id);
     }
 }

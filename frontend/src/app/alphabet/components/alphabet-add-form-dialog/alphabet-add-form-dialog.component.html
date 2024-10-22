@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Create Alphabet</h2>
+<mat-dialog-content>
+  @if (reqError()) {
+    <p class="request-error">{{ reqError() }}</p>
+  }
+  <form [formGroup]="addAlphabetBaseForm">
+    <mat-form-field>
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+      @if (title?.errors) {
+        <mat-error>Invalid title</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSubmit()" [disabled]="disabled()">
+    Create
+  </button>
+</mat-dialog-actions>

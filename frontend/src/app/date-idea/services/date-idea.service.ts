@@ -5,6 +5,7 @@ import { BaseService } from '../../shared/services/base.service';
 import { DateIdeaCreateRequest } from '../models/date-idea-create.request';
 import { DateIdeaUpdateRequest } from '../models/date-idea-update.request';
 import { DateIdeaEntity } from '../models/date-idea.entity';
+import { DateIdeaRandomRequest } from '../models/date-idea-random.request';
 
 @Injectable({
   providedIn: 'root',
@@ -66,9 +67,17 @@ export class DateIdeaService extends BaseService {
 
   delete(id: string): Observable<void> {
     const path = `${this.resourcePath()}/${id}`;
+    return this.http.delete<void>(path).pipe(retry(2));
+  }
+
+  randomIdea(request: DateIdeaRandomRequest): Observable<DateIdeaEntity> {
+    const { alphabetId, excludeActive } = request;
+    const path = `${this.resourcePath()}/random/${alphabetId}`;
     return this.http
-      .delete<void>(path, {
-        body: {},
+      .get<DateIdeaEntity>(path, {
+        params: {
+          exclude_active: excludeActive,
+        },
       })
       .pipe(retry(2));
   }

@@ -1,17 +1,18 @@
 import {
   Component,
-  computed,
-  effect,
+  inject,
   Input,
   OnInit,
   output,
   Signal,
+  viewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
+import { MatTable, MatTableModule } from '@angular/material/table';
+import { AlphabetStore } from '../../../alphabet/store/alphabet.store';
 import { DateIdeaEntity } from '../../models/date-idea.entity';
 import { TagEntity } from '../../models/tag.entity';
 
@@ -37,7 +38,15 @@ export class IdeasTableComponent implements OnInit {
   @Input({ required: true }) tags!: Signal<Array<TagEntity>>;
   @Input({ required: true }) admin!: boolean;
 
+  alphabetStore = inject(AlphabetStore);
+
   displayedColumns: string[] = ['idea', 'description', 'tags'];
+
+  matTable = viewChild<MatTable<any>>('table');
+
+  get currAlphabetId() {
+    return this.alphabetStore.getCurrentAlphabetId();
+  }
 
   ngOnInit(): void {
     if (this.admin) {
@@ -74,5 +83,13 @@ export class IdeasTableComponent implements OnInit {
 
   onAddIdeaAlphabet(dateIdea: DateIdeaEntity) {
     this.addIdeaAlphabet.emit({ dateIdea });
+  }
+
+  isOnAlphabet(dateIdea: DateIdeaEntity): boolean {
+    const alphabet = this.alphabetStore.getCurrentAlphabet();
+    if (!alphabet) return false;
+    return alphabet.user_dates.some((date) => {
+      return date.date_idea.id == dateIdea.id;
+    });
   }
 }

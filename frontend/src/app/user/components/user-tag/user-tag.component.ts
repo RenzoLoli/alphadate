@@ -33,6 +33,6 @@ export class UserTagComponent {
   }
 
   logout() {
-    this.authStore.logout();
+    window.location.href = '/logout';
   }
 }
