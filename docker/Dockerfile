@@ -51,6 +51,11 @@ WORKDIR /app/hosting
 
 COPY hosting/nginx.conf /etc/nginx/nginx.conf
 
+RUN rm -rf /var/log/nginx/ \
+  && mkdir /var/log/nginx/ \
+  && touch /var/log/nginx/error.log \
+  && chown -R www-data:www-data /var/log/nginx/
+
 ## hosting env variables
 
 ENV HOSTING_FRONTEND_URL=http://127.0.0.1:4200
