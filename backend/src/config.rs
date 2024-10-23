@@ -19,7 +19,7 @@ impl ServerOptions {
     pub fn load() -> ServerOptions {
         log::info!("Loading server options");
 
-        let port = EnvService::get_env("PORT")
+        let port = EnvService::get_env("BACKEND_PORT")
             .unwrap_or(String::from("3000"))
             .parse::<u16>()
             .unwrap();
