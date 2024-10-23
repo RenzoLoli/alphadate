@@ -31,19 +31,19 @@ RUN apt-get update \
   unzip \
   xz-utils
 
-# install bun and pm2
+# install node and pm2
 
-WORKDIR /data
+WORKDIR /tmp
 
-# RUN sh -c "curl -fsSL https://bun.sh/install | bash -s \"bun-v1.1.29\"" \
-#   && ln -s /root/.bun/bin/bun /usr/bin/bun \
-#   && bun install -g pm2@5.4.2 \
-#   && ln -s /root/.bun/bin/pm2 /usr/bin/pm2 \
-#   && mkdir /pm2
-
-RUN apt-get install nodejs npm -y \
+RUN curl -o node-v18.20.4-linux-x64.tar.xz https://nodejs.org/dist/v18.20.4/node-v18.20.4-linux-x64.tar.xz \
+  && tar -xf node-v18.20.4-linux-x64.tar.xz \
+  && mv node-v18.20.4-linux-x64 /usr/local/node \
+  && ln -s /usr/local/node/bin/node /usr/bin/node \
+  && ln -s /usr/local/node/bin/npm /usr/bin/npm \
+  && rm node-v18.20.4-linux-x64.tar.xz \
   && npm install -g pm2@5.4.2 \
-  && mkdir /pm2
+  && ln -s /usr/local/node/bin/pm2 /usr/bin/pm2 \
+  && mkdir -p /data/pm2
 
 # config hosting
 
