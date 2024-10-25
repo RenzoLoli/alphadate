@@ -1,18 +1,20 @@
 # All Users
 
 <!--toc:start-->
+
 - [All Users](#all-users)
   - [Description](#description)
   - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Found success](#not-found-success)
-<!--toc:end-->
+  - [Internal Server Error Response](#internal-server-error-response)
+  <!--toc:end-->
 
 ## Description
 
-| URL                 | Method | Auth required | Description   |
-| ------------------- | ------ | ------------- | ------------- |
-| /api/v1/auth/users/ | GET    | YES           | Get all users |
+| URL              | Method | Auth required | Description   |
+| ---------------- | ------ | ------------- | ------------- |
+| /api/v1/user/all | GET    | YES           | Get all users |
 
 ## Success Response
 
@@ -33,6 +35,18 @@
 ]
 ```
 
+## Bad Request Response
+
+**Code** : `400 BAD REQUEST`
+
+**Content** :
+
+```json
+{
+  "message": "string"
+}
+```
+
 ## Unauthorized Response
 
 **Code** : `401 UNAUTHORIZED`
@@ -45,9 +59,9 @@
 }
 ```
 
-## Not Found success
+## Internal Server Error Response
 
-**Code** : `404 NOT FOUND`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

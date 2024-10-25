@@ -1,10 +1,10 @@
-# Tag by Id
+# Create Tag
 
 <!--toc:start-->
 
-- [Tag by Id](#tag-by-id)
+- [Create Tag](#create-tag)
   - [Description](#description)
-  - [URL Params](#url-params)
+  - [Request Body](#request-body)
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
@@ -13,15 +13,17 @@
 
 ## Description
 
-| URL             | Method | Auth required | Description   |
-| --------------- | ------ | ------------- | ------------- |
-| /api/v1/tag/:id | GET    | YES           | Get tag by id |
+| URL         | Method | Auth required | Description |
+| ----------- | ------ | ------------- | ----------- |
+| /api/v1/tag | POST   | YES           | Create tag  |
 
-## URL Params
+## Request Body
 
-| Param | Type   | Description                 |
-| ----- | ------ | --------------------------- |
-| id    | String | The id of the tag to delete |
+```json
+{
+  "name": "string"
+}
+```
 
 ## Success Response
 

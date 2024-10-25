@@ -27,7 +27,7 @@ async fn get_all_tags(services: ContextServices) -> impl Responder {
     let tags = match tag_service.handle(query).await {
         Ok(tags) => tags,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
@@ -51,7 +51,7 @@ async fn get_tag_by_id(
     let tag = match tag_service.handle(query).await {
         Ok(tag) => tag,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 

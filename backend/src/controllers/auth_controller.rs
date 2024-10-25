@@ -22,7 +22,7 @@ async fn login(
     let token = match auth_command_service.handle(singin_command).await {
         Ok(token) => token,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
@@ -45,7 +45,7 @@ async fn register(
     let _user = match auth_service.handle(user_command).await {
         Ok(user) => user,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 

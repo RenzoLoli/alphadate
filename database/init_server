@@ -1,12 +1,12 @@
 #!/bin/sh
 
-user="${S_USER:-root}"
-pass="${S_PASS:-root}"
-port="${S_PORT:-4700}"
-host="${S_HOST:-127.0.0.1}"
-method="${S_METHOD:-}"
-dbpath="${S_DBPATH:-database}"
-loglevel="${S_LOGLEVEL:-debug}"
+user="${DATABASE_USER:-root}"
+pass="${DATABASE_PASS:-root}"
+port="${DATABASE_PORT:-4700}"
+host="${DATABASE_HOST:-127.0.0.1}"
+method="${DATABASE_METHOD:-}"
+dbpath="${DATABASE_DBPATH:-database}"
+loglevel="${DATABASE_LOGLEVEL:-debug}"
 
 if [ -n "$dbpath" ]; then
   method="file://$dbpath"

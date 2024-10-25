@@ -9,20 +9,20 @@
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Modified Response](#not-modified-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
 
 | URL                             | Method | Auth required | Description          |
 | ------------------------------- | ------ | ------------- | -------------------- |
-| /api/v1/date-idea/:date-idea-id | DELETE | YES           | Remove tag from date |
+| /api/v1/date-idea/:idea-id/tag/ | DELETE | YES           | Remove tag from date |
 
 ## URL Params
 
-| Param        | Type   | Description                           |
-| ------------ | ------ | ------------------------------------- |
-| date-idea-id | String | The id of the date idea to remove tag |
+| Param   | Type   | Description                           |
+| ------- | ------ | ------------------------------------- |
+| idea-id | String | The id of the date idea to remove tag |
 
 ## Request Body
 
@@ -70,9 +70,9 @@
 }
 ```
 
-## Not Modified Response
+## Internal Server Error Response
 
-**Code** : `304 NOT MODIFIED`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

@@ -5,15 +5,16 @@
 - [All Date Ideas](#all-date-ideas)
   - [Description](#description)
   - [Success Response](#success-response)
-  - [Not Found Response](#not-found-response)
+  - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
 
-| URL                | Method | Auth required | Description        |
-| ------------------ | ------ | ------------- | ------------------ |
-| /api/v1/date-idea/ | GET    | YES           | Get all date ideas |
+| URL                   | Method | Auth required | Description        |
+| --------------------- | ------ | ------------- | ------------------ |
+| /api/v1/date-idea/all | GET    | YES           | Get all date ideas |
 
 ## Success Response
 
@@ -37,9 +38,9 @@
 ]
 ```
 
-## Not Found Response
+## Bad Request Response
 
-**Code** : `404 NOT FOUND`
+**Code** : `400 BAD REQUEST`
 
 **Content** :
 
@@ -52,6 +53,18 @@
 ## Unauthorized Response
 
 **Code** : `401 UNAUTHORIZED`
+
+**Content** :
+
+```json
+{
+  "message": "string"
+}
+```
+
+## Internal Server Error Response
+
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 
