@@ -19,39 +19,41 @@ impl ServerOptions {
     pub fn load() -> ServerOptions {
         log::info!("Loading server options");
 
-        let port = EnvService::get_env("PORT")
+        let port = EnvService::get_env("BACKEND_PORT")
             .unwrap_or(String::from("3000"))
             .parse::<u16>()
             .unwrap();
         log::debug!("port: {}", port);
 
-        let host = EnvService::get_env("HOST").unwrap_or(String::from("0.0.0.0"));
+        let host = EnvService::get_env("BACKEND_HOST").unwrap_or(String::from("0.0.0.0"));
         log::debug!("host: {}", host);
 
-        let secret = EnvService::get_env("SECRET_KEY").unwrap_or(String::from("secret"));
+        let secret = EnvService::get_env("BACKEND_SECRET_KEY").unwrap_or(String::from("secret"));
         log::debug!("secret: {}", secret);
 
         let password_encryption_key =
-            EnvService::get_env("PASSWORD_ENCRYPTION_KEY").unwrap_or(String::from(""));
+            EnvService::get_env("BACKEND_PASSWORD_ENCRYPTION_KEY").unwrap_or(String::from(""));
         log::debug!("password_encryption_key: {}", password_encryption_key);
 
-        let expiration_token_time = EnvService::get_env("EXPIRATION_TOKEN_TIME_IN_MS")
+        let expiration_token_time = EnvService::get_env("BACKEND_EXPIRATION_TOKEN_TIME_IN_MS")
             .unwrap_or(String::from("86400000"))
             .parse::<usize>()
             .unwrap();
         log::debug!("expiration_token_time: {}", expiration_token_time);
 
-        let origins: Vec<String> = EnvService::get_env("CORS_ORIGINS")
+        let origins: Vec<String> = EnvService::get_env("BACKEND_CORS_ORIGINS")
             .map(|origins| origins.split(',').map(|s| s.to_string()).collect())
             .unwrap_or_default();
         log::debug!("origins: {:?}", origins);
 
         // config database variables
-        let username = EnvService::get_env("DB_USER").unwrap_or(String::from("root"));
-        let password = EnvService::get_env("DB_PASS").unwrap_or(String::from("root"));
-        let address = EnvService::get_env("DB_HOST").unwrap_or(String::from("127.0.0.1"));
-        let namespace = EnvService::get_env("DB_NAMESPACE").unwrap_or(String::from("alphadate"));
-        let database = EnvService::get_env("DB_DATABASE").unwrap_or(String::from("resources"));
+        let username = EnvService::get_env("BACKEND_DB_USER").unwrap_or(String::from("root"));
+        let password = EnvService::get_env("BACKEND_DB_PASS").unwrap_or(String::from("root"));
+        let address = EnvService::get_env("BACKEND_DB_HOST").unwrap_or(String::from("127.0.0.1"));
+        let namespace =
+            EnvService::get_env("BACKEND_DB_NAMESPACE").unwrap_or(String::from("alphadate"));
+        let database =
+            EnvService::get_env("BACKEND_DB_DATABASE").unwrap_or(String::from("resources"));
 
         let config_connection = ConfigConnection {
             username,

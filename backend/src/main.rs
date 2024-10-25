@@ -22,7 +22,7 @@ use services::{
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     // init logger
-    let log_level = EnvService::get_env("LOG_LEVEL").unwrap_or(String::from("info"));
+    let log_level = EnvService::get_env("BACKEND_LOG_LEVEL").unwrap_or(String::from("info"));
     log::debug!("log_level: {}", log_level);
     env_logger::init_from_env(Env::default().default_filter_or(log_level));
 
