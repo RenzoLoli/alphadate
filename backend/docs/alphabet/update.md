@@ -9,20 +9,20 @@
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Modified](#not-modified)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
 
-| URL                        | Method | Auth required | Description     |
-| -------------------------- | ------ | ------------- | --------------- |
-| /api/v1/alphabets/:user-id | PUT    | YES           | Update alphabet |
+| URL                  | Method | Auth required | Description     |
+| -------------------- | ------ | ------------- | --------------- |
+| /api/v1/alphabet/:id | PUT    | YES           | Update alphabet |
 
 ## URL Params
 
-| Param   | Type   | Description                               |
-| ------- | ------ | ----------------------------------------- |
-| user_id | String | The id of the user to update alphabet for |
+| Param | Type   | Description                      |
+| ----- | ------ | -------------------------------- |
+| id    | String | The id of the alphabet to update |
 
 ## Request Body
 
@@ -69,9 +69,9 @@
 }
 ```
 
-## Not Modified
+## Internal Server Error Response
 
-**Code** : `304 NOT MODIFIED`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

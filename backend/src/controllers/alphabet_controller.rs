@@ -1,10 +1,4 @@
-use std::time::Duration;
-
-use actix_web::{
-    delete, get, patch, post, put,
-    rt::{spawn, time::interval},
-    web, HttpResponse, Responder,
-};
+use actix_web::{delete, get, patch, post, put, web, HttpResponse, Responder};
 
 use crate::{
     controllers::resources::{
@@ -33,7 +27,8 @@ async fn get_all_alphabets(
     let alphabets = match alphabet_query_service.handle(query).await {
         Ok(date_ideas) => date_ideas,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()));
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()));
         }
     };
 
@@ -59,7 +54,8 @@ async fn get_all_alphabets_base(
     let alphabets = match alphabet_query_service.handle(query).await {
         Ok(date_ideas) => date_ideas,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()));
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()));
         }
     };
 
@@ -85,7 +81,8 @@ async fn get_alphabet_by_id(
     let alphabet = match alphabet_query_service.handle(query).await {
         Ok(alphabet) => alphabet,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()));
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()));
         }
     };
 
@@ -108,7 +105,8 @@ async fn create_alphabet(
     let alphabet = match alphabet_command_service.handle(command).await {
         Ok(alphabet) => alphabet,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()));
+            return HttpResponse::InternalServerError()
+                .json(ErrorResource::new(err.to_string().as_str()));
         }
     };
 

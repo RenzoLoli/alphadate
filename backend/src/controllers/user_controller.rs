@@ -22,7 +22,7 @@ async fn get_all_users(services: ContextServices) -> impl Responder {
 
     let users = match user_service.handle(query).await {
         Ok(users) => users,
-        Err(err) => return HttpResponse::NotFound().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resources = users
@@ -45,7 +45,7 @@ async fn get_user_by_id(services: ContextServices, path: web::Path<(String,)>) -
 
     let user = match user_service.handle(query).await {
         Ok(user) => user,
-        Err(err) => return HttpResponse::NotFound().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = UserResource::from(user);
