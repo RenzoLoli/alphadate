@@ -4,31 +4,24 @@
 
 - [Create Alphabet](#create-alphabet)
   - [Description](#description)
-  - [URL Params](#url-params)
   - [Request Body](#request-body)
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
-  - [Unauthorized Response](#unauthorized-response)
-  - [Not Found Response](#not-found-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
 
-| URL                        | Method | Auth required | Description     |
-| -------------------------- | ------ | ------------- | --------------- |
-| /api/v1/alphabets/:user-id | POST   | YES           | Create alphabet |
-
-## URL Params
-
-| Param   | Type   | Description                               |
-| ------- | ------ | ----------------------------------------- |
-| user_id | String | The id of the user to create alphabet for |
+| URL              | Method | Auth required | Description     |
+| ---------------- | ------ | ------------- | --------------- |
+| /api/v1/alphabet | POST   | YES           | Create alphabet |
 
 ## Request Body
 
 ```json
 {
   "title": "string"
+  "user_id": "string"
 }
 ```
 
@@ -57,21 +50,9 @@
 }
 ```
 
-## Unauthorized Response
+## Internal Server Error Response
 
-**Code** : `401 UNAUTHORIZED`
-
-**Content** :
-
-```json
-{
-  "message": "string"
-}
-```
-
-## Not Found Response
-
-**Code** : `404 NOT FOUND`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

@@ -7,7 +7,7 @@
   - [Data constraints](#data-constraints)
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
-  - [Conflict Response](#conflict-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
@@ -45,28 +45,24 @@ Used to register a new User.
 
 ## Bad Request Response
 
-**Condition** : If json combination is wrong.
-
 **Code** : `400 BAD REQUEST`
 
 **Content** :
 
 ```json
 {
-  "message": "[Cause of the error]"
+  "message": "string"
 }
 ```
 
-## Conflict Response
+## Internal Server Error Response
 
-**Condition** : If register is falied.
-
-**Code** : `409 CONFLICT`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 
 ```json
 {
-  "message": "[Cause of the error]"
+  "message": "string"
 }
 ```

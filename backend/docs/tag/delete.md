@@ -8,7 +8,7 @@
   - [Success Response](#success-response)
   - [Unauthorized Response](#unauthorized-response)
   - [Bad Request Response](#bad-request-response)
-  - [Not Found Response](#not-found-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
@@ -31,7 +31,8 @@
 
 ```json
 {
-  "message": "string"
+  "id": "string",
+  "name": "string"
 }
 ```
 
@@ -59,9 +60,9 @@
 }
 ```
 
-## Not Found Response
+## Internal Server Error Response
 
-**Code** : `404 NOT FOUND`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

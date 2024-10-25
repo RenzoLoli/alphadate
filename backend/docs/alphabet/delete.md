@@ -1,20 +1,21 @@
 # Delete Alphabet
 
 <!--toc:start-->
+
 - [Delete Alphabet](#delete-alphabet)
   - [Description](#description)
   - [URL Params](#url-params)
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Modified Response](#not-modified-response)
-<!--toc:end-->
+  - [Internal Server Error Response](#internal-server-error-response)
+  <!--toc:end-->
 
 ## Description
 
-| URL                   | Method | Auth required | Description     |
-| --------------------- | ------ | ------------- | --------------- |
-| /api/v1/alphabets/:id | DELETE | YES           | Delete alphabet |
+| URL                  | Method | Auth required | Description     |
+| -------------------- | ------ | ------------- | --------------- |
+| /api/v1/alphabet/:id | DELETE | YES           | Delete alphabet |
 
 ## URL Params
 
@@ -31,15 +32,7 @@
 ```json
 {
   "id": "string",
-  "title": "string",
-  "user_dates": [
-    {
-      "id": "string",
-      "letter": "string",
-      "completed": "string",
-      "date_idea_id": "string"
-    }
-  ]
+  "title": "string"
 }
 ```
 
@@ -67,9 +60,9 @@
 }
 ```
 
-## Not Modified Response
+## Internal Server Error Response
 
-**Code** : `304 NOT MODIFIED`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

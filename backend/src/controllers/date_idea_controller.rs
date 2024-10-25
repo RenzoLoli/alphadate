@@ -32,7 +32,7 @@ async fn get_all_date_ideas(services: ContextServices) -> impl Responder {
     let ideas = match date_idea_query_service.handle(query).await {
         Ok(date_ideas) => date_ideas,
         Err(err) => {
-            return HttpResponse::NotFound().json(ErrorResource::new(err.to_string().as_str()))
+            return HttpResponse::InternalServerError().json(ErrorResource::new(err.to_string().as_str()))
         }
     };
 
@@ -96,7 +96,7 @@ async fn get_date_idea_by_id(
 
     let date_idea = match date_idea_query_service.handle(query).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::NotFound().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = DateIdeaCompleteResource::from(date_idea);
@@ -191,7 +191,7 @@ async fn add_tag_to_date_idea(
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::NotFound().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = DateIdeaResource::from(date_idea);
@@ -215,7 +215,7 @@ async fn remove_tag_from_date_idea(
 
     let date_idea = match date_idea_command_service.handle(command).await {
         Ok(date_idea) => date_idea,
-        Err(err) => return HttpResponse::NotFound().json(ErrorResource::new(err.as_str())),
+        Err(err) => return HttpResponse::InternalServerError().json(ErrorResource::new(err.as_str())),
     };
 
     let resource = DateIdeaResource::from(date_idea);

@@ -8,14 +8,14 @@
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Found Response](#not-found-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
 
-| URL                   | Method | Auth required | Description        |
-| --------------------- | ------ | ------------- | ------------------ |
-| /api/v1/alphabets/:id | GET    | YES           | Get alphabet by id |
+| URL                  | Method | Auth required | Description        |
+| -------------------- | ------ | ------------- | ------------------ |
+| /api/v1/alphabet/:id | GET    | YES           | Get alphabet by id |
 
 ## URL Params
 
@@ -30,18 +30,32 @@
 **Content** :
 
 ```json
-{
-  "id": "string",
-  "title": "string",
-  "user_dates": [
-    {
-      "id": "string",
-      "letter": "string",
-      "completed": "string",
-      "date_idea_id": "string"
-    }
-  ]
-}
+[
+  {
+    "id": "string",
+    "title": "string",
+    "user_dates": [
+      {
+        "id": "string",
+        "letter": "string",
+        "completed": "boolean",
+        "date_idea": [
+          {
+            "id": "string",
+            "idea": "string",
+            "description": "string"
+            "tags": [
+              {
+                "id": "string",
+                "name": "string"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
 ```
 
 ## Bad Request Response
@@ -68,9 +82,9 @@
 }
 ```
 
-## Not Found Response
+## Internal Server Error Response
 
-**Code** : `404 NOT FOUND`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

@@ -9,7 +9,7 @@
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Modified Response](#not-modified-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
@@ -71,9 +71,9 @@
 }
 ```
 
-## Not Modified Response
+## Internal Server Error Response
 
-**Code** : `304 NOT MODIFIED`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

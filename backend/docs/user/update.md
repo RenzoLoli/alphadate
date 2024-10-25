@@ -8,14 +8,15 @@
   - [Request Body](#request-body)
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
-  - [Not Found Response](#not-found-response)
+  - [Unauthorized Response](#unauthorized-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
 
-| URL                   | Method | Auth required | Description       |
-| --------------------- | ------ | ------------- | ----------------- |
-| /api/v1/auth/user/:id | PUT    | YES           | Update user by id |
+| URL              | Method | Auth required | Description       |
+| ---------------- | ------ | ------------- | ----------------- |
+| /api/v1/user/:id | PUT    | YES           | Update user by id |
 
 ## URL Params
 
@@ -27,11 +28,11 @@
 
 ```json
 {
-  "username?": "string",
-  "email?": "string",
-  "couplename?": "string",
-  "anniversary?": "string",
-  "photo?": "string"
+  "username": "string",
+  "email": "string",
+  "couplename": "string",
+  "anniversary": "string",
+  "photo": "string"
 }
 ```
 
@@ -64,9 +65,21 @@
 }
 ```
 
-## Not Found Response
+## Unauthorized Response
 
-**Code** : `404 NOT FOUND`
+**Code** : `401 UNAUTHORIZED`
+
+**Content** :
+
+```json
+{
+  "message": "string"
+}
+```
+
+## Internal Server Error Response
+
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 
