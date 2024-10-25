@@ -1,17 +1,15 @@
 # Alphadate
 
 <!--toc:start-->
+
 - [Alphadate](#alphadate)
   - [Description](#description)
   - [Features](#features)
   - [Architecture](#architecture)
   - [Database](#database)
     - [database diagram](#database-diagram)
-  - [Docker](#docker)
-    - [Env varialbes](#env-varialbes)
-    - [Build](#build)
-    - [Run](#run)
-<!--toc:end-->
+  - [Docker](#docker) - [Env varialbes](#env-varialbes) - [Build](#build) - [Run](#run)
+  <!--toc:end-->
 
 ## Description
 
@@ -46,6 +44,7 @@
 | DATABASE_PASS                       | Database | Password for database       | root                                         |
 | DATABASE_PORT                       | Database | Port for database           | 4700                                         |
 | DATABASE_HOST                       | Database | Host for database           | 0.0.0.0                                      |
+| DATABASE_LOGLEVEL                   | Database | Log level for database      | debug                                        |
 | DATABASE_METHOD                     | Database | Method for database         |                                              |
 | DATABASE_DBPATH                     | Database | Path for database           | /var/lib/surrealdb                           |
 | BACKEND_SECRET_KEY                  | Backend  | Secret key for backend      | ZOREN4u8u4e8u4u8u4e8u4u8                     |
