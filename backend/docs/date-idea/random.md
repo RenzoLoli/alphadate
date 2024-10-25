@@ -1,8 +1,8 @@
-# Tag by Id
+# Random Date Idea
 
 <!--toc:start-->
 
-- [Tag by Id](#tag-by-id)
+- [Random Date Idea](#random-date-idea)
   - [Description](#description)
   - [URL Params](#url-params)
   - [Success Response](#success-response)
@@ -13,15 +13,15 @@
 
 ## Description
 
-| URL             | Method | Auth required | Description   |
-| --------------- | ------ | ------------- | ------------- |
-| /api/v1/tag/:id | GET    | YES           | Get tag by id |
+| URL                                   | Method | Auth required | Description          |
+| ------------------------------------- | ------ | ------------- | -------------------- |
+| /api/v1/date-idea/random/:alphabet-id | GET    | YES           | Get random date idea |
 
 ## URL Params
 
-| Param | Type   | Description                 |
-| ----- | ------ | --------------------------- |
-| id    | String | The id of the tag to delete |
+| Param       | Type   | Description                             |
+| ----------- | ------ | --------------------------------------- |
+| alphabet-id | String | The id of the alphabet to get date idea |
 
 ## Success Response
 
@@ -32,7 +32,14 @@
 ```json
 {
   "id": "string",
-  "name": "string"
+  "idea": "string",
+  "description": "string",
+  "tags": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ]
 }
 ```
 

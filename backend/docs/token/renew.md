@@ -5,7 +5,9 @@
 - [Renew token](#renew-token)
   - [Description](#description)
   - [Success Response](#success-response)
+  - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
@@ -26,6 +28,18 @@
 }
 ```
 
+## Bad Request Response
+
+**Code** : `400 BAD REQUEST`
+
+**Content** :
+
+```json
+{
+  "message": "string"
+}
+```
+
 ## Unauthorized Response
 
 **Code** : `401 UNAUTHORIZED`
@@ -38,9 +52,9 @@
 }
 ```
 
-## Not Modified Response
+## Internal Server Error Response
 
-**Code** : `304 NOT MODIFIED`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

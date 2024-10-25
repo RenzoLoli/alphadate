@@ -7,14 +7,14 @@
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Found Response](#not-found-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
 
-| URL                   | Method | Auth required | Description    |
-| --------------------- | ------ | ------------- | -------------- |
-| /api/v1/auth/user/:id | GET    | YES           | Get user by id |
+| URL              | Method | Auth required | Description    |
+| ---------------- | ------ | ------------- | -------------- |
+| /api/v1/user/:id | GET    | YES           | Get user by id |
 
 ## Success Response
 
@@ -57,9 +57,9 @@
 }
 ```
 
-## Not Found Response
+## Internal Server Error Response
 
-**Code** : `404 NOT FOUND`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

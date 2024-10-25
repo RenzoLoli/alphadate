@@ -5,32 +5,24 @@
 - [Add Idea to Alphabet](#add-idea-to-alphabet)
   - [Description](#description)
   - [URL Params](#url-params)
-  - [Request Body](#request-body)
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Modified Response](#not-modified-response)
+  - [Internal Server Error Response](#internal-server-error-response)
   <!--toc:end-->
 
 ## Description
 
-| URL                           | Method | Auth required | Description          |
-| ----------------------------- | ------ | ------------- | -------------------- |
-| /api/v1/alphabet/:alphabet-id | POST   | YES           | Add idea to alphabet |
+| URL                                              | Method | Auth required | Description          |
+| ------------------------------------------------ | ------ | ------------- | -------------------- |
+| /api/v1/alphabet/:alphabet-id/date-idea/:idea-id | POST   | YES           | Add idea to alphabet |
 
 ## URL Params
 
-| Param       | Type   | Description                           |
-| ----------- | ------ | ------------------------------------- |
-| alphabet-id | String | The id of the alphabet to add idea to |
-
-## Request Body
-
-```json
-{
-  "date_idea_id": "string"
-}
-```
+| Param       | Type   | Description                            |
+| ----------- | ------ | -------------------------------------- |
+| alphabet-id | String | The id of the alphabet to add idea to  |
+| idea-id     | String | The id of the date idea to add idea to |
 
 ## Success Response
 
@@ -41,8 +33,7 @@
 ```json
 {
   "id": "string",
-  "title": "string",
-  "description": "string"
+  "title": "string"
 }
 ```
 
@@ -70,9 +61,9 @@
 }
 ```
 
-## Not Modified Response
+## Internal Server Error Response
 
-**Code** : `304 NOT MODIFIED`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 

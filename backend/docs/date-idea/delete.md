@@ -1,14 +1,15 @@
 # Delete Date Idea
 
 <!--toc:start-->
+
 - [Delete Date Idea](#delete-date-idea)
   - [Description](#description)
   - [URL Params](#url-params)
   - [Success Response](#success-response)
   - [Bad Request Response](#bad-request-response)
   - [Unauthorized Response](#unauthorized-response)
-  - [Not Modified Response](#not-modified-response)
-<!--toc:end-->
+  - [Internal Server Error Response](#internal-server-error-response)
+  <!--toc:end-->
 
 ## Description
 
@@ -32,13 +33,7 @@
 {
   "id": "string",
   "idea": "string",
-  "description": "string",
-  "tags": [
-    {
-      "id": "string",
-      "name": "string"
-    }
-  ]
+  "description": "string"
 }
 ```
 
@@ -66,9 +61,9 @@
 }
 ```
 
-## Not Modified Response
+## Internal Server Error Response
 
-**Code** : `304 NOT MODIFIED`
+**Code** : `500 INTERNAL SERVER ERROR`
 
 **Content** :
 
