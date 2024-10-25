@@ -30,20 +30,20 @@ const COMPONENTS: Array<Component> = [];
 })
 export class RegisterComponent {
   formGroup = new FormGroup({
-    username: new FormControl('test', {
+    username: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(20)],
     }),
-    couplename: new FormControl('testa', {
+    couplename: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(20)],
     }),
-    anniversary: new FormControl('2020-02-03', {
+    anniversary: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required],
     }),
     photo: new FormControl(
-      'https://img.freepik.com/vector-gratis/ilustracion-pareja-asiatica-dibujada-mano_23-2150016652.jpg',
+      '',
       {
         nonNullable: true,
         validators: [
@@ -52,11 +52,11 @@ export class RegisterComponent {
         ],
       },
     ),
-    email: new FormControl('test@test.com', {
+    email: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
-    password: new FormControl('test123', {
+    password: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(6)],
     }),
