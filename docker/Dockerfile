@@ -56,11 +56,6 @@ RUN rm -rf /var/log/nginx/ \
   && touch /var/log/nginx/error.log \
   && chown -R www-data:www-data /var/log/nginx/
 
-## hosting env variables
-
-ENV HOSTING_FRONTEND_URL=http://127.0.0.1:4200
-ENV HOSTING_BACKEND_URL=http://127.0.0.1:3000
-
 # config database
 
 WORKDIR /app/database
@@ -71,22 +66,19 @@ COPY database/init_server ./init_server
 RUN chmod +x ./init_server
 
 ## database env variables
-ENV S_USER=root
-ENV S_PASS=root
-ENV S_PORT=4700
-ENV S_HOST=0.0.0.0
-ENV S_METHOD=
-ENV S_DBPATH=/var/lib/surrealdb
-ENV S_LOGLEVEL=debug
+ENV DATABASE_USER=root
+ENV DATABASE_PASS=root
+ENV DATABASE_PORT=4700
+ENV DATABASE_HOST=0.0.0.0
+ENV DATABASE_METHOD=
+ENV DATABASE_DBPATH=/var/lib/surrealdb
+ENV DATABASE_LOGLEVEL=debug
 
 # config frontend
 
 WORKDIR /app/frontend
 
 COPY --from=frontend /app/frontend/dist/frontend .
-
-## frontend env variables
-ENV FRONTEND_API_URL=http://127.0.0.1:3000/api/v1
 
 # config backend
 
@@ -96,20 +88,20 @@ COPY --from=backend /app/target/release/backend ./backend
 RUN chmod +x ./backend
 
 ## backend env variables
-ENV SECRET_KEY=ZOREN4u8u4e8u4u8u4e8u4u8
-ENV PASSWORD_ENCRYPTION_KEY=4WOLu6iFbO4XIXLTPwst1cFYEwGQ7vRUGXoOSxBWFuM=
-ENV BACKEND_PORT=3000
-ENV HOST=0.0.0.0
-ENV LOG_LEVEL=debug
-ENV EXPIRATION_TOKEN_TIME_IN_MS=86400000
+ENV BACKEND_SECRET_KEY=ZOREN4u8u4e8u4u8u4e8u4u8
+ENV BACKEND_PASSWORD_ENCRYPTION_KEY=4WOLu6iFbO4XIXLTPwst1cFYEwGQ7vRUGXoOSxBWFuM=
+ENV BACKEND_BACKEND_PORT=3000
+ENV BACKEND_HOST=0.0.0.0
+ENV BACKEND_LOG_LEVEL=debug
+ENV BACKEND_EXPIRATION_TOKEN_TIME_IN_MS=86400000
 
-ENV DB_HOST=127.0.0.1:4700
-ENV DB_USER=root
-ENV DB_PASS=root
-ENV DB_NAMESPACE=alphadate
-ENV DB_DATABSAE=resources
+ENV BACKEND_DB_HOST=127.0.0.1:4700
+ENV BACKEND_DB_USER=root
+ENV BACKEND_DB_PASS=root
+ENV BACKEND_DB_NAMESPACE=alphadate
+ENV BACKEND_DB_DATABSAE=resources
 
-ENV CORS_ORIGINS=http://127.0.0.1:4200
+ENV BACKEND_CORS_ORIGINS=http://127.0.0.1:4200
 
 # config pm2 for process management
 
@@ -126,4 +118,5 @@ RUN chmod +x ./entry.sh \
 EXPOSE 80
 
 ENTRYPOINT ["./entry.sh"]
+
 
