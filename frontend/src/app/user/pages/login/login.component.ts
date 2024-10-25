@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { SignInRequest } from '../../models/sign-in.request';
 import { AuthStore } from '../../store/auth.store';
+import { Router } from '@angular/router';
 
 const MATERIAL: Array<any> = [MatInputModule, MatButtonModule, MatCardModule];
 const MODULES: Array<any> = [ReactiveFormsModule];
@@ -31,6 +32,8 @@ export class LoginComponent {
   });
   authStore = inject(AuthStore);
 
+  router = inject(Router);
+
   get reqError() {
     return this.authStore.getError();
   }
@@ -49,5 +52,9 @@ export class LoginComponent {
     const signinRequest: SignInRequest = this.formGroup.getRawValue();
 
     this.authStore.login(signinRequest);
+  }
+
+  onGotoRegister() {
+    this.router.navigateByUrl('/register');
   }
 }

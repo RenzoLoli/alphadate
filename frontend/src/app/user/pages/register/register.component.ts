@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 const MATERIAL: Array<any> = [
   MatFormFieldModule,
@@ -42,16 +43,13 @@ export class RegisterComponent {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    photo: new FormControl(
-      '',
-      {
-        nonNullable: true,
-        validators: [
-          Validators.required,
-          Validators.pattern('^(http|https)://.+.(png|jpg|jpeg|gif)$'),
-        ],
-      },
-    ),
+    photo: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.pattern('^(http|https)://.+.(png|jpg|jpeg|gif)$'),
+      ],
+    }),
     email: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
@@ -62,6 +60,7 @@ export class RegisterComponent {
     }),
   });
   authStore = inject(AuthStore);
+  router = inject(Router);
 
   get reqError() {
     return this.authStore.getError();
@@ -97,5 +96,9 @@ export class RegisterComponent {
     const signupRequest: SignUpRequest = this.formGroup.getRawValue();
 
     this.authStore.register(signupRequest);
+  }
+
+  onGotoLogin() {
+    this.router.navigateByUrl('/login');
   }
 }
