@@ -1,5 +1,12 @@
 # Database
 
+<!--toc:start-->
+
+- [Database](#database)
+  - [Info](#info)
+  - [Setup](#setup)
+  <!--toc:end-->
+
 ## Info
 
 Database initialization using _SurrealDB_
@@ -15,20 +22,20 @@ Database initialization using _SurrealDB_
 - env properties (Not implemented yet)
 
       # authentication
-      S_USER=
-      S_PASS=
+      DATABASE_USER=
+      DATABASE_PASS=
 
       # server binding
-      S_PORT=
-      S_HOST=
+      DATABASE_PORT=
+      DATABASE_HOST=
 
       # surreal properties
-      S_METHOD=
-      S_DBPATH=
-      S_LOGLEVEL=
+      DATABASE_METHOD=
+      DATABASE_DBPATH=
+      DATABASE_LOGLEVEL=
 
       # One liner
-      S_USER= S_PASS= S_PORT= S_HOST= S_METHOD= S_DBPATH= S_LOGLEVEL=
+      DATABASE_USER=root DATABASE_PASS=root DATABASE_PORT=4700 DATABASE_HOST=0.0.0.0 DATABASE_METHOD= DATABASE_DBPATH=/var/lib/surrealdb DATABASE_LOGLEVEL=debug surreal version
 
 - initialize engine
 

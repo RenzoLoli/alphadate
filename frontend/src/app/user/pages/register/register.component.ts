@@ -1,16 +1,16 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { AuthStore } from '../../store/auth.store';
-import { SignUpRequest } from '../../models/sign-up.request';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
+import { SignUpRequest } from '../../models/sign-up.request';
+import { AuthStore } from '../../store/auth.store';
 
 const MATERIAL: Array<any> = [
   MatFormFieldModule,
@@ -30,33 +30,30 @@ const COMPONENTS: Array<Component> = [];
 })
 export class RegisterComponent {
   formGroup = new FormGroup({
-    username: new FormControl('test', {
+    username: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(20)],
     }),
-    couplename: new FormControl('testa', {
+    couplename: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(20)],
     }),
-    anniversary: new FormControl('2020-02-03', {
+    anniversary: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    photo: new FormControl(
-      'https://img.freepik.com/vector-gratis/ilustracion-pareja-asiatica-dibujada-mano_23-2150016652.jpg',
-      {
-        nonNullable: true,
-        validators: [
-          Validators.required,
-          Validators.pattern('^(http|https)://.+.(png|jpg|jpeg|gif)$'),
-        ],
-      },
-    ),
-    email: new FormControl('test@test.com', {
+    photo: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.pattern('^(http|https)://.+.(png|jpg|jpeg|gif)$'),
+      ],
+    }),
+    email: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
-    password: new FormControl('test123', {
+    password: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(6)],
     }),

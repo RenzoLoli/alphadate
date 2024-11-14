@@ -19,6 +19,7 @@ echo "  Host: $host"
 echo "  Port: $port"
 echo "  Method: $method"
 echo "  Log level: $loglevel"
+echo "  Database path: $dbpath"
 echo ""
 
 surreal start "$method" -A --username "$user" --password "$pass" --bind "$host":"$port" --log "$loglevel" "$@"
