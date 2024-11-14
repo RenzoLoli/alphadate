@@ -240,6 +240,13 @@ export class DateIdeasComponent implements OnInit {
   }
 
   onRandomIdea() {
+    if (!this.dateIdeas().length) {
+      this._snackBar.open('No Ideas', 'close', {
+        duration: 3000,
+      });
+      return;
+    }
+
     const filteredDateIdeas = this.filterDateIdeas();
     if (!filteredDateIdeas) return;
 

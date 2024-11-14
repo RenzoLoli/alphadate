@@ -20,11 +20,11 @@ const COMPONENTS: Array<Component> = [];
 })
 export class LoginComponent {
   formGroup = new FormGroup({
-    email: new FormControl('test@test.com', {
+    email: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
-    password: new FormControl('test123', {
+    password: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(20)],
     }),
