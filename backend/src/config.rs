@@ -31,8 +31,8 @@ impl ServerOptions {
         let secret = EnvService::get_env("BACKEND_SECRET_KEY").unwrap_or(String::from("secret"));
         log::debug!("secret: {}", secret);
 
-        let password_encryption_key =
-            EnvService::get_env("BACKEND_PASSWORD_ENCRYPTION_KEY").unwrap_or(String::from(""));
+        let password_encryption_key = EnvService::get_env("BACKEND_PASSWORD_ENCRYPTION_KEY")
+            .unwrap_or(String::from("7S7Cq6d0p0p/Qd+C6o5tqBdjgqMsFyU="));
         log::debug!("password_encryption_key: {}", password_encryption_key);
 
         let expiration_token_time = EnvService::get_env("BACKEND_EXPIRATION_TOKEN_TIME_IN_MS")
@@ -49,7 +49,8 @@ impl ServerOptions {
         // config database variables
         let username = EnvService::get_env("BACKEND_DB_USER").unwrap_or(String::from("root"));
         let password = EnvService::get_env("BACKEND_DB_PASS").unwrap_or(String::from("root"));
-        let address = EnvService::get_env("BACKEND_DB_HOST").unwrap_or(String::from("127.0.0.1"));
+        let address =
+            EnvService::get_env("BACKEND_DB_HOST").unwrap_or(String::from("127.0.0.1:4700"));
         let namespace =
             EnvService::get_env("BACKEND_DB_NAMESPACE").unwrap_or(String::from("alphadate"));
         let database =

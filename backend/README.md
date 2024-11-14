@@ -1,21 +1,36 @@
 # Alphadate REST API Documentation
 
 <!--toc:start-->
-
 - [Alphadate REST API Documentation](#alphadate-rest-api-documentation)
-  1. [Authentication](#authentication)
-  2. [Open Endpoints](#open-endpoints)
+  - [Env Variables](#env-variables)
+  - [Authentication](#authentication)
+  - [Open Endpoints](#open-endpoints)
+    - [Authentication Related](#authentication-related)
+    - [Playground Endpoints](#playground-endpoints)
+  - [Required Authentication Endpoints](#required-authentication-endpoints)
+    - [User Related](#user-related)
+    - [Token Related](#token-related)
+    - [Tag Related](#tag-related)
+    - [Date Idea Related](#date-idea-related)
+    - [Alphabet Related](#alphabet-related)
+<!--toc:end-->
 
-      - [Authentication Related](#authentication-related)
-      - [Playground Endpoints](#playground-endpoints)
-  3. [Required Authentication Endpoints](#required-authentication-endpoints)
+## Env Variables
 
-      - [User Related](#user-related)
-      - [Token Related](#token-related)
-      - [Tag Related](#tag-related)
-      - [Date Idea Related](#date-idea-related)
-      - [Alphabet Related](#alphabet-related)
-  <!--toc:end-->
+| Name                                | Description                 | Default                                      |
+| ----------------------------------- | --------------------------- | -------------------------------------------- |
+| BACKEND_SECRET_KEY                  | Secret key for JWT          | ZOREN4u8u4e8u4u8u4e8u4u8                     |
+| BACKEND_PASSWORD_ENCRYPTION_KEY     | Encryption key for password | 4WOLu6iFbO4XIXLTPwst1cFYEwGQ7vRUGXoOSxBWFuM= |
+| BACKEND_BACKEND_PORT                | Backend port                | 3000                                         |
+| BACKEND_HOST                        | Backend host                | 0.0.0.0                                      |
+| BACKEND_LOG_LEVEL                   | Log level                   | debug                                        |
+| BACKEND_EXPIRATION_TOKEN_TIME_IN_MS | Expiration token time in ms | 86400000                                     |
+| BACKEND_DB_HOST                     | Database host               | 127.0.0.1:4700                               |
+| BACKEND_DB_USER                     | Database user               | root                                         |
+| BACKEND_DB_PASS                     | Database password           | root                                         |
+| BACKEND_DB_NAMESPACE                | Database namespace          | alphadate                                    |
+| BACKEND_DB_DATABSAE                 | Database database           | resources                                    |
+| BACKEND_CORS_ORIGINS                | CORS origins                | http://127.0.0.1:4200                        |
 
 ## Authentication
 
