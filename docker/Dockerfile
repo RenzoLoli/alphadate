@@ -109,14 +109,13 @@ WORKDIR /data
 
 COPY docker/ecosystem.config.js .
 
-COPY docker/entry.sh docker/entry.backend.sh docker/entry.frontend.sh ./
+COPY docker/entry.sh docker/entry.backend.sh docker/entry.frontend.sh docker/create_admin.sh ./
 
 RUN chmod +x ./entry.sh \
   && chmod +x ./entry.backend.sh \
-  && chmod +x ./entry.frontend.sh
+  && chmod +x ./entry.frontend.sh \
+  && chmod +x ./create_admin.sh
 
 EXPOSE 80
 
 ENTRYPOINT ["./entry.sh"]
-
-
