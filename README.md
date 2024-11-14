@@ -8,8 +8,11 @@
   - [Architecture](#architecture)
   - [Database](#database)
     - [database diagram](#database-diagram)
-  - [Docker](#docker) - [Env varialbes](#env-varialbes) - [Build](#build) - [Run](#run)
-  <!--toc:end-->
+  - [Docker](#docker)
+    - [Env varialbes](#env-varialbes)
+    - [Build](#build)
+    - [Run](#run)
+    <!--toc:end-->
 
 ## Description
 
